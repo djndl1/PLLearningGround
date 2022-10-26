@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using System.Collections.Immutable;
 using MoreLinq;
-
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace csharpPlayground.morelinq
 {
@@ -45,6 +46,23 @@ namespace csharpPlayground.morelinq
             string concated = Fruits.AggregateRight("", (a, b) => $"{a}-{b}");
 
             Assert.That(concated, Is.EqualTo("apple-banana-plum-raspberry-strawberry-pear--"));
+        }
+
+        [Test]
+        public void TestAssertCount()
+        {
+            Fruits.AssertCount(7);
+        }
+
+        [Test]
+        public void TestChoose()
+        {
+            var chosen = Fruits.Choose(f => (f.Length > 5, f)).ToList();
+
+            TestContext.Progress.WriteLine(JsonSerializer.Serialize(chosen, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            }));
         }
     }
 }
