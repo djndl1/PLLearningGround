@@ -595,3 +595,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+java_tutorial/.factorypath
+java_tutorial/.settings
+java_tutorial/.classpath
+java_tutorial/.project
