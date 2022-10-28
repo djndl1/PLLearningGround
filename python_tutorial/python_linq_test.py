@@ -3,9 +3,9 @@
 from collections.abc import Callable, Iterable, Iterator, Sequence
 from typing import Generator, List
 import unittest
-from itertools import dropwhile, islice, chain, groupby, product, takewhile
+from itertools import count, dropwhile, islice, chain, groupby, product, takewhile
 from functools import reduce
-from more_itertools import ichunked
+from more_itertools import ichunked, map_reduce
 
 class PinqTransformation(unittest.TestCase):
     def setUp(self) -> None:
@@ -314,3 +314,8 @@ class PinqMoreIterTools(unittest.TestCase):
 
         for batch in batched:
             print(list(batch))
+            self.assertLessEqual(len(list(batch)), 2)
+
+    def test_map_reduce_as_count_by(self) -> None:
+        count_by_len = map_reduce(self.fruit, len, lambda x: 1, sum)
+        print(count_by_len)

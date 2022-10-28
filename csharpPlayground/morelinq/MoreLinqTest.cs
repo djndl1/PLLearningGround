@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using System.Collections.Immutable;
 using MoreLinq;
-using System.Text.Json.Serialization;
 using System.Text.Json;
 
 namespace csharpPlayground.morelinq
@@ -63,6 +62,15 @@ namespace csharpPlayground.morelinq
             {
                 WriteIndented = true
             }));
+        }
+
+        [Test]
+        public void TestBatch()
+        {
+            foreach (var batch in Fruits.Batch(2))
+            {
+                Assert.That(batch.Count(), Is.LessThanOrEqualTo(2));
+            }
         }
     }
 }
