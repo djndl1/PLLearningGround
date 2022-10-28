@@ -1,0 +1,76 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/csharpPlayground.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/csharpPlayground.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watch",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "--project",
+                "${workspaceFolder}/csharpPlayground.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "run test",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "test",
+                "--filter",
+                "${input:TestFilter}"
+            ]
+        },
+        {
+            "label": "debug test",
+            "command": "dotnet",
+            "type": "process",
+            "options": {
+                "env": {
+                    "VSTEST_HOST_DEBUG": "1"
+                }
+            },
+            "args": [
+                "test",
+                "--filter",
+                "${input:TestFilter}"
+            ],
+            "problemMatcher": [
+                "$msCompile"
+            ]
+        }
+    ],
+    "inputs": [
+        {
+            "id": "TestFilter",
+            "type": "promptString",
+            "description": "Type the test you want to run"
+        }
+    ]
+}
