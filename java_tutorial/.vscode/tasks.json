@@ -17,6 +17,30 @@
         }
       },
       "problemMatcher": []
+    },
+    {
+      "label": "Debug Run Java",
+      "type": "shell",
+      "command": "mvn",
+      "args": [
+        "compile",
+        "exec:exec",
+        "-Dexec.executable=java",
+        "-Dexec.args=\"-classpath %classpath -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=localhost:5005 com.java.tutorial.App\""
+      ],
+      "options": {
+        "env": {
+          "JAVA_HOME": "/usr/lib/jvm/java-1.17.0-openjdk-amd64/",
+          "PATH": "/usr/lib/jvm/java-1.17.0-openjdk-amd64/bin/:/home/djn/opt/maven-3.8.5/bin/:/usr/share/bin:/bin"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Java In A Primitive Way",
+      "type": "shell",
+      "command": "./run.sh",
+      "problemMatcher": []
     }
   ],
   "inputs": [
