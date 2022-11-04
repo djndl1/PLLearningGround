@@ -6,6 +6,7 @@ using NUnit.Framework;
 using System.Collections.Immutable;
 using MoreLinq;
 using System.Text.Json;
+using NUnit.Framework.Internal;
 
 namespace csharpPlayground.morelinq
 {
@@ -70,6 +71,22 @@ namespace csharpPlayground.morelinq
             foreach (var batch in Fruits.Batch(2))
             {
                 Assert.That(batch.Count(), Is.LessThanOrEqualTo(2));
+            }
+        }
+
+        [Test]
+        public void TestSlice()
+        {
+            var rng = Fruits.ToList().GetRange(2, 2);
+            Assert.That(Fruits.Slice(2, 2), Is.EquivalentTo(rng));
+        }
+
+        [Test]
+        public void TestIndex()
+        {
+            foreach (var kv in Fruits.Index(2))
+            {
+                TestContext.Progress.WriteLine($"[{kv.Key} => {kv.Value}]");
             }
         }
     }
