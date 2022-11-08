@@ -89,5 +89,14 @@ namespace csharpPlayground.morelinq
                 TestContext.Progress.WriteLine($"[{kv.Key} => {kv.Value}]");
             }
         }
+
+        [Test]
+        public void TestCountdown()
+        {
+            foreach (var cd in Fruits.CountDown(3, (a, i) => (i, a)))
+            {
+                TestContext.Progress.WriteLine(cd);
+            }
+        }
     }
 }
