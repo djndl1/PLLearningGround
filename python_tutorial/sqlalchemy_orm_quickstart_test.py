@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from dataclasses import dataclass
+from types import new_class
 import unittest
 from typing import Container, Iterable, Sequence
 
@@ -19,6 +20,13 @@ class DeviceInFlow:
     name: str
     position: int
     direction: bool
+
+class FlWeightOpcItem(Base):
+    __tablename__ = "FL_WGT_OPC_ITEMS"
+
+    scale_name = Column("DEVICENAME", String(30), primary_key=True)
+    sequence = Column("ITEM_SEQ", Integer, primary_key=True)
+    item_code = Column("ITEM_CODE", String(60))
 
 class BasicFlow(Base):
     __tablename__ = "FL_BASIC"
@@ -263,17 +271,18 @@ class SAOrmQuickStartTest(unittest.TestCase):
     def __init__(self, methodName: str = ...) -> None:
         super().__init__(methodName)
 
-    def setUp(self) -> None:
-        super().setUp()
+    @classmethod
+    def setUpClass(cls) -> None:
 
         cx_Oracle.init_oracle_client("/home/djn/opt/instantclient_21_1/")
 
-        self.engine = create_engine("oracle://mgyard:mgyl1234@10.10.0.3:1521?service_name=pdbmgyard.docker.internal",
-                                    future=True)
+        cls.engine = create_engine("oracle://mgyard:mgyl1234@10.10.0.3:1521?service_name=pdbmgyard.docker.internal",
+                                    future=True,
+                                    echo=True)
 
-    def tearDown(self) -> None:
-        self.engine.dispose()
-        super().tearDown()
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.engine.dispose()
 
     def test_connect(self):
         with sorm.Session(self.engine) as sess:
@@ -295,6 +304,34 @@ class SAOrmQuickStartTest(unittest.TestCase):
 
     def test_flow_read_one(self) -> None:
         with sorm.Session(self.engine) as sess:
-            flow_result = sess.scalars(sa.select(BasicFlow))
+            flow_result = sess.scalar(sa.select(BasicFlow).limit(1))
 
-            print(flow_result.first().devices)
+            print(flow_result.devices)
+
+    def test_insert_update_delete_scale(self) -> None:
+        with sorm.Session(self.engine) as sess:
+            new_scale = FlWeightOpcItem(scale_name="AAA", sequence=123, item_code="FDS.Fdsa.df")
+
+            sess.add(new_scale)
+            sess.commit()
+
+            saved = sess.scalar(sa.select(FlWeightOpcItem)
+                        .where(FlWeightOpcItem.scale_name == new_scale.scale_name))
+
+            self.assertEqual(new_scale, saved)
+
+            saved.item_code = "ABC"
+            sess.commit()
+
+            updated = sess.scalar(sa.select(FlWeightOpcItem)
+                        .where(FlWeightOpcItem.scale_name == new_scale.scale_name))
+
+            self.assertEqual(saved, updated)
+
+            sess.delete(new_scale)
+            sess.commit()
+
+            saved = sess.scalar(sa.select(FlWeightOpcItem)
+                        .where(FlWeightOpcItem.scale_name == new_scale.scale_name))
+
+            self.assertIsNone(saved)
