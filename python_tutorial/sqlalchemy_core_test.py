@@ -11,7 +11,8 @@ import sqlalchemy as sa
 import sqlalchemy.orm as sorm
 
 
-from sqlalchemy import Column, ForeignKey, MetaData, String, Integer, Numeric, DateTime, create_engine, insert, values
+from sqlalchemy import Column, ForeignKey, MetaData, String, Integer
+from sqlalchemy import Numeric, DateTime, and_, create_engine, insert, select, values
 
 Base = sorm.declarative_base()
 
@@ -145,3 +146,86 @@ class SAMetaDataTest(unittest.TestCase):
         )
 
         print(insert_returning_stmt.compile())
+
+    def test_select(self) -> None:
+        select_stmt = select(self.user_table).where(self.user_table.c.NAME == "DJN") # "DJN" as a parameter
+        print(select_stmt)
+
+        with self.engine.connect() as conn:
+            for row in conn.execute(select_stmt):
+                print(row)
+
+    def test_select_columns(self) -> None:
+        select_stmt = select(self.user_table.c.NAME,
+                             self.user_table.c.FULL_NAME.label("FullName")).where(
+                                 self.user_table.c.NAME == "DJN")
+        print(select_stmt)
+
+        with self.engine.connect() as conn:
+            for row in conn.execute(select_stmt):
+                print(row)
+
+    def test_select_text_block(self) -> None:
+        select_stmt = select(sa.literal_column("NAME").label("Name"), # more capable that `text`
+                             sa.text("ID"),
+                             self.user_table.c.FULL_NAME)
+        print(select_stmt)
+
+        with self.engine.connect() as conn:
+            for row in conn.execute(select_stmt):
+                print(row)
+
+    def test_select_from(self) -> None:
+        print(
+            select(sa.literal_column("ID"), sa.literal_column("NAME"))
+            .select_from(self.user_table)
+        )
+
+    def test_select_where(self) -> None:
+        print(self.user_table.c.NAME == "DJN")
+        print(self.user_table.c.ID > 5)
+
+        print(select(self.user_table)
+              .where(self.user_table.c.NAME == "DJN")
+              .where(self.user_table.c.ID == 3))
+
+        print(select(self.user_table)
+              .where(self.user_table.c.NAME == "DJN",
+                     self.user_table.c.ID == 3))
+
+        print(select(self.user_table)
+              .where(sa.or_(self.user_table.c.NAME == "DJN",
+                         self.user_table.c.ID == 3)))
+
+        print(select(self.user_table).filter_by(NAME="DJN"))
+
+    def test_select_tables_join(self) -> None:
+        # implicit key
+        print(
+            select(self.user_table.c.NAME, self.address_table.c.email_address).join_from(
+                self.user_table, self.address_table
+            )
+        )
+
+        print(
+            select(self.user_table.c.NAME, self.address_table.c.email_address).join(self.address_table)
+        )
+
+        # explicit on
+        print(
+            select(self.user_table.c.NAME, self.address_table.c.email_address)
+            .join(self.address_table, self.user_table.c.ID == self.address_table.c.user_id)
+        )
+
+        # outer_join, full_join
+        print(select(self.user_table, self.address_table.c.email_address).join_from(
+            self.user_table, self.address_table, isouter=True))
+        print(select(self.user_table).join(self.address_table, isouter=True))
+        print(select(self.user_table).join_from(self.user_table, self.address_table, full=True))
+
+    def test_select_count(self) -> None:
+        stmt = select(sa.func.count("*")).select_from(self.user_table)
+
+        with self.engine.connect() as conn:
+            for r in conn.execute(stmt):
+                print(r)
