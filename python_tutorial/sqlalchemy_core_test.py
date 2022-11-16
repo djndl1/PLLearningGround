@@ -229,3 +229,27 @@ class SAMetaDataTest(unittest.TestCase):
         with self.engine.connect() as conn:
             for r in conn.execute(stmt):
                 print(r)
+
+    def test_order_by(self) -> None:
+        stmt = select(self.user_table).order_by(self.user_table.c.NAME.asc())
+
+        print(stmt)
+
+    def test_group_by_having(self) -> None:
+        with self.engine.connect() as conn:
+            result = conn.execute(
+                select(self.user_table.c.NAME, sa.func.count(self.address_table.c.id).label("COUNT"))
+                .join(self.address_table)
+                .group_by(self.user_table.c.NAME)
+                .having(sa.func.count(self.address_table.c.id) > 1)
+            )
+
+            print(result.all())
+
+    def test_table_alias(self) -> None:
+        users = self.user_table.alias("USERS")
+        addresses = self.address_table.alias("ADDRESSES")
+
+        print(
+            select(users).join_from(users, addresses)
+        )
