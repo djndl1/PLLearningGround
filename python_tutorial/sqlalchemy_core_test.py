@@ -253,3 +253,31 @@ class SAMetaDataTest(unittest.TestCase):
         print(
             select(users).join_from(users, addresses)
         )
+
+    def test_subquery_cte(self) -> None:
+        '''
+            Subquery represented as `Subquery` from `Select.subquery()`
+            Behaves like any other FROM object such as a `Table`
+        '''
+
+        subq = select(sa.func.count(self.address_table.c.id).label("count"),
+                   self.address_table.c.user_id).group_by(
+                       self.address_table.c.user_id
+                       ).subquery()
+
+        print(select(subq.c.user_id, subq.c.count))
+
+        print(select(self.user_table.c.NAME, self.user_table.c.FULL_NAME, subq.c.count).join_from(
+            self.user_table, subq
+        ))
+
+        cte = select(sa.func.count(self.address_table.c.id).label("count"),
+                   self.address_table.c.user_id).group_by(
+                       self.address_table.c.user_id
+                       ).cte()
+
+        print(select(cte.c.user_id, cte.c.count))
+
+        print(select(self.user_table.c.NAME, self.user_table.c.FULL_NAME, cte.c.count).join_from(
+            self.user_table, cte
+        ))
