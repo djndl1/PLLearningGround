@@ -28,25 +28,19 @@ func TestPerimeter(t *testing.T) {
 }
 
 func TestArea(t *testing.T) {
-	checkArea := func(t testing.TB, shape Shape, want float64) {
-		t.Helper()
 
-		got := shape.Area()
-		assert := assert.New(t)
-
-		assert.InDelta(want, got, 0.0000001)
+	areaTests := []struct {
+		shape Shape
+		want  float64
+	}{
+		{Rectangle{12, 6}, 72.0},
+		{Circle{10}, 314.1592653589793},
 	}
 
-	t.Run("rectangle area", func(t *testing.T) {
-		rec := Rectangle{10.0, 10.0}
-		want := 100.0
+	for _, tt := range areaTests {
+		got := tt.shape.Area()
+		assert := assert.New(t)
 
-		checkArea(t, rec, want)
-	})
-
-	t.Run("circle area", func(t *testing.T) {
-		circ := Circle{10}
-		want := 314.1592653589793
-		checkArea(t, circ, want)
-	})
+		assert.InDelta(tt.want, got, 0.0000001, "%#v got %g want %g", tt.shape, got, tt.want)
+	}
 }
