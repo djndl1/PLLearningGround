@@ -11,4 +11,8 @@ executable('HelloWorld', 'src/hello/HelloWorld.vala', dependencies: dependencies
 executable('HelloObjectWorld', 'src/hello/HelloObjectWorld.vala', dependencies: dependencies)
 executable('HelloGUIWorld', 'src/hello/HelloGUIWorld.vala', dependencies: dependencies)
 
+executable('nullability', 'src/hello/nullability.vala', dependencies: dependencies)
+
+executable('lock', 'src/threading/lock.vala', dependencies: dependencies)
+
 executable('ntp', 'src/examples/ntp.vala', dependencies: dependencies)
