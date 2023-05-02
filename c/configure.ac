@@ -1,6 +1,6 @@
 AC_INIT([c_tutorial], [1.0.0]) # mandatory; set up a project
 
-AM_INIT_AUTOMAKE([1.16 subdir-objects]) # initialize automake
+AM_INIT_AUTOMAKE([foreign 1.16 subdir-objects]) # initialize automake, no GNU Coding Style files such as NEWS, README, AUTHORS
 
 AC_PROG_CC # determine the C compiler to use
 
