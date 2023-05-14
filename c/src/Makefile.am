@@ -1,4 +1,5 @@
-bin_PROGRAMS = init_test
+bin_PROGRAMS = init_test \
+	unistring_test
 
 init_test_SOURCES = $(top_srcdir)/src/init_test.c
 
@@ -15,3 +16,9 @@ LDADD = $(top_builddir)/lib/libgnu.a
 
 init_test_CFLAGS = -I$(INC_DIR) $(gnulib_CFLAGS)
 init_test_LDFLAGS = $(gnulib_LDFLAGS)
+
+# unistring flags
+unistring_test_SOURCES = $(top_srcdir)/src/unistring_test.c
+
+unistring_test_CFLAGS = -I$(INC_DIR) $(gnulib_CFLAGS)
+unistring_test_LDFLAGS = $(gnulib_LDFLAGS)
