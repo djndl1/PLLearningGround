@@ -3,6 +3,13 @@
 
 #include "unistr.h"
 
+UTEST(NULLPTR_TEST, nullptr) {
+    int *n = nullptr;
+
+    ASSERT_EQ(NULL, nullptr);
+    ASSERT_EQ((void*)0, nullptr);
+}
+
 UTEST(UTF_TEST, UTF8UTF16) {
     const char *utf8str = "中文";
 
