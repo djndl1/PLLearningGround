@@ -1,0 +1,29 @@
+% preamble
+\documentclass[a4paper,12pt]{article}
+\usepackage{xeCJK}  % for CJK
+
+
+% a document environment
+\begin{document}
+
+\title{LaTeX Beginner Note}
+\author{djndl1}
+\date{2023年06月19日}
+
+% make a title along with author and date
+\maketitle
+
+% make a section. An article does not have a chapter
+\section{Formatting Fonts, Shapes and Styles}
+
+Text can be \emph{emphasized}, \textit{italic}, \textbf{bold}, \textsl{slanted} and even \textsc{small caps}. They can also be \textbf{\textit{nested}}.
+\texttt{\textbackslash emph} % use typewriter/monospace font for code
+is a \emph{semantic markup}, unlike the other
+\texttt{text**} \emph{shape}
+markups in that it does not refer to the appearance of text.
+
+For headings, normally we use \textsf{Sans Serif} for readability on low-resolution devices. Standard text in \LaTeX\ is in \textrm{Roman fonts}.
+We can also use \emph{declarations} like \ttfamily \textbackslash sffamily, \textbackslash ttfamily, \textbackslash bfseries, \textbackslash itshape \normalfont and \ttfamily \textbackslash rmfamily \normalfont to change the underlying font context. However, It would be so wrong to deal with them without using grouping.
+
+{\em Grouping} can be so useful with {\em declarations}. Here, {\ttfamily \textbackslash em} can only be valid within the {\ttfamily scope} of the group.
+\end{document}
