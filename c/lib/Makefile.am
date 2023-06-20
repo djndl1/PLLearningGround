@@ -32,6 +32,8 @@
 #  --no-conditional-dependencies \
 #  --no-libtool \
 #  --macro-prefix=gl \
+#  nullptr \
+#  stdbool \
 #  unistr/u16-to-u32 \
 #  unistr/u16-to-u8 \
 #  unistr/u32-to-u16 \

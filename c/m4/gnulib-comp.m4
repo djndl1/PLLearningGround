@@ -49,6 +49,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module inline:
   # Code from module limits-h:
   # Code from module multiarch:
+  # Code from module nullptr:
   # Code from module ssize_t:
   # Code from module std-gnu11:
   # Code from module stdbool:
@@ -92,6 +93,7 @@ AC_DEFUN([gl_INIT],
   gl_CONDITIONAL_HEADER([limits.h])
   AC_PROG_MKDIR_P
   gl_MULTIARCH
+  gl_NULLPTR
   gt_TYPE_SSIZE_T
   gl_C_BOOL
   gl_STDINT_H
@@ -335,6 +337,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/libunistring-base.m4
   m4/limits-h.m4
   m4/multiarch.m4
+  m4/nullptr.m4
   m4/off_t.m4
   m4/pid_t.m4
   m4/ssize_t.m4

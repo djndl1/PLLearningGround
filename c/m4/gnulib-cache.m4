@@ -37,6 +37,8 @@
 #  --no-conditional-dependencies \
 #  --no-libtool \
 #  --macro-prefix=gl \
+#  nullptr \
+#  stdbool \
 #  unistr/u16-to-u32 \
 #  unistr/u16-to-u8 \
 #  unistr/u32-to-u16 \
@@ -47,6 +49,8 @@
 # Specification in the form of a few gnulib-tool.m4 macro invocations:
 gl_LOCAL_DIR([])
 gl_MODULES([
+  nullptr
+  stdbool
   unistr/u16-to-u32
   unistr/u16-to-u8
   unistr/u32-to-u16
