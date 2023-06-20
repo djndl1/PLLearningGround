@@ -2,6 +2,12 @@
 \documentclass[a4paper,12pt]{article}
 \usepackage{xeCJK}  % for CJK
 
+% \newcommand{\code}{\texttt} a macro definition
+% \newcommand{command}[arguments][optional]{definition}
+% optional if present is the first argument
+% use \newcommand to create styles!
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\keyword}[2][\ttfamily]{{#1#2}}
 
 % a document environment
 \begin{document}
@@ -17,13 +23,42 @@
 \section{Formatting Fonts, Shapes and Styles}
 
 Text can be \emph{emphasized}, \textit{italic}, \textbf{bold}, \textsl{slanted} and even \textsc{small caps}. They can also be \textbf{\textit{nested}}.
-\texttt{\textbackslash emph} % use typewriter/monospace font for code
+\code{\textbackslash emph} % use typewriter/monospace font for code
 is a \emph{semantic markup}, unlike the other
-\texttt{text**} \emph{shape}
+\code{text**} \emph{shape}
 markups in that it does not refer to the appearance of text.
 
 For headings, normally we use \textsf{Sans Serif} for readability on low-resolution devices. Standard text in \LaTeX\ is in \textrm{Roman fonts}.
 We can also use \emph{declarations} like \ttfamily \textbackslash sffamily, \textbackslash ttfamily, \textbackslash bfseries, \textbackslash itshape \normalfont and \ttfamily \textbackslash rmfamily \normalfont to change the underlying font context. However, It would be so wrong to deal with them without using grouping.
 
-{\em Grouping} can be so useful with {\em declarations}. Here, {\ttfamily \textbackslash em} can only be valid within the {\ttfamily scope} of the group.
+
+
+\keyword[\bfseries\sffamily]{Grouping} can be so useful with {\em declarations}. Here, {\ttfamily \textbackslash em} can only be valid within the {\ttfamily scope} of the group.
+
+\noindent Text size can be set to {\tiny tiny}, {\small small}, {\normalsize normalsize}, {\large large}, {\Large Large} and {\LARGE LARGE}.
+Also, there are {\footnotesize footnotesize} and {\scriptsize scriptsize}.
+
+
+\subsection{Using Environments}
+
+\begin{large}
+  For every declaration there's a corresponding environment carrying the same name except the backslash.
+  Environments are like declarations with a built-in scope.
+\end{large}
+
+
+
+\subsection{Using Boxes}
+
+% paragraph box with top alignment
+\parbox[t]{1cm}{I have a narrow column here!}
+\quad
+\parbox[b]{1cm}{I have a narrow column here!}
+\quad
+\begin{minipage}{3cm}
+A minipage is a \code{\textbackslash parbox} for a large amount of text.
+
+\footnote{footnote is possible inside a \code{\textbackslash minipage}.}
+\end{minipage}
+
 \end{document}
