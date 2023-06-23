@@ -12,7 +12,7 @@
 \newcommand{\keyword}[2][\ttfamily]{{#1#2}}
 
 
-\hyphenation{ac-ro-nym} % tell the engine how to break acronym
+\hyphenation{ac-ro-nym} % tell the engine how to break the word acronym
 
 
 % a document environment
@@ -20,9 +20,9 @@
 
 \title{LaTeX Beginner Note}
 \author{djndl1}
-\date{2023年06月19日}
+\date{\today}
 
-% make a title along with author and date
+% make a title along with the author and the date
 \maketitle
 
 % make a section. An article does not have a chapter
@@ -69,13 +69,12 @@ A minipage is a \code{\textbackslash parbox} for a large amount of text.
 
 \subsection{Linebreaks}
 
-\code{\textbackslash\textbackslash} or \code{\textbackslash newline} \\[1cm] breaks the current line
-and they also supports a few arguments.
+\code{\textbackslash\textbackslash} or \code{\textbackslash newline} \\[1cm] breaks the current line and they also supports a few arguments.
 
-{\textbackslash linebreak} breaks a line too but keep the full justication. {\textbackslash nolinebreak} prevents a line brak at the current position. \nolinebreak[4] \linebreak[1]
+\code{\textbackslash linebreak} breaks a line too but keep the full justication. \code{\textbackslash nolinebreak} prevents a line break at the current position. \nolinebreak[4] \linebreak[1]
 This line should not be broken.
 
-\LaTeX break lines at spaces between words if meaningful. \code{~} stands for an interword space where no break is allowed. Using =\\= and its friends is susceptible to further document changes.
+\LaTeX\ break lines at spaces between words if meaningful. \code{\~} stands for an interword space where no break is allowed. Using \code{\textbackslash\textbackslash} and its friends is susceptible to further document changes.
 
 \subsection{Ligatures}
 
@@ -91,5 +90,26 @@ A single \code{-} marks mark hyphenation or compound words. A \code{--} is used 
 
 Accent commands are available. Set \code{\textbackslash [utf8]\{inputenc\}} to use UTF-8. Instead of
 \'{a}, input  á.
+
+\subsection{Justification}
+
+\begin{center}
+  We want titles \\
+  to be centered \\
+\end{center}
+
+\subsection{Quotation}
+
+A short quote goes here:
+
+\begin{quote}
+A short quote.
+\end{quote}
+
+I also have a long quotation.
+
+\begin{quotation}
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+\end{quotation}
 
 \end{document}
