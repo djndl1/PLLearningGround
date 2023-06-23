@@ -12,6 +12,21 @@
 \newcommand{\keyword}[2][\ttfamily]{{#1#2}}
 
 
+% compactenum, inparaenum and asparaenum
+% compactitem, inparaitem and asparaitem
+% compactdesc, inparadesc and asparadesc
+\usepackage{paralist}
+
+% customize lists
+\usepackage{enumitem}
+\setlist{nolistsep} % no list separator to obtain compact lists
+\setitemize[1]{label=---} % em dash for all unordered lists
+
+% set ordered lists to use circled capital letters as labels on the first level
+\setenumerate[1]{label=\textcircled{\scriptsize\Alph*}, font=\sffamily}
+
+\usepackage{layouts}
+
 \hyphenation{ac-ro-nym} % tell the engine how to break the word acronym
 
 
@@ -111,5 +126,84 @@ I also have a long quotation.
 \begin{quotation}
   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 \end{quotation}
+
+\section{Lists}
+
+\subsection{Unordered Lists}
+
+I have several items:
+
+\begin{itemize}
+  \item item1
+  \item item2
+  \item item3
+\item item4
+\end{itemize}
+
+They can also be nested:
+
+\begin{itemize}
+  \item Topitem1
+        \begin{itemize}
+          \item nested item
+        \end{itemize}
+  \item topitem2
+\end{itemize}
+
+\subsection{Ordered Lists}
+
+\begin{enumerate}
+  \item topitem1
+        \begin{itemize}
+          \item unordered item1
+          \item unordered item2
+        \end{itemize}
+  \item topitem2
+        \begin{enumerate}[label=\Roman*] % set list properties at local level, * is only there for distinguising
+          \item ordered item1
+          \item  ordered item2
+        \end{enumerate}
+\end{enumerate}
+
+Somehow I need to resume the previous list:
+
+\begin{enumerate}[resume*]
+  \item topitem3
+\end{enumerate}
+
+Using a compact list:
+
+\begin{compactenum}
+  \item Compact Item1
+  \item Compact Item2
+  \begin{compactitem}
+    \item nested compact item 1
+    \item nested compact item 2
+  \end{compactitem}
+\end{compactenum}
+
+\subsection{Definition/Description Lists}
+
+There are several useful packages for lists.
+
+\begin{description}
+  \item[paralist] provides compact lists and list versions that
+can be used within paragraphs, helps to customize labels and
+layout
+\item[enumitem] gives control over labels and lengths
+in all kind of lists
+\item[mdwlist] is useful to customize description lists, it
+even allows multi-line labels. It features compact lists and
+the capability to suspend and resume.
+\item[desclist] offers more flexibility in definition list
+\item[multenum] produces vertical enumeration in multiple
+columns
+\end{description}
+
+\subsection{Layouts}
+
+Show various lengths
+
+\listdiagram
 
 \end{document}
