@@ -1,6 +1,7 @@
 % preamble
 \documentclass[a4paper,12pt]{article}
 \usepackage{xeCJK}  % for CJK
+\usepackage{microtype}
 
 % \newcommand{\code}{\texttt} a macro definition
 % \newcommand{command}[arguments][optional]{definition}
@@ -8,6 +9,10 @@
 % use \newcommand to create styles!
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\keyword}[2][\ttfamily]{{#1#2}}
+
+
+\hyphenation{ac-ro-nym} % tell the engine how to break acronym
+
 
 % a document environment
 \begin{document}
@@ -60,5 +65,15 @@ A minipage is a \code{\textbackslash parbox} for a large amount of text.
 
 \footnote{footnote is possible inside a \code{\textbackslash minipage}.}
 \end{minipage}
+
+\subsection{Linebreaks}
+
+\code{\textbackslash\textbackslash} or \code{\textbackslash newline} \\[1cm] breaks the current line
+and they also supports a few arguments.
+
+{\textbackslash linebreak} breaks a line too but keep the full justication. {\textbackslash nolinebreak} prevents a line brak at the current position. \nolinebreak[4] \linebreak[1]
+This line should not be broken.
+
+\LaTeX break lines at spaces between words if meaningful. \code{~} stands for an interword space where no break is allowed. Using =\\= and its friends is susceptible to further document changes.
 
 \end{document}
