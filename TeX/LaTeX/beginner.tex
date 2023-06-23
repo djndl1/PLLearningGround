@@ -1,6 +1,11 @@
 % preamble
 \documentclass[a4paper,12pt]{article}
-\usepackage{xeCJK}  % for CJK
+\usepackage{xeCJK}% for CJK
+
+% a flexible and easy interface to page dimensions.
+\usepackage[a4paper, portrait, inner=1.5cm, outer=3cm, top=2cm, bottom=3cm, bindingoffset=1cm]{geometry}
+
+
 \usepackage{microtype}
 % \usepackage[utf8]{inputenc} meant only for tex or pdftex
 
@@ -205,5 +210,9 @@ columns
 Show various lengths
 
 \listdiagram
+
+\section{Pages}
+
+By default, LaTeX sets the outer margin twice as wide as the inner margin so that an opened book has three margins (left, middle, right) of equal size. The bottom margin contains the page number.
 
 \end{document}
