@@ -2,6 +2,7 @@
 \documentclass[a4paper,12pt]{article}
 \usepackage{xeCJK}  % for CJK
 \usepackage{microtype}
+% \usepackage[utf8]{inputenc} meant only for tex or pdftex
 
 % \newcommand{\code}{\texttt} a macro definition
 % \newcommand{command}[arguments][optional]{definition}
@@ -75,5 +76,20 @@ and they also supports a few arguments.
 This line should not be broken.
 
 \LaTeX break lines at spaces between words if meaningful. \code{~} stands for an interword space where no break is allowed. Using =\\= and its friends is susceptible to further document changes.
+
+\subsection{Ligatures}
+
+Ligatures are automatic if the fonts used support this feature. Use \code{\{\}} or \code{\textbackslash/} to separate them. -- and -\/-.
+
+A single \code{-} marks mark hyphenation or compound words. A \code{--} is used to indicate a range of some values. Wider dashes are used to mark a parenthetical thought.
+
+\subsection{Dots}
+
+\LaTeX\ assumes a dot after a capital letter an abbreviation and one after a lowercase a normal period. Use \code{\textbackslash @} and \code{\textbackslash } to correct that.
+
+\subsection{Accents}
+
+Accent commands are available. Set \code{\textbackslash [utf8]\{inputenc\}} to use UTF-8. Instead of
+\'{a}, input  á.
 
 \end{document}
