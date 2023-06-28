@@ -1,6 +1,14 @@
 % preamble
 \documentclass[a4paper,12pt]{article}
-\usepackage{xeCJK}% for CJK
+%\usepackage{xeCJK}% for CJK
+
+% \usepackage[T1]{fontenc} % for pdflatex, xelatex and lualatex don't require this
+\usepackage{fontspec}
+\usepackage{hyperref}
+\usepackage{babel}
+
+\babelprovide[import]{chinese}
+\babelfont[chinese]{rm}{FandolSong-Regular.otf}
 
 % a flexible and easy interface to page dimensions.
 \usepackage[a4paper, portrait, inner=1.5cm, outer=3cm, top=2cm, bottom=3cm, bindingoffset=1cm]{geometry}
@@ -16,6 +24,8 @@
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\keyword}[2][\ttfamily]{{#1#2}}
 
+\newcommand{\pangram}[1][\rmfamily]{{#1 The quick brown fox jumps
+over the lazy dog. 1234567890}\par}
 
 % compactenum, inparaenum and asparaenum
 % compactitem, inparaitem and asparaitem
@@ -214,5 +224,33 @@ Show various lengths
 \section{Pages}
 
 By default, LaTeX sets the outer margin twice as wide as the inner margin so that an opened book has three margins (left, middle, right) of equal size. The bottom margin contains the page number.
+
+\section{multilingual Support}
+
+Here, suppose we want some good German text support.
+
+Here I use the \code{babel} package for basic multilingual support. There is a good \href{https://en.wikibooks.org/wiki/LaTeX/Internationalization}{article}
+on Wikibooks.
+
+\begin{quotation}
+\begin{otherlanguage*}{german}
+  1237 und 1244 wurden die Nachbarstädte Alt-Kölln und Alt-Berlin im heutigen Ortsteil Mitte erstmals urkundlich erwähnt. Die Doppelstadt wurde als Handelsplatz gegründet und stieg im Mittelalter zu einem bedeutenden Wirtschaftszentrum auf. In seiner fast 800-jährigen Geschichte war Berlin Hauptstadt der Mark Brandenburg, Preußens und Deutschlands. Im Laufe des 18. und 19. Jahrhunderts festigte Berlin sich als internationale Großstadt mit viel Zuzug bis hin zur weltweit viertgrößten Stadt, mit der Berliner Klassik als Kulturstandort, als Zentrum der europäischen Aufklärung, sowie als bedeutender Industrie- und Wissenschaftsstandort. Nach dem Ende des Zweiten Weltkriegs unterlag die Stadt 1945 dem Viermächtestatus; Ost-Berlin hatte ab 1949 die Funktion als Hauptstadt der sozialistischen Autokratie der Deutschen Demokratischen Republik, während West-Berlin sich eng an die freiheitlich-demokratische Bundesrepublik anschloss. Mit dem Fall der Berliner Mauer 1989 und der deutschen Wiedervereinigung im Jahr 1990 wuchsen die beiden Stadthälften wieder zusammen und Berlin erhielt seine Rolle als gesamtdeutsche Hauptstadt zurück. Seit 1999 ist die Stadt Sitz der Bundesregierung, des Bundespräsidenten, des Deutschen Bundestages, des Bundesrates sowie der meisten Bundesministerien, zahlreicher Bundesbehörden und Botschaften.
+\end{otherlanguage*}
+\end{quotation}
+
+I'd like some Chinese.
+
+
+\begin{quotation}
+\foreignlanguage{chinese}{中文测试}
+\end{quotation}
+
+Fonts packages are available for \TeX\ in additional to font files (actually the inverse?).
+
+\pangram[\rmfamily]
+\pangram[\sffamily]
+\pangram[\ttfamily]
+\pangram[\itshape]
+\pangram[\slshape]
 
 \end{document}
