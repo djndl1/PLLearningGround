@@ -7,6 +7,8 @@
 \usepackage{hyperref}
 \usepackage{babel}
 
+\usepackage[onehalfspacing]{setspace} % change spacing
+
 \babelprovide[import]{chinese}
 \babelfont[chinese]{rm}{FandolSong-Regular.otf}
 
@@ -25,7 +27,7 @@
 \newcommand{\keyword}[2][\ttfamily]{{#1#2}}
 
 \newcommand{\pangram}[1][\rmfamily]{{#1 The quick brown fox jumps
-over the lazy dog. 1234567890}\par}
+over the lazy dog. 1234567890 \foreignlanguage{chinese}{中文测试}}\par}
 
 % compactenum, inparaenum and asparaenum
 % compactitem, inparaitem and asparaitem
@@ -47,6 +49,8 @@ over the lazy dog. 1234567890}\par}
 
 % a document environment
 \begin{document}
+
+\tableofcontents %a .toc file will be generated
 
 \title{LaTeX Beginner Note}
 \author{djndl1}
@@ -224,6 +228,12 @@ Show various lengths
 \section{Pages}
 
 By default, LaTeX sets the outer margin twice as wide as the inner margin so that an opened book has three margins (left, middle, right) of equal size. The bottom margin contains the page number.
+
+\begin{spacing}{2.4}
+\noindent I want really wide spacing \\
+I want really wide spacing \\
+I want really wide spacing \\
+\end{spacing}
 
 \section{multilingual Support}
 
