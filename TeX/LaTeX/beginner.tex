@@ -50,7 +50,7 @@ over the lazy dog. 1234567890 \foreignlanguage{chinese}{中文测试}}\par}
 % a document environment
 \begin{document}
 
-\tableofcontents %a .toc file will be generated
+\tableofcontents %a .toc file will be generated in the first run and will be used in the second run
 
 \title{LaTeX Beginner Note}
 \author{djndl1}
@@ -60,7 +60,8 @@ over the lazy dog. 1234567890 \foreignlanguage{chinese}{中文测试}}\par}
 \maketitle
 
 % make a section. An article does not have a chapter
-\section{Formatting Fonts, Shapes and Styles}
+% an optional argument gives a shorter version of the heading used in the TOC
+\section[Fonts, Shapes and Styles]{Formatting Fonts, Shapes and Styles}
 
 Text can be \emph{emphasized}, \textit{italic}, \textbf{bold}, \textsl{slanted} and even \textsc{small caps}. They can also be \textbf{\textit{nested}}.
 \code{\textbackslash emph} % use typewriter/monospace font for code
@@ -79,7 +80,7 @@ We can also use \emph{declarations} like \ttfamily \textbackslash sffamily, \tex
 Also, there are {\footnotesize footnotesize} and {\scriptsize scriptsize}.
 
 
-\subsection{Using Environments}
+\subsection[Environments]{Using Environments}
 
 \begin{large}
   For every declaration there's a corresponding environment carrying the same name except the backslash.
@@ -88,7 +89,7 @@ Also, there are {\footnotesize footnotesize} and {\scriptsize scriptsize}.
 
 
 
-\subsection{Using Boxes}
+\subsection[Boxes]{Using Boxes}
 
 % paragraph box with top alignment
 \parbox[t]{1cm}{I have a narrow column here!}
