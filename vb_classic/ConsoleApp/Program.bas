@@ -8,12 +8,14 @@ Option Explicit
 Sub Main()
    Console.Init
 
-   Dim s As String
-   s = "123"
-   Dim i As Long
-   i = s
+   On Error GoTo FailedTest
 
-   Console.WriteLine CStr(i)
+   VariantTest.Run
+
+FailedTest:
+   Dim printOut As String
+   printOut = "Failed test: " & CStr(Err.Number) & " " & Err.Description & " at " & Err.Source
+   Console.WriteLine Err.Err
 
    Call Console.Dispose
 End Sub

@@ -14,7 +14,9 @@ VB_EXE="/c/Program Files/Microsoft Visual Studio/VB98/VB6.EXE"
 BUILD_DIR=build
 
 CONSOLE_APP_SRC = Console.bas \
-                  Program.bas
+                  Program.bas \
+                  VariantTest.bas \
+                  AssertThat.bas
 
 .PHONY: all
 all: build/ConsoleApp.exe build/C2Hook.exe
@@ -28,6 +30,10 @@ build/ConsoleApp.exe: ConsoleApp.vbp $(CONSOLE_APP_SRC) build
 
 build/C2Hook.exe: C2Hook.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $< -o $@
+
+.PHONY: TAGS
+TAGS:
+	find . -regex ".*.[(bas)|(cls)]"	| xargs etags
 
 .PHONY: clean
 clean:
