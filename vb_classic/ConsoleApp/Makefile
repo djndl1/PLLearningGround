@@ -5,10 +5,13 @@ LINKER_FLAGS="//NOLOGO"
 LINKER_CONSOLE_SUBSYSTEM="//SUBSYSTEM:CONSOLE"
 
 CC="/z/Programs/mingw32/bin/gcc.exe"
+CPPFLAGS=-DUNICODE -D_UNICODE
+CFLAGS=-std=c11  -municode -g
+LDFLAGS=-mconsole
 
 VB_EXE="/c/Program Files/Microsoft Visual Studio/VB98/VB6.EXE"
 
-BUILD_DIR="build"
+BUILD_DIR=build
 
 CONSOLE_APP_SRC = Console.bas \
                   Program.bas
@@ -24,10 +27,10 @@ build/ConsoleApp.exe: ConsoleApp.vbp $(CONSOLE_APP_SRC) build
 	$(LINK_EXE) //EDIT $(LINKER_FLAGS) $(LINKER_CONSOLE_SUBSYSTEM) "$(BUILD_DIR)/ConsoleApp.exe"
 
 build/C2Hook.exe: C2Hook.c
-	$(CC) -std=c99 -DUNICODE -D_UNICODE -D__MINGW_PRINTF_FORMAT -D__USE_MINGW_ANSI_STDIO=1 -mconsole -g C2Hook.c -o build/C2Hook.exe
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $< -o $@
 
 .PHONY: clean
 clean:
 	-rm -rf $(BUILD_DIR)
-	-rm -f C2_*.txt
+	-rm -f HOOK_*.txt
 	-rm -f C2Hook.exe
