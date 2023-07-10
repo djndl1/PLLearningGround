@@ -14,8 +14,8 @@ Sub Main()
 
 FailedTest:
    Dim printOut As String
-   printOut = "Failed test: " & CStr(Err.Number) & " " & Err.Description & " at " & Err.Source
-   Console.WriteLine Err.Err
+   printOut = "Failed test: " & CStr(Err.Number) & " " _
+            & Err.Description & " at " & Err.Source ' line continuation
 
    Call Console.Dispose
 End Sub

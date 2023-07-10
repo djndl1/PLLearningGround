@@ -24,6 +24,9 @@ all: build/ConsoleApp.exe build/C2Hook.exe
 build:
 	mkdir -p $(BUILD_DIR)
 
+run: build/ConsoleApp.exe
+	build/ConsoleApp.exe
+
 build/ConsoleApp.exe: ConsoleApp.vbp $(CONSOLE_APP_SRC) build
 	$(VB_EXE) //MAKE ConsoleApp.vbp //OUTDIR $(BUILD_DIR)
 	$(LINK_EXE) //EDIT $(LINKER_FLAGS) $(LINKER_CONSOLE_SUBSYSTEM) "$(BUILD_DIR)/ConsoleApp.exe"
