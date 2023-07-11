@@ -412,7 +412,6 @@ csx/
 # Microsoft Azure Emulator
 ecf/
 rcf/
-
 # Windows Store app package directories and files
 AppPackages/
 BundleArtifacts/
@@ -581,3 +580,6 @@ java_tutorial/.settings
 java_tutorial/.classpath
 java_tutorial/.project
 python_tutorial/oracle_scratchpad.sql
+
+# symbol tags
+TAGS

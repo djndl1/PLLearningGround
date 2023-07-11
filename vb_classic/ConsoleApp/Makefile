@@ -16,7 +16,9 @@ BUILD_DIR=build
 CONSOLE_APP_SRC = Console.bas \
                   Program.bas \
                   VariantTest.bas \
-                  AssertThat.bas
+                  AssertThat.bas \
+                  AggregateTypesTest.bas \
+                  ArrayTest.bas
 
 .PHONY: all
 all: build/ConsoleApp.exe build/C2Hook.exe

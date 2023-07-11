@@ -11,6 +11,8 @@ Sub Main()
    On Error GoTo FailedTest
 
    VariantTest.Run
+   AggregateTypesTest.Run
+   ArrayTest.Run
 
 FailedTest:
    Dim printOut As String
