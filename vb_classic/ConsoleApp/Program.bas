@@ -14,10 +14,12 @@ Sub Main()
    AggregateTypesTest.Run
    ArrayTest.Run
 
+   GoTo CleanUp
 FailedTest:
    Dim printOut As String
    printOut = "Failed test: " & CStr(Err.Number) & " " _
             & Err.Description & " at " & Err.Source ' line continuation
-
+   Console.WriteLine printOut
+CleanUp:
    Call Console.Dispose
 End Sub

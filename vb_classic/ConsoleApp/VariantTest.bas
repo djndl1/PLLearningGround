@@ -39,7 +39,7 @@ End Sub
 
 
 Public Sub EmptyCharStringVariantTest()
-   Console.WriteLine "ErrorVariantTest"
+   Console.WriteLine "EmptyCharStringVariantTest"
    Dim v As Variant
 
    v = vbNullChar

@@ -6,14 +6,14 @@ Public Enum AssertCode
     IgnoreCode
 End Enum
 
-Public Sub IsTrue(cond As Boolean, message As String)
+Public Sub IsTrue(cond As Boolean, message As String, Optional source As String)
    If Not cond Then
-      Console.WriteLine "IsTrue test failed: " & message
+      Err.Raise FailureCode, source, message
    End If
 End Sub
 
-Public Sub IsFalse(cond As Boolean, message As String)
+Public Sub IsFalse(cond As Boolean, message As String, Optional source As String)
    If cond Then
-      Console.WriteLine "IsFalse test failed: " & message
+      Err.Raise SuccessCode, source, message
    End If
 End Sub

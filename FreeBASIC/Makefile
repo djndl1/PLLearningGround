@@ -11,7 +11,7 @@ TARGETS=FirstHello
 .PHONY: all
 all: $(TARGETS)
 
-FirstHello: FirstHello.bas
+%: %.bas
 	$(FBC) $<
 
 .PHONY: clean
