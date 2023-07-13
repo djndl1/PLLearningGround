@@ -1,10 +1,19 @@
 Option Explicit
 
+Private Type MyDUT
+   A As Long
+   B As Long
+End Type
+
+
 Public Sub Run()
    RedimensionPreserveTest
    FixedArrayTest
    DynamicArrayTest
    ArrayBoundaryTest
+   UDTArrayTest
+   ArrayInVariantTest
+   ArrayAssignmentTest
 End Sub
 
 Private Sub FixedArrayTest()
@@ -56,6 +65,7 @@ End Sub
 
 Private Sub RedimensionPreserveTest()
    Console.WriteLine "RedimensionPreserveTest"
+   Dim arr() As Long
    ReDim arr(1 To 10) As Long
 
    Dim i As Long
@@ -68,5 +78,56 @@ Private Sub RedimensionPreserveTest()
       AssertThat.IsTrue (arr(i) = i * 2), "Value should be retained"
    Next
 
+   ReDim arr(1 To 5, 1) As Long ' it's possible to change dimensions
+   arr(1, 0) = 5
+   AssertThat.isTrue arr(1, 0) = 5, ""
+
    Erase arr
+End Sub
+
+Private Sub UDTArrayTest()
+   ReDim duts(5) AS MyDUT
+
+   duts(1).A = 5
+   duts(2).B = 5
+
+   AssertThat.IsTrue duts(1).A = 5, "Should be 5"
+   AssertThat.IsTrue duts(2).B = 5, "Should be 5"
+End Sub
+
+Private Sub ArrayInVariantTest()
+   ReDim arr(5) As Long
+
+   Dim v As Variant
+   v = arr
+
+   v(5) = 5
+
+   AssertThat.IsTrue v(5) = 5, "v(5) == 5"
+
+   AssertThat.IsTrue VarType(v) = vbArray + vbLong, "Should be vbArray + vbLong"
+   AssertThat.IsTrue TypeName(v) = "Long()", "should be Long()"
+End Sub
+
+private Sub ArrayAssignmentTest()
+   ReDim a(5) As Long
+
+   Dim idx As Long
+   For idx = 0 To 5
+      a(idx) = idx
+   Next
+
+   Dim b() As Long
+   b = a
+
+   For idx = 0 To 5
+      AssertThat.IsTrue b(idx) = idx, ""
+      b(idx) = idx * 2
+   Next
+
+   ' it's copy assignment
+   For idx = 0 To 5
+      AssertThat.IsTrue a(idx) = idx, ""
+      AssertThat.IsTrue b(idx) = idx * 2, ""
+   Next
 End Sub
