@@ -14,6 +14,7 @@ Sub Main()
    AggregateTypesTest.Run
    ArrayTest.Run
    CollectionTest.Run
+   DotnetInteropTest.Run
 
    GoTo CleanUp
 FailedTest:
