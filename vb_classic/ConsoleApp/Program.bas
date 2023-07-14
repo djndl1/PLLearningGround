@@ -13,6 +13,7 @@ Sub Main()
    VariantTest.Run
    AggregateTypesTest.Run
    ArrayTest.Run
+   CollectionTest.Run
 
    GoTo CleanUp
 FailedTest:

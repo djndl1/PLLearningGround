@@ -17,3 +17,7 @@ Public Sub IsFalse(cond As Boolean, message As String, Optional source As String
       Err.Raise SuccessCode, source, message
    End If
 End Sub
+
+Public Sub Fail(message As String, Optional source As String)
+      Err.Raise FailureCode, source, message
+End Sub

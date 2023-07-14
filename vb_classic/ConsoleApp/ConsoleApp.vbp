@@ -7,6 +7,7 @@ Module=VariantTest; VariantTest.bas
 Module=AssertThat; AssertThat.bas
 Module=AggregateTypesTest; AggregateTypesTest.bas
 Module=ArrayTest; ArrayTest.bas
+Module=CollectionTest; CollectionTest.bas
 Startup="Sub Main"
 HelpFile=""
 NoControlUpgrade=1

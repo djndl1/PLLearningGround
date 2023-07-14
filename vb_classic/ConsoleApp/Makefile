@@ -18,7 +18,8 @@ CONSOLE_APP_SRC = Console.bas \
                   VariantTest.bas \
                   AssertThat.bas \
                   AggregateTypesTest.bas \
-                  ArrayTest.bas
+                  ArrayTest.bas \
+                  CollectionTest.bas
 
 .PHONY: all
 all: build/ConsoleApp.exe build/C2Hook.exe
