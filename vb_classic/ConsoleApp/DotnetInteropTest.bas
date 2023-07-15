@@ -1,12 +1,15 @@
+Attribute VB_Name = "DotnetInteropTest"
 Option Explicit
 
 Public Sub Run()
    CreateDotnetObjectTest
+   StringBuilderTest
    MethodOverloadingTest
    ArrayListTest
    QueueTest
    StackTest
    HashTableTest
+   CalendarTest
 End Sub
 
 Private Sub CreateDotnetObjectTest()
@@ -20,6 +23,24 @@ Private Sub CreateDotnetObjectTest()
    Set typ = o.GetType()    ' and thus it has be acccessed through a certain interface
    Console.WriteLine typ.AssemblyQualifiedName
 
+End Sub
+
+Private Sub CalendarTest()
+   Dim o As New mscorlib.GregorianCalendar
+
+   Dim d As Variant
+   d = Date
+
+   AssertThat.IsTrue o.GetYear(d) = 2023, "Should be year 2023"
+End Sub
+
+Private Sub StringBuilderTest()
+   Dim o As Object
+   Set o = CreateObject("System.Text.StringBuilder")
+
+   o.Append_3 "A" ' Append(String) is the third in the source code
+
+   AssertThat.IsTrue o.ToString = "A", "Should be A"
 End Sub
 
 Private Sub MethodOverloadingTest()
@@ -50,7 +71,7 @@ Private Sub StackTest()
 End Sub
 
 Private Sub HashTableTest()
-   Dim dict As New mscorlib.HashTable
+   Dim dict As New mscorlib.Hashtable
 
    dict.Add 1, 1
    dict.Add 2, 2
@@ -71,21 +92,21 @@ Private Sub HashTableTest()
       kv = c            ' cast to DictionaryEntry
 
       Dim k As Variant, ki As Integer, vi As Integer
-      Set k = kv.[_Key] ' this Variant holds to an IUnknown pointer, a not-quite-supported interface in VBA
-      Console.WriteLine VarType(k) & " " & Typename(k) ' 13 vbDataObject (VT_UNKNOWN) and Int16
+      Set k = kv.[_key] ' this Variant holds to an IUnknown pointer, a not-quite-supported interface in VBA
+      Console.WriteLine VarType(k) & " " & TypeName(k) ' 13 vbDataObject (VT_UNKNOWN) and Int16
 
       Dim ik As IUnknown
       Set ik = k
 
       Dim ko As Object ' It just happens that System.Int16's class interface is IDispatch by default
       Set ko = ik       ' so it can be assigned to a VBA Object (IDispatch)'
-      Set ko = kv.[_Key] ' the assignment wouldn't work otherwise
+      Set ko = kv.[_key] ' the assignment wouldn't work otherwise
 
       Dim kconv As mscorlib.IConvertible ' cast to IConvertible so that it can be converted to an integer
       Set kconv = ko
       ki = kconv.ToInt16(Nothing)
 
-      Set ko = kv.[_Value]
+      Set ko = kv.[_value]
       vi = CInt(ko.ToString) ' or we parse its string form
 
       AssertThat.IsTrue ki = vi, "key = value"
@@ -94,13 +115,13 @@ Private Sub HashTableTest()
    Dim dictumerable As mscorlib.IEnumerable ' otherwise IDictionaryEnumerator
    Set dictumerable = dict
    Dim dictEntryVar As Variant ' IEnumVARIANT returns VARIANT
-   For Each dictEntryVar in dictumerable
+   For Each dictEntryVar In dictumerable
       Dim dictEntry As mscorlib.DictionaryEntry ' but actually a DictionaryEntry
       dictEntry = dictEntryVar
 
-      Set ko = dictEntry.[_Key]
+      Set ko = dictEntry.[_key]
       ki = CInt(ko) ' seems that the default ToString is evaluated before passing to CInt
-      Set ko = dictEntry.[_Value]
+      Set ko = dictEntry.[_value]
       vi = CInt(ko)
 
       AssertThat.IsTrue ki = vi, "key = value"
@@ -117,7 +138,7 @@ Private Sub QueueTest()
    AssertThat.IsTrue q.Peek() = 1, "Should be one"
 
    Dim l As Variant
-   For Each l in q
+   For Each l In q
       AssertThat.IsTrue l = 1 Or l = 2, "Should be elements"
    Next
 
@@ -142,7 +163,7 @@ Private Sub ArrayListTest()
    AssertThat.IsTrue arrLst(1) = 1, "Should be reversed"
 
    Dim l As Variant
-   For Each l in arrLst
+   For Each l In arrLst
       AssertThat.IsTrue l = 1 Or l = 2, "Should be elements"
    Next
 
