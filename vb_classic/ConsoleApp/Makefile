@@ -31,7 +31,10 @@ build:
 run: build/ConsoleApp.exe
 	build/ConsoleApp.exe
 
-build/ConsoleApp.exe: ConsoleApp.vbp $(CONSOLE_APP_SRC) build
+build/ConsoleApp.exe.config: ConsoleApp.exe.config
+	cp $< $@
+
+build/ConsoleApp.exe: ConsoleApp.vbp $(CONSOLE_APP_SRC) build build/ConsoleApp.exe.config
 	$(VB_EXE) //MAKE ConsoleApp.vbp //OUTDIR $(BUILD_DIR)
 	$(LINK_EXE) //EDIT $(LINKER_FLAGS) $(LINKER_CONSOLE_SUBSYSTEM) "$(BUILD_DIR)/ConsoleApp.exe"
 

@@ -10,12 +10,15 @@ Public Sub Run()
 End Sub
 
 Private Sub CreateDotnetObjectTest()
-   Dim o As Object
-   Set o = CreateObject("System.Object")
+   Dim o As New mscorlib.Object
 
    AssertThat.IsFalse o Is Nothing, "there should be an object"
    AssertThat.IsTrue o.ToString = "System.Object", "Should be System.Object"
    AssertThat.IsTrue o.Equals(o), "Should be equal to itself"
+
+   Dim typ As mscorlib.[_Type] ' System.Type is by default exposed as _Type   ' and has no generated class interface
+   Set typ = o.GetType()    ' and thus it has be acccessed through a certain interface
+   Console.WriteLine typ.AssemblyQualifiedName
 
 End Sub
 
@@ -74,11 +77,11 @@ Private Sub HashTableTest()
       Dim ik As IUnknown
       Set ik = k
 
-      Dim ko As Object ' It just happens that System.Int16 is dual so it can be assigned to a VBA Object (IDispatch)
-      Set ko = ik      ' the assignment wouldn't work otherwise
-      Set ko = kv.[_Key]
+      Dim ko As Object ' It just happens that System.Int16's class interface is IDispatch by default
+      Set ko = ik       ' so it can be assigned to a VBA Object (IDispatch)'
+      Set ko = kv.[_Key] ' the assignment wouldn't work otherwise
 
-      Dim kconv As mscorlib.IConvertible ' make it IConvertible so that it can be converted to an integer
+      Dim kconv As mscorlib.IConvertible ' cast to IConvertible so that it can be converted to an integer
       Set kconv = ko
       ki = kconv.ToInt16(Nothing)
 
