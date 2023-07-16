@@ -14,6 +14,7 @@ Public Sub Run()
    UDTArrayTest
    ArrayInVariantTest
    ArrayAssignmentTest
+   ByteArrayFromStringTest
 End Sub
 
 Private Sub FixedArrayTest()
@@ -99,7 +100,7 @@ Private Sub ArrayInVariantTest()
    ReDim arr(5) As Long
 
    Dim v As Variant
-   v = arr
+   v = arr()
 
    v(5) = 5
 
@@ -107,6 +108,20 @@ Private Sub ArrayInVariantTest()
 
    AssertThat.IsTrue VarType(v) = vbArray + vbLong, "Should be vbArray + vbLong"
    AssertThat.IsTrue TypeName(v) = "Long()", "should be Long()"
+End Sub
+
+Private Sub ByteArrayFromStringTest()
+   Dim b() As Byte
+   Dim s As String
+   s = "ABC"
+   b() = s
+
+   Dim idx As Long
+   For idx = LBound(b) To UBound(b)
+      If idx mod 2 = 0 Then
+         AssertThat.IsTrue b(idx) <> 0, "Should not be zero", "ByteArrayFromStringTest"
+      End If
+   next
 End Sub
 
 private Sub ArrayAssignmentTest()
@@ -118,7 +133,7 @@ private Sub ArrayAssignmentTest()
    Next
 
    Dim b() As Long
-   b = a
+   b() = a()
 
    For idx = 0 To 5
       AssertThat.IsTrue b(idx) = idx, ""
