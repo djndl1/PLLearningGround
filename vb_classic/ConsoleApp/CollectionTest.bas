@@ -3,6 +3,7 @@ Option Explicit
 Public Sub Run()
    OneBasedTest
    DenseIndexedTest
+   ReplaceTest
 End Sub
 
 Private Sub DenseIndexedTest()
@@ -20,6 +21,20 @@ Private Sub DenseIndexedTest()
    AssertThat.IsTrue c(3) = 4, "After: c(3) = 4"
    AssertThat.IsTrue c("4") = 4, "After: c(3) = 4"
    AssertThat.IsTrue c.Count = 99, "Before: Count 99"
+End Sub
+
+Private Sub ReplaceTest()
+   Dim c As New Collection
+
+   Dim idx As Long
+   For idx = 1 To 100
+      c.Add idx, CStr(idx)
+   Next
+
+   c.Remove 1
+   c.Add 5,, 1
+
+   AssertThat.IsTrue c(1) = 5, "Should be replaced"
 End Sub
 
 Private Sub OneBasedTest()
