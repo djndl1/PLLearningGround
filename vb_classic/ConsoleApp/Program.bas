@@ -15,6 +15,8 @@ Sub Main()
    ArrayTest.Run
    CollectionTest.Run
    DotnetInteropTest.Run
+   StringFunctionTest.Run
+   DateTimeTest.Run
 
    GoTo CleanUp
 FailedTest:
