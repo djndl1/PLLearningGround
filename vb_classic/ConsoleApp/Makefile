@@ -22,7 +22,10 @@ CONSOLE_APP_SRC = Console.bas \
                   CollectionTest.bas \
                   DotnetInteropTest.bas \
                   StringFunctionTest.bas \
-                  DateTimeTest.bas
+                  DateTimeTest.bas \
+                  ClassTest.bas \
+                  TestClass.cls \
+                  FileTest.bas
 
 .PHONY: all
 all: build/ConsoleApp.exe build/C2Hook.exe

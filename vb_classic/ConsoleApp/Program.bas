@@ -17,6 +17,8 @@ Sub Main()
    DotnetInteropTest.Run
    StringFunctionTest.Run
    DateTimeTest.Run
+   ClassTest.Run
+   FileTest.Run
 
    GoTo CleanUp
 FailedTest:
