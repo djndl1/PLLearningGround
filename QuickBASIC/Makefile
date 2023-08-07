@@ -6,7 +6,7 @@
 #
 QBC=qb64
 
-TARGETS=qb_hello octaves Bonnie playerscore read_record
+TARGETS=qb_hello octaves Bonnie playerscore read_record graphics
 
 QBFLAGS=-x
 
