@@ -18,6 +18,10 @@ Private Sub ShowDateTest()
    valueDate = DateValue("2023-07-22 23:49:41") ' date only
    AssertThat.IsTrue DateTimeAsISO8601(valueDate) = "2023-07-22T00:00:00", "ISO8601 Format"
 
+   Dim dvalue As Double
+   dvalue = valueDate
+   Console.WriteLine CStr(dvalue / 365.25) & " years since the Lotus 1-2-3 epoch"
+
    Dim tseconds As Single
    tseconds = Timer
    Dim tTime As Date
