@@ -45,4 +45,30 @@ switch -1
          disp("-1 == -1");
        otherwise
          disp("you can't be serious");
-end;
+end
+
+# for loop
+x = ones(1, 10)
+for i = 1:2:10
+  x(i) = i
+end
+
+# while-loop
+n = 1
+nFactorial = 1
+while nFactorial < 10000
+  n = n + 1
+  nFactorial = nFactorial * n
+end
+
+# try-catch-end
+try
+  m = [1 2 3 4]
+  m(5)
+catch E
+  disp(E.identifier);
+end
+
+elems = ones(1, 10)
+cumsum(elems)
+movsum(elems, 3)
