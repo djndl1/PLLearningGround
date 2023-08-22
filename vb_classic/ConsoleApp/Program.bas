@@ -19,6 +19,7 @@ Sub Main()
    DateTimeTest.Run
    ClassTest.Run
    FileTest.Run
+   ADOTest.Run
 
    GoTo CleanUp
 FailedTest:
