@@ -1,57 +1,44 @@
 # this script is meant to run in bash
+LINK_EXE="C:/Program Files/Microsoft Visual Studio/VB98/LINK.EXE"
+LINKER_FLAGS=-NOLOGO
+LINKER_CONSOLE_SUBSYSTEM=-SUBSYSTEM:CONSOLE
 
-LINK_EXE="/c/Program Files/Microsoft Visual Studio/VB98/LINK.EXE"
-LINKER_FLAGS="//NOLOGO"
-LINKER_CONSOLE_SUBSYSTEM="//SUBSYSTEM:CONSOLE"
-
-CC="/z/Programs/mingw32/bin/gcc.exe"
+CC="gcc.exe"
 CPPFLAGS=-DUNICODE -D_UNICODE
-CFLAGS=-std=c11  -municode -g
+CFLAGS=-std=c17  -municode -g
 LDFLAGS=-mconsole
 
-VB_EXE="/c/Program Files/Microsoft Visual Studio/VB98/VB6.EXE"
+VB_EXE="C:/Program Files/Microsoft Visual Studio/VB98/VB6.EXE"
 
 BUILD_DIR=build
 
-CONSOLE_APP_SRC = Console.bas \
-                  Program.bas \
-                  VariantTest.bas \
-                  AssertThat.bas \
-                  AggregateTypesTest.bas \
-                  ArrayTest.bas \
-                  CollectionTest.bas \
-                  DotnetInteropTest.bas \
-                  StringFunctionTest.bas \
-                  DateTimeTest.bas \
-                  ClassTest.bas \
-                  TestClass.cls \
-                  FileTest.bas
+CONSOLE_APP_SRC = $(wildcard *.bas) $(wildcard *.cls) $(wildcard *.frm)
 
 .PHONY: all
-all: build/ConsoleApp.exe build/C2Hook.exe
+all: build_ConsoleApp build/C2Hook.exe
 
 build:
-	mkdir -p $(BUILD_DIR)
+	mkdir $(BUILD_DIR)
 
-run: build/ConsoleApp.exe
+run: build_ConsoleApp
 	build/ConsoleApp.exe
 
 build/ConsoleApp.exe.config: ConsoleApp.exe.config
 	cp $< $@
 
 build/ConsoleApp.exe: ConsoleApp.vbp $(CONSOLE_APP_SRC) build build/ConsoleApp.exe.config
-	$(VB_EXE) //MAKE ConsoleApp.vbp //OUTDIR $(BUILD_DIR)
-	$(LINK_EXE) //EDIT $(LINKER_FLAGS) $(LINKER_CONSOLE_SUBSYSTEM) "$(BUILD_DIR)/ConsoleApp.exe"
+	$(VB_EXE) -MAKE ConsoleApp.vbp -OUTDIR $(BUILD_DIR)
+	$(LINK_EXE) -EDIT $(LINKER_FLAGS) $(LINKER_CONSOLE_SUBSYSTEM) ./$(BUILD_DIR)/ConsoleApp.exe
+
+build_ConsoleApp: build/ConsoleApp.exe
 
 build/C2Hook.exe: C2Hook.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $< -o $@
 
-.PHONY: TAGS
-TAGS:
-	find . -regex ".*.[(bas)|(cls)]"	| xargs etags
-
 .PHONY: clean
 clean:
-	-rm -rf $(BUILD_DIR)
-	-rm -f HOOK_*.txt
-	-rm -f C2Hook.exe
+	-powershell.exe -NoProfile -c \
+                            Remove-Item -ErrorAction SilentlyContinue -Force -Recurse $(BUILD_DIR); \
+                            Remove-Item -ErrorAction SilentlyContinue -Force HOOK_*.txt; \
+                            Remove-Item -ErrorAction SilentlyContinue -Force C2Hook.exe; \
+                            exit 0
