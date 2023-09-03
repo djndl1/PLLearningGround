@@ -59,8 +59,24 @@ Private Sub SimpleReadTest()
    End If
 
 
+   Dim cmd As New ADODB.Command
+   cmd.CommandText = "SELECT * FROM V$INSTANCE"
+   cmd.CommandType = adCmdText
+   Set cmd.ActiveConnection = conn
+   Dim rs2 As ADODB.RecordSet
+   Set rs2 = cmd.Execute
+
+   Console.WriteLine "V$INSTANCE ROW: " & CStr(rs.RecordCount)
+   If rs.RecordCount > 0 Then
+      rs.MoveFirst
+      instanceName = rs("INSTANCE_NAME")
+
+      Console.WriteLine "Oracle Instance: " & instanceName
+   End If
+
 Cleanup:
    rs.Close
+   rs2.Close
    If conn.State & adStateOpen Then
       conn.Close
    End If
