@@ -7,6 +7,7 @@ Private Const TestDBConnectionString As String = "Driver={Oracle in oracle_insta
 Public Sub Run()
    InitialConnectionTest
    SimpleReadTest
+   SimpleCommandTest
 End Sub
 
 Private Sub InitialConnectionTest()
@@ -33,6 +34,30 @@ Private Sub InitialConnectionTest()
 
 Cleanup:
    conn.Close
+End Sub
+
+Private Sub SimpleCommandTest()
+   Dim conn As New ADODB.Connection
+   conn.ConnectionString = TestDBConnectionString
+   conn.Open
+
+   Dim cmd As New ADODB.Command
+   cmd.CommandText = "UPDATE SQLALCHEMY.USER_ACCOUNT SET name = ? WHERE id = ?" ' only positional parameters are supported
+
+   Dim p As ADODB.Parameter
+   ' length is required for variable length
+   Set p = cmd.CreateParameter("Name", DataTypeEnum.adBSTR, ParameterDirectionEnum.adParamInput, 30, Left(TestDBConnectionString, 30))
+   cmd.Parameters.Append p
+   Set p = cmd.CreateParameter("Id", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput, , 4)
+   cmd.Parameters.Append p
+
+   Set cmd.ActiveConnection = conn
+   cmd.Execute
+
+CleanUp:
+   If conn.State = adStateOpen Then
+      conn.Close
+   End If
 End Sub
 
 Private Sub SimpleReadTest()
