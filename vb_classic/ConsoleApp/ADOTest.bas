@@ -46,7 +46,7 @@ Private Sub SimpleCommandTest()
 
    Dim p As ADODB.Parameter
    ' length is required for variable length
-   Set p = cmd.CreateParameter("Name", DataTypeEnum.adBSTR, ParameterDirectionEnum.adParamInput, 30, Left(TestDBConnectionString, 30))
+   Set p = cmd.CreateParameter("Name", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamInput, 30, Left(TestDBConnectionString, 30))
    cmd.Parameters.Append p
    Set p = cmd.CreateParameter("Id", DataTypeEnum.adInteger, ParameterDirectionEnum.adParamInput, , 4)
    cmd.Parameters.Append p
@@ -77,10 +77,28 @@ Private Sub SimpleReadTest()
    Console.WriteLine "V$INSTANCE ROW: " & CStr(rs.RecordCount)
    If rs.RecordCount > 0 Then
       rs.MoveFirst
-      Dim instanceName As String
-      instanceName = rs("INSTANCE_NAME")
 
-      Console.WriteLine "Oracle Instance: " & instanceName
+      Dim col() As String
+      ReDim col(rs.Fields.Count)
+      Dim idx As Integer
+      Dim fi As Object
+      For idx = 0 To rs.Fields.Count - 1
+         Set fi = rs.Fields(idx)
+         Dim vs As String
+         Dim vt As String
+         If IsNull(fi.Value) Then
+            vs = ""
+            vt = "Null"
+         Else
+            vs = CStr(fi.Value)
+            vt = TypeName(fi.Value)
+         End If
+         col(idx) = fi.Name & vbTab & vs & vbTab & fi.Type & vbTab & vt
+      Next
+
+      Dim colsString As String
+      colsString = Join(col, vbCrlf)
+      Console.WriteLine "V$INSTANCE COLUMNS: " & colsString
    End If
 
 
@@ -94,9 +112,8 @@ Private Sub SimpleReadTest()
    Console.WriteLine "V$INSTANCE ROW: " & CStr(rs.RecordCount)
    If rs.RecordCount > 0 Then
       rs.MoveFirst
-      instanceName = rs("INSTANCE_NAME")
 
-      Console.WriteLine "Oracle Instance: " & instanceName
+      Console.WriteLine "Oracle Instance: " & rs("INSTANCE_NAME")
    End If
 
 Cleanup:
