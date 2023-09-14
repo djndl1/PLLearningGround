@@ -8,6 +8,8 @@ Public Sub Run()
    InitialConnectionTest
    SimpleReadTest
    SimpleCommandTest
+   DisplayRecordSetFeaturesTest
+   ImmediateRecordsetUpdateTest
 End Sub
 
 Private Sub InitialConnectionTest()
@@ -34,6 +36,96 @@ Private Sub InitialConnectionTest()
 
 Cleanup:
    conn.Close
+End Sub
+
+Private Sub DisplayRecordSetFeaturesTest()
+   Console.WriteLine "Dynamic Cursor"
+   DisplayRecordSetFeatures adOpenDynamic
+
+   Console.WriteLine "KeySet Cursor"
+   DisplayRecordSetFeatures adOpenKeySet
+
+   Console.WriteLine "Static Cursor"
+   DisplayRecordSetFeatures adOpenStatic
+
+   Console.WriteLine "Forward-Only Cursor"
+   DisplayRecordSetFeatures adOpenForwardOnly
+End Sub
+
+Private Sub DisplayRecordSetFeatures(cursorTyp As CursorTypeEnum)
+   On Error GoTo CleanUp
+
+   Dim conn As New ADODB.Connection
+   conn.ConnectionString = TestDBConnectionString
+   conn.Open
+
+   Dim rs As New ADODB.Recordset
+   With rs
+      Set .ActiveConnection = conn
+      .Source = "SELECT * FROM SQLALCHEMY.USER_ACCOUNT"
+      .CursorType = cursorTyp
+      .Open LockType := adLockOptimistic
+   End With
+
+   Dim b As Boolean
+   b = rs.Supports(adAddNew)
+   Console.WriteLine "Supports adAddNew: " & CStr(b)
+
+   b = rs.Supports(adApproxPosition)
+   Console.WriteLine "Supports adApproxPosition: " & CStr(b)
+
+   b = rs.Supports(adBookmark)
+   Console.WriteLine "Supports adBookmark: " & CStr(b)
+
+   b = rs.Supports(adDelete)
+   Console.WriteLine "Supports adDelete: " & CStr(b)
+
+   b = rs.Supports(adFind)
+   Console.WriteLine "Supports adFind: " & CStr(b)
+
+   b = rs.Supports(adHoldRecords)
+   Console.WriteLine "Supports adHoldRecords: " & CStr(b)
+
+   b = rs.Supports(adMovePrevious)
+   Console.WriteLine "Supports adMovePrevious: " & CStr(b)
+
+   b = rs.Supports(adNotify)
+   Console.WriteLine "Supports adNotify: " & CStr(b)
+
+   b = rs.Supports(adUpdate)
+   Console.WriteLine "Supports adUpdate: " & CStr(b)
+
+   b = rs.Supports(adUpdateBatch)
+   Console.WriteLine "Supports adUpdateBatch: " & CStr(b)
+
+CleanUp:
+   rs.Close
+   If conn.State = adStateOpen Then
+      conn.Close
+   End If
+End Sub
+
+Private Sub ImmediateRecordsetUpdateTest()
+   Dim conn As New ADODB.Connection
+   conn.ConnectionString = TestDBConnectionString
+   conn.Open
+
+   Dim rs As New ADODB.Recordset
+   With rs
+      Set .ActiveConnection = conn
+      .Source = "SELECT ROWID, ua.* FROM SQLALCHEMY.USER_ACCOUNT ua"
+      .CursorType = adOpenDynamic
+      .Open LockType := adLockOptimistic
+   End With
+
+   rs.MoveFirst
+   ' update failed probably due to ODBC provider, better use an explicit command to avoid locking
+   Do While Not rs.EOF
+      'rs("FULL_NAME").Value = "SELECT"
+      'rs.Update "NAME", "SELECT"
+      rs.MoveNext
+   Loop
+
 End Sub
 
 Private Sub SimpleCommandTest()
