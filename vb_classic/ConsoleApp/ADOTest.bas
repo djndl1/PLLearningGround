@@ -15,27 +15,17 @@ End Sub
 Private Sub InitialConnectionTest()
    Dim conn As New ADODB.Connection
 
+   Dim hndler As New ADOConnectionEventHandler
+   hndler.Subscribe conn
+
    On Error GoTo Cleanup
 
    conn.ConnectionString = TestDBConnectionString
    conn.Open
 
-   Console.WriteLine "State: " & CStr(conn.State)  & " Mode: " & CStr(conn.Mode)
-
-
-   Console.WriteLine "Connected to test Database: " _
-          &  CStr(conn.Properties("DBMS Name")) & " " & _
-          CStr(conn.Properties("DBMS Version")) & " " & _
-          CStr(conn.Properties("Data Source Name"))
-   Console.WriteLine "Provider: " & CStr(conn.Properties("Provider Name")) _
-          & " " & CStr(conn.Properties("Provider Friendly Name"))  _
-          & " " & CStr(conn.Properties("Provider Version"))
-   Console.WriteLine "Conncted through ODBC " & CStr(conn.Properties("Driver ODBC Version"))  _
-             & " " & CStr(conn.Properties("Driver Name"))  _
-             & " " & CStr(conn.Properties("SQL Grammar Support"))
-
 Cleanup:
    conn.Close
+   hndler.Unsubscribe
 End Sub
 
 Private Sub DisplayRecordSetFeaturesTest()

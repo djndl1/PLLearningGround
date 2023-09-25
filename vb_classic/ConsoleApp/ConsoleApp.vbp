@@ -17,6 +17,7 @@ Module=ClassTest; ClassTest.bas
 Module=FileTest; FileTest.bas
 Module=ADOTest; ADOTest.bas
 Class=TestClass; TestClass.cls
+Class=ADOConnectionEventHandler; ADOConnectionEventHandler.cls
 Startup="Sub Main"
 HelpFile=""
 NoControlUpgrade=1
