@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"testing"
 	_ "github.com/godror/godror"
 )
@@ -50,7 +49,50 @@ func TestSimpleConnect(t *testing.T) {
 
 	err := db.Ping()
 	if err != nil {
-		log.Fatal("Bailing out!")
+		t.Error("Bailing out!")
+	}
+}
+
+type HrCountry struct {
+	CountryId string
+	CountryName string
+	RegionId int64
+}
+
+func TestMultiRowsRead(t *testing.T) {
+	db := getOracleConnection()
+
+	var regionId int64 = 30
+	rows, err := db.Query("SELECT * FROM HR.COUNTRIES WHERE REGION_ID IN (:RegionId)", regionId)
+	defer rows.Close()
+
+	if err != nil {
+		t.Error("Failed to query")
+	}
+
+	var countries []HrCountry
+	for rows.Next() {
+		var country HrCountry
+		rows.Scan(&country.CountryId, &country.CountryName, &country.RegionId);
+
+		countries = append(countries, country)
+	}
+
+	fmt.Println(countries)
+}
+
+func TestRowExecute(t *testing.T) {
+	db := getOracleConnection()
+
+	result, err := db.Exec("UPDATE HR.COUNTRIES SET COUNTRY_NAME = 'PRC' WHERE COUNTRY_NAME = :CountryName", "China")
+	if err != nil {
+		t.Error(err)
+	}
+
+	affected, _ := result.RowsAffected()
+
+	if affected != 1 {
+		t.Errorf("Failed to update %s", "China")
 	}
 }
 
