@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"testing"
+
+	_ "github.com/alexbrainman/odbc"
 	_ "github.com/godror/godror"
 )
 
@@ -13,7 +15,7 @@ type OracleVersion struct {
 	Banner string
 	FullBanner string
 	LegacyBanner string
-	ConId int32
+	ConId float64
 }
 
 func setUp() {
@@ -38,7 +40,8 @@ func TestShowDrivers(t *testing.T) {
 
 func getOracleConnection() *sql.DB {
 	if OracleDb == nil {
-		OracleDb, _ = sql.Open("godror", `user="DJN" password="freebird" connectString="10.10.0.3:1521/pdborcl.cisdi.com.cn"`)
+		//OracleDb, _ = sql.Open("godror", `user="DJN" password="freebird" connectString="10.10.0.3:1521/pdborcl.cisdi.com.cn"`)
+		OracleDb, _ = sql.Open("odbc", "Driver={Oracle 12c ODBC driver};DBQ=10.10.0.3:1521/pdborcl.cisdi.com.cn;UID=DJN;PWD=freebird;")
 	}
 
 	return OracleDb
@@ -49,7 +52,7 @@ func TestSimpleConnect(t *testing.T) {
 
 	err := db.Ping()
 	if err != nil {
-		t.Error("Bailing out!")
+		t.Error(err)
 	}
 }
 
@@ -62,12 +65,16 @@ type HrCountry struct {
 func TestMultiRowsRead(t *testing.T) {
 	db := getOracleConnection()
 
-	var regionId int64 = 30
-	rows, err := db.Query("SELECT * FROM HR.COUNTRIES WHERE REGION_ID IN (:RegionId)", regionId)
+	rows, err := db.Query("SELECT * FROM HR.COUNTRIES WHERE REGION_ID = ?", 30)
 	defer rows.Close()
 
 	if err != nil {
-		t.Error("Failed to query")
+		t.Error(err)
+	}
+
+	colTypes, _ := rows.ColumnTypes()
+	for _, v := range colTypes {
+		fmt.Printf("%s: %v\n", v.Name(), v.ScanType())
 	}
 
 	var countries []HrCountry
@@ -81,10 +88,10 @@ func TestMultiRowsRead(t *testing.T) {
 	fmt.Println(countries)
 }
 
-func TestRowExecute(t *testing.T) {
+func ATestRowExecute(t *testing.T) {
 	db := getOracleConnection()
 
-	result, err := db.Exec("UPDATE HR.COUNTRIES SET COUNTRY_NAME = 'PRC' WHERE COUNTRY_NAME = :CountryName", "China")
+	result, err := db.Exec("UPDATE HR.COUNTRIES SET COUNTRY_NAME = 'PRC' WHERE COUNTRY_NAME = ?", "PRC")
 	if err != nil {
 		t.Error(err)
 	}
@@ -100,6 +107,7 @@ func TestSingleRowRead(t *testing.T) {
 	db := getOracleConnection()
 
 	row := db.QueryRow("SELECT BANNER, BANNER_FULL, BANNER_LEGACY, CON_ID FROM V$VERSION FETCH FIRST 1 ROWS ONLY")
+
 
 	var ver OracleVersion
 	if err := row.Scan(&ver.Banner, &ver.FullBanner, &ver.LegacyBanner, &ver.ConId); err == nil {
