@@ -152,6 +152,65 @@ func TestUsePreparedStmt(t *testing.T) {
 	}
 }
 
+func TestTransactionalUpdate(t *testing.T) {
+	db := getOracleConnection()
+
+	tx, err := db.Begin()
+	if err != nil {
+		t.Error(err)
+	}
+	defer tx.Rollback() // in case of errors, rollback; if committed, it's a nop, which simply returns ErrTxDone
+
+	stmt, err := tx.Prepare("UPDATE HR.COUNTRIES SET COUNTRY_NAME = ? WHERE COUNTRY_NAME = ?")
+	if err != nil {
+		t.Error(err)
+	}
+	//defer stmt.Close() no need to close the statement since the transaction is responsible to close related statements
+
+	countries := []string{
+		"Germany",
+		"Malaysia",
+		"Egypt",
+		"Denmark",
+		"United Kingdom of Great Britain and Northern Ireland",
+		"Japan",
+		"Kuwait",
+		"Nigeria",
+		"Zambia",
+		"Zimbabwe",
+		"Italy",
+		"Netherlands",
+		"Canada",
+		"Switzerland",
+		"France",
+		"Israel",
+		"PRC",
+		"Mexico",
+		"Argentina",
+		"India",
+		"United States of America",
+		"Australia",
+		"Belgium",
+		"Brazil",
+		"Singapore",
+	}
+
+	count := 0
+	for _, v := range countries {
+		result, _ := stmt.Exec(v, v)
+		affected, _ := result.RowsAffected()
+		count += int(affected)
+	}
+
+	if count != len(countries) {
+		t.Errorf("Incorrect number of updated: %d\n", count)
+	}
+
+	if err := tx.Commit(); err != nil {
+		t.Error(err)
+	}
+}
+
 func TestSingleRowRead(t *testing.T) {
 	db := getOracleConnection()
 
