@@ -2,12 +2,15 @@
 {$codepage UTF8}
 program FirstHello;
 
+(* why called PascalCase *)
+
 type
    HelloMessage =  record
                       Target : UTF8String;
                    end;
 
 const
+   (* dobule quotes are not used for strings or characters *)
    First                 = 'First';
    My                    = 'My';
    HelloWord             = 'Hello';
