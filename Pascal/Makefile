@@ -1,6 +1,6 @@
 FPC=fpc
 
-FLAGS=-g -MDELPHIUNICODE
+FLAGS=-g -Fcutf8 -Sh
 
 .phony: all
 

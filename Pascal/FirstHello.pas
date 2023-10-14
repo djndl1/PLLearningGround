@@ -1,12 +1,20 @@
-{$MODE OBJFPC}
-{$codepage UTF8}
+{$MODE OBJFPC}{$J-}
 program FirstHello;
 
 (* why called PascalCase *)
+Uses
+    sysutils,
+    cwstring;
+
+
+procedure ConstParameterProc(const A : Integer);
+begin
+   WriteLn('A + 10 is: ', A + 10);
+end;
 
 type
    HelloMessage =  record
-                      Target : UTF8String;
+                      Target : String;
                    end;
 
 const
@@ -14,7 +22,7 @@ const
    First                 = 'First';
    My                    = 'My';
    HelloWord             = 'Hello';
-   ChineseOutputConst    = '中文输出';
+   ChineseOutputConst    = '中文输出'; { the compiler sees as CP_ACP and no conversion to UTF-16 in the binary object }
    Message: HelloMessage = (Target: 'My World');
    Alfabetica: array[1..26] of char =
    ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
@@ -22,9 +30,24 @@ const
 
 var
    ChineseOutput : AnsiString;
+   UTF8Output    : UTF8String;
+   WideOutput    : WideString;
+   ShortOutput   : ShortString;
 
 begin
-   WriteLn('My First hello');
+   ConstParameterProc(10);
+
+   Write(Format('%s %d %s', ['DefaultSystemCodePage: ', DefaultSystemCodePage, LineEnding]));
+
    ChineseOutput := ChineseOutputConst;
    WriteLn(ChineseOutput);
+
+   UTF8Output := ChineseOutputConst;
+   WriteLn(UTF8Output);
+
+   WideOutput := ChineseOutputConst;
+   WriteLn(WideOutput);
+
+   ShortOutput := ChineseOutputConst;
+   WriteLn(ShortOutput);
 end.
