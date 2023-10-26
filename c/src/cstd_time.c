@@ -3,6 +3,10 @@
 #include <time.h>
 #include "utest.h"
 
+#if defined(__MINGW32__) || defined (_MSC_VER)
+#define localtime_s(a, b) (localtime_s(b, a))
+#endif
+
 UTEST(DATETIME, NOW_SECONDS) {
     time_t now = time(nullptr);
 
@@ -23,7 +27,7 @@ UTEST(DATETIME, LOCAL_NOW) {
         time_t now = time(nullptr);
 
         struct tm local_now = { 0 };
-        localtime_r(&now, &local_now); // C23
+        localtime_s(&now, &local_now); // C23
 
         char iso[30] = { '\0' };
         strftime(iso, 30, "%Y-%m-%dT%H:%M:%S", &local_now);
@@ -35,7 +39,7 @@ UTEST(DATETIME, LOCAL_NOW) {
         timespec_get(&now_nano, TIME_UTC);
 
         struct tm local_now_nano = { 0 };
-        localtime_r(&now_nano.tv_sec, &local_now_nano); // C23
+        localtime_s(&now_nano.tv_sec, &local_now_nano); // C23
 
         char iso_nano[32] = { '\0' };
         strftime(iso_nano, 32, "%Y-%m-%dT%H:%M:%S", &local_now_nano);
