@@ -1,0 +1,3 @@
+[submodule "FreeBASIC/fbcunit"]
+	path = FreeBASIC/fbcunit
+	url = https://github.com/jayrm/fbcunit.git
