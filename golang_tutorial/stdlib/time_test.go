@@ -1,4 +1,4 @@
-package time_test
+package test_learn
 
 import (
 	"fmt"
