@@ -11,7 +11,8 @@ TEST_LIB=fbcunit/lib/libfbcunit.a
 TEST_FLAGS=-g -mt -exx -i fbcunit/inc -p fbcunit/lib
 
 TARGETS=FirstHello \
-		FirstTest
+		FirstTest \
+		VariableTest
 
 .PHONY: all
 all: $(TARGETS)
