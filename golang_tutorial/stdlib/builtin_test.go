@@ -20,3 +20,15 @@ func TestSlices(t *testing.T) {
 
 	assert.Equal(t, 2, len(slis))
 }
+
+func TestPanicRecover(t *testing.T) {
+	panicker := func() {
+		panic("Panicking")
+	}
+	defer func() {
+		r := recover()
+		assert.Equal(t, "Panicking", r)
+	}()
+
+	panicker()
+}
