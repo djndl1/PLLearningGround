@@ -1,17 +1,22 @@
 #include "config.h"
-
 #include <time.h>
-#include "utest.h"
 
-#if defined(__MINGW32__) || defined (_MSC_VER)
+#if defined(__MINGW64__) || defined(__MINGW32__) || defined (_MSC_VER)
+#include <windows.h>
+
     #define localtime_s(a, b) (localtime_s(b, a))
     #define gmtime_s(a, b) (gmtime_s(b, a))
+    #define sleep(s) (Sleep)(s * 1000)
 #elif defined(__STDC_LIB_EXT1__)
     #define __STDC_WANT_LIB_EXT1__ 1
 #else
+#include <unistd.h>
+
     #define localtime_s(a, b) (localtime_r(a, b))
     #define gmtime_s(a, b) (gmtime_r(a, b))
 #endif
+
+#include "utest.h"
 
 
 UTEST(DATETIME, NOW_SECONDS) {
@@ -68,6 +73,16 @@ UTEST(DATETIME, LOCAL_NOW) {
         time_t now2 = mktime(&local_now_nano);
         ASSERT_EQ(now_nano.tv_sec, now2);
     }
+}
+
+UTEST(PROCESSOR, CLOCK) {
+    clock_t start_clock = clock();
+    sleep(1);
+    clock_t stop_clock = clock();
+
+    double elapsed_processor_time = (stop_clock - start_clock) / CLOCKS_PER_SEC;
+
+    printf("Processor time elapsed: %lf\n", elapsed_processor_time);
 }
 
 UTEST_MAIN();
