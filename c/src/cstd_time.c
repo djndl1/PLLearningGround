@@ -85,7 +85,7 @@ UTEST(DATETIME, POSIX_REALTIME_CLOCK) {
     ASSERT_EQ(0, res_status);
 
     printf("REALTIME_CLOCK: "
-           "Current unix time: %ld.%9ld seconds since Epoch with a resolution of %lf nanosecond\n",
+           "Current unix time: %ld.%09ld seconds since Epoch with a resolution of %lf nanosecond\n",
            now.tv_sec,
            now.tv_nsec,
            res.tv_sec * 1e9 + res.tv_nsec);
