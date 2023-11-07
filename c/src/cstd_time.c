@@ -90,6 +90,22 @@ UTEST(DATETIME, POSIX_REALTIME_CLOCK) {
            now.tv_nsec,
            res.tv_sec * 1e9 + res.tv_nsec);
 }
+
+#endif
+
+#ifdef _POSIX_C_SOURCE
+#include <sys/timex.h>
+UTEST(DATETIME, NTP_GET_TIME) {
+    struct ntptimeval ntp_time = { 0 };
+
+    int status = ntp_gettime(&ntp_time);
+
+    printf("NTP API time: %ld.%06ld seconds, "
+           "max error %ld microseconds, estimated error %ld\n",
+           ntp_time.time.tv_sec, ntp_time.time.tv_usec,
+           ntp_time.maxerror, ntp_time.esterror);
+}
+
 #endif
 
 UTEST_MAIN();
