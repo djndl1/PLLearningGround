@@ -25,4 +25,5 @@ unistring_test_CFLAGS = -I$(INC_DIR) $(gnulib_CFLAGS)
 unistring_test_LDFLAGS = $(gnulib_LDFLAGS)
 
 cstd_time_SOURCES = $(top_srcdir)/src/cstd_time.c
+cstd_time_LDFLAGS = -lpthread
 cstd_time_CFLAGS = -I$(INC_DIR)
