@@ -10,6 +10,7 @@
 #elif defined(__STDC_LIB_EXT1__)
     #define __STDC_WANT_LIB_EXT1__ 1
 #else
+#define _XOPEN_SOURCE 700
 #include <unistd.h>
 
     #define localtime_s(a, b) (localtime_r(a, b))
@@ -17,6 +18,8 @@
 #endif
 
 #include "utest.h"
+
+#define ISO_DATE_TIME_FORMAT "%Y-%m-%dT%H:%M:%S"
 
 
 UTEST(DATETIME, NOW_SECONDS) {
@@ -37,6 +40,10 @@ UTEST(DATETIME, NOW_NANOSECOND) {
     printf("Current Unix time: %lf seconds since Epoch, that is %s\n",
            now.tv_sec + now.tv_nsec / 1e9,
            asctime(&broken_down));
+#ifdef _DEFAULT_SOURCE
+    printf("Curent timezone: %s, %ld seconds from UTC\n",
+           broken_down.tm_zone, broken_down.tm_gmtoff);
+#endif
 }
 
 UTEST(DATETIME, LOCAL_NOW) {
@@ -46,13 +53,30 @@ UTEST(DATETIME, LOCAL_NOW) {
         struct tm local_now = { 0 };
         localtime_s(&now, &local_now); // C23
 
+#ifdef _DEFAULT_SOURCE
+    printf("Curent timezone: %s, %ld seconds from UTC\n",
+          local_now.tm_zone, local_now.tm_gmtoff);
+#endif
+
         char iso[30] = { '\0' };
-        strftime(iso, 30, "%Y-%m-%dT%H:%M:%S", &local_now);
+        strftime(iso, 30, ISO_DATE_TIME_FORMAT, &local_now);
         printf("Current Local time: %s.\n", iso);
 
         time_t now2 = mktime(&local_now);
 
         ASSERT_EQ(now, now2);
+
+#ifdef _XOPEN_SOURCE
+        struct tm restored_now = { 0 };
+        strptime(iso, ISO_DATE_TIME_FORMAT, &restored_now);
+
+        ASSERT_TRUE(local_now.tm_year == restored_now.tm_year
+                    && local_now.tm_mon == restored_now.tm_mon
+                    && local_now.tm_mday == restored_now.tm_mday
+                    && local_now.tm_hour == restored_now.tm_hour
+                    && local_now.tm_min == restored_now.tm_min
+                    && local_now.tm_sec == restored_now.tm_sec);
+#endif
     }
 
     {
@@ -61,6 +85,11 @@ UTEST(DATETIME, LOCAL_NOW) {
 
         struct tm local_now_nano = { 0 };
         localtime_s(&now_nano.tv_sec, &local_now_nano); // C23
+
+#ifdef _DEFAULT_SOURCE
+    printf("Curent timezone: %s, %ld seconds from UTC\n",
+          local_now_nano.tm_zone, local_now_nano.tm_gmtoff);
+#endif
 
         char iso_nano[32] = { '\0' };
         strftime(iso_nano, 32, "%Y-%m-%dT%H:%M:%S", &local_now_nano);
@@ -72,6 +101,18 @@ UTEST(DATETIME, LOCAL_NOW) {
 
         time_t now2 = mktime(&local_now_nano);
         ASSERT_EQ(now_nano.tv_sec, now2);
+
+#ifdef _XOPEN_SOURCE
+        struct tm restored_now = { 0 };
+        strptime(iso_nano_string, ISO_DATE_TIME_FORMAT, &restored_now);
+
+        ASSERT_TRUE(local_now_nano.tm_year == restored_now.tm_year
+                    && local_now_nano.tm_mon == restored_now.tm_mon
+                    && local_now_nano.tm_mday == restored_now.tm_mday
+                    && local_now_nano.tm_hour == restored_now.tm_hour
+                    && local_now_nano.tm_min == restored_now.tm_min
+                    && local_now_nano.tm_sec == restored_now.tm_sec);
+#endif
     }
 }
 
