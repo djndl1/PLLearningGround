@@ -141,9 +141,9 @@ UTEST(DATETIME, POSIX_REALTIME_CLOCK) {
     ASSERT_EQ(0, res_status);
 
     printf("REALTIME_CLOCK: "
-           "Current unix time: %ld.%09ld seconds since Epoch with a resolution of %lf nanosecond\n",
-           now.tv_sec,
-           now.tv_nsec,
+           "Current unix time: %"PRId64".%09"PRId64" seconds since Epoch with a resolution of %lf nanosecond\n",
+           (int64_t)now.tv_sec,
+           (int64_t)now.tv_nsec,
            res.tv_sec * 1e9 + res.tv_nsec);
 }
 
@@ -160,6 +160,25 @@ UTEST(DATETIME, NTP_GET_TIME) {
            "max error %ld microseconds, estimated error %ld\n",
            ntp_time.time.tv_sec, ntp_time.time.tv_usec,
            ntp_time.maxerror, ntp_time.esterror);
+}
+
+#endif
+
+#if defined(__MINGW64__) || defined(__MINGW32__) || defined (_MSC_VER)
+#include <sys/types.h>
+#include <sys/timeb.h>
+
+UTEST(DATETIME, FTIME) {
+    struct _timeb tb = { 0 };
+    errno_t err = _ftime_s(&tb);
+    ASSERT_EQ(0, err);
+
+    printf("FTIME: "
+           "Current unix time: %"PRId64".%03"PRId64" seconds since Epoch, offset from UTC %"PRId64"  minute(s).\n",
+           (int64_t)tb.time,
+           (int64_t)tb.millitm,
+           (int64_t)tb.timezone);
+
 }
 
 #endif
