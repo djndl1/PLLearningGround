@@ -1,9 +1,9 @@
 bin_PROGRAMS = init_test \
 	unistring_test \
-	cstd_time
+	cstd_time \
+	use_signal
 
 init_test_SOURCES = $(top_srcdir)/src/init_test.c
-
 
 INC_DIR = $(top_srcdir)/src/include
 
@@ -27,3 +27,5 @@ unistring_test_LDFLAGS = $(gnulib_LDFLAGS)
 cstd_time_SOURCES = $(top_srcdir)/src/cstd_time.c
 cstd_time_LDFLAGS = -lpthread
 cstd_time_CFLAGS = -I$(INC_DIR)
+
+use_signal_SOURCES = $(top_srcdir)/src/use_signal.c
