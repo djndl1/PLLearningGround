@@ -10,6 +10,6 @@ void _Assert(char*);
 #define _VAL(x) #x
 
 #define assert(test)    ((test) ? (void)0                               \
-                         : _Assert(__FILE__ ":" _STR(__LINE__) " " #test))
+                         : _assert_impl(#test, __FILE__, __func__, _STR(__LINE__)))
 
 #endif // NDEBUG

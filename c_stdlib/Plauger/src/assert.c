@@ -3,10 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void _Assert(char* msg)
+void _assert_impl(char const* expr, char const* func, char const* file, const char* linenum)
 {
-    fputs(msg, stderr);
-    fputs(" -- assertion failed\n", stderr);
+    fprintf(stderr, "Assertion failed: %s, function %s, file %s xyz, line %s",
+           expr, func, file, linenum);
 
     abort();
 }
