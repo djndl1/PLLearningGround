@@ -10,7 +10,9 @@
 
     .locals init(
         bool zeroLen,
-        int32 argLen)
+        int32 argLen,
+	int32 idx,
+	int32 sum)
 
     // read and save length
     ldarg args
@@ -33,6 +35,34 @@
     box int32
     call string [mscorlib]System.String::Format(string, object)
     call void [mscorlib]System.Console::WriteLine(string)
+
+INIT_LOOP:
+    ldc.i4.0
+    stloc idx
+    ldc.i4.0
+    stloc sum
+LOOP_CONDITION:
+    ldloc idx
+    ldloc argLen
+    ceq
+
+    brtrue.s LOOP_END
+SUM_LOOP:
+    ldloc sum
+    ldloc idx
+    add
+    stloc sum
+POST_EXPR:
+    ldc.i4.1
+    ldloc idx
+    add
+    stloc idx
+    br.s LOOP_CONDITION
+LOOP_END:
+    ldstr "Sum: {0}"
+    ldloc sum
+    box int32
+    call void [mscorlib]System.Console::WriteLine(string, object)
 
 RET_LEN:
     ldloc argLen
