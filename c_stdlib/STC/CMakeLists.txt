@@ -8,9 +8,8 @@ include_directories(AFTER
   ${STCTutorial_SOURCE_DIR}/include
   ${STCTutorial_SOURCE_DIR}/lib/STC/include)
 
-add_executable(cstr_test src/cstr_test)
-add_executable(cvec_test src/cvec_test)
-
-enable_testing()
+add_executable(cstr_test src/cstr_test.c)
+add_executable(cvec_test src/cvec_test.c)
+add_executable(calgo_test src/calgo_test.c)
 
 add_test(cstr_test cstr_test)
