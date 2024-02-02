@@ -1,7 +1,10 @@
 bin_PROGRAMS = init_test \
 	unistring_test \
 	cstd_time \
-	use_signal
+	use_signal \
+	inline_keywords \
+	macro_def \
+	static_assert
 
 init_test_SOURCES = $(top_srcdir)/src/init_test.c
 
@@ -29,3 +32,9 @@ cstd_time_LDFLAGS = -lpthread
 cstd_time_CFLAGS = -I$(INC_DIR)
 
 use_signal_SOURCES = $(top_srcdir)/src/use_signal.c
+
+inline_keywords_SOURCES = $(top_srcdir)/src/inline_keywords.c
+
+macro_def_SOURCES = $(top_srcdir)/src/macro_def.c
+
+static_assert_SOURCES = $(top_srcdir)/src/static_assert.c
