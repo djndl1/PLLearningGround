@@ -17,5 +17,6 @@ include_directories(AFTER
 add_executable(cstr_test src/cstr_test.c)
 add_executable(cvec_test src/cvec_test.c)
 add_executable(calgo_test src/calgo_test.c)
+add_executable(pseudo_raii src/pseudo_raii.c)
 
 add_test(cstr_test cstr_test)
