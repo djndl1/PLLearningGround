@@ -158,4 +158,30 @@ drop_ints:
     cvec_int_drop(&ints);
 }
 
+UTEST(SWAP, c_swap)
+{
+    int _0 = 0, _1 = 1;
+
+    c_swap(int, &_0, &_1);
+
+    ASSERT_EQ(0, _1);
+    ASSERT_EQ(1, _0);
+}
+
+/**
+ * type-safe const_cast
+ **/
+UTEST(CAST, c_const_cast)
+{
+    int src = 5;
+    const int *a = &src;
+    // a is mutable, dropping constness is okay
+    int *b = c_const_cast(int*, a);
+    ASSERT_EQ(5, *b);
+
+    // different pointer types: warning
+    char *c = c_const_cast(char*, a);
+    ASSERT_EQ(5, *c);
+}
+
 UTEST_MAIN();
