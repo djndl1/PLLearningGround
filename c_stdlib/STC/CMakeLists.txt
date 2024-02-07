@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 3.13)
 
 project(STCTutorial)
 
+include(ExternalProject)
+ExternalProject_Add(STC
+  URL ${STCTutorial_SOURCE_DIR}/lib/STC
+  INSTALL_COMMAND echo "STC included"
+)
+
 SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include_directories(AFTER
