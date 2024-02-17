@@ -5,7 +5,7 @@ include(ExternalProject)
 set(BOOST_CHECKSUM "cc4b893acf645c9d4b698e9a0f08ca8846aa5d6c68275c14c3e7949c24109454")
 
 if(ANDROID)
-  set(B2_IGNORED_LIBRARIES --without-locale)
+  set(B2_FLAGS boost.locale.posix=off )
 endif()
 
 ExternalProject_Add(boost
@@ -15,7 +15,7 @@ ExternalProject_Add(boost
   DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/.cache/
   SOURCE_DIR libs/boost
   CONFIGURE_COMMAND cd ${CMAKE_CURRENT_BINARY_DIR}/libs/boost/tools/build/ && ./bootstrap.sh
-  BUILD_COMMAND cd ${CMAKE_CURRENT_BINARY_DIR}/libs/boost && ./tools/build/b2 --prefix=${CMAKE_CURRENT_BINARY_DIR}/ --libdir=${CMAKE_CURRENT_BINARY_DIR} ${B2_IGNORED_LIBRARIES} install
+  BUILD_COMMAND cd ${CMAKE_CURRENT_BINARY_DIR}/libs/boost && ./tools/build/b2 --prefix=${CMAKE_CURRENT_BINARY_DIR}/ --libdir=${CMAKE_CURRENT_BINARY_DIR} ${B2_FLAGS} install
   INSTALL_COMMAND echo "Finished Building Boost"
 )
 
