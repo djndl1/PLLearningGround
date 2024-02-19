@@ -17,6 +17,7 @@ static inline bool is_fib_size_ok(size_t len)
  * @brief generate a fibonacci number
  * @param pos the position of the requested number
  * @param result the requested result
+ * @tparam sequence element type
  * @returns whether the computation succeeds
  */
 template<typename T>
@@ -42,6 +43,12 @@ bool fib_func(size_t pos, T &result)
 }
 
 
+/**
+ * @brief generate a Fibonacci sequence of certain length
+ * @param len the length of the sequence
+ * @tparam sequence element type
+ * @returns the generated sequence
+ */
 template<typename T>
 std::vector<T> fibon_seq(size_t len)
 {
@@ -90,6 +97,7 @@ void print_sequence(size_t pos)
  * @brief display a vector to a stream, by default the standard output
  * @param vec the vector to display
  * @param os the output stream
+ * @tparam sequence element type
  */
 template<typename T>
 void display(const std::vector<T> &vec, std::ostream &os = std::cout)
