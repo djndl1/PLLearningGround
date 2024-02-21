@@ -4,7 +4,9 @@ bin_PROGRAMS = init_test \
 	use_signal \
 	inline_keywords \
 	macro_def \
-	static_assert
+	static_assert \
+	alignof \
+	matrix
 
 init_test_SOURCES = $(top_srcdir)/src/init_test.c
 
@@ -38,3 +40,5 @@ inline_keywords_SOURCES = $(top_srcdir)/src/inline_keywords.c
 macro_def_SOURCES = $(top_srcdir)/src/macro_def.c
 
 static_assert_SOURCES = $(top_srcdir)/src/static_assert.c
+alignof_SOURCES = $(top_srcdir)/src/alignof.c
+matrix_SOURCES = $(top_srcdir)/src/matrix.c
