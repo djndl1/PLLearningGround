@@ -8,6 +8,8 @@
 #include <numeric>
 #include <limits>
 
+#include <stdint.h>
+
 static inline bool is_fib_size_ok(size_t len)
 {
     return (len > 0) && (len < 1000);
