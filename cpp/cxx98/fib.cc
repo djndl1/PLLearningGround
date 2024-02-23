@@ -8,6 +8,7 @@
 #include <numeric>
 #include <limits>
 #include <sstream>
+#include <iterator>
 
 #include <stdint.h>
 
@@ -96,33 +97,6 @@ void print_sequence(size_t pos)
     std::cout << '\n';
 }
 
-template<typename T>
-struct stringer
-{
-    public:
-        std::string operator()(T obj)
-        {
-            std::ostringstream ss;
-            ss << obj;
-            return ss.str();
-        }
-};
-
-struct string_joiner
-{
-    public:
-        string_joiner(const std::string &joiner)
-        : m_joiner(joiner)
-        {}
-
-        std::string operator()(const std::string &a, const std::string &b)
-        {
-            return a + m_joiner + b;
-        }
-    private:
-        std::string m_joiner;
-};
-
 /**
  * @brief display a vector to a stream, by default the standard output
  * @param vec the vector to display
@@ -132,13 +106,10 @@ struct string_joiner
 template<typename T>
 void display(const std::vector<T> &vec, std::ostream &os = std::cout)
 {
-    std::vector<std::string> str_vec(vec.size());
-    std::transform(vec.begin(), vec.end(), str_vec.begin(), stringer<T>());
-    std::string joined = str_vec.empty() ? ""
-        : std::accumulate(++str_vec.begin(), str_vec.end(),
-                          *str_vec.begin(), string_joiner(" "));
+    std::ostream_iterator<T> oit(os, " ");
 
-    os << joined << '\n';
+    std::copy(vec.begin(), vec.end(), oit);
+    os << '\n';
 }
 
 
