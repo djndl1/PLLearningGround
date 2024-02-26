@@ -12,3 +12,4 @@ add_custom_command(
   ${CMAKE_CURRENT_SOURCE_DIR}/family_names.txt
   ${CMAKE_CURRENT_BINARY_DIR}/family_names.txt
 )
+add_executable(odd_even_nums odd_even_nums.cc)
