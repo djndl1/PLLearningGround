@@ -1,0 +1,6 @@
+A   ab  ac  ad
+B   bb  bc  bd
+C   cd  ce  cf
+E
+F   fa
+G   ga gb   bc
