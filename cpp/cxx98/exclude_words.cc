@@ -34,6 +34,18 @@ int main()
         word_counts[read_word]++;
     }
 
+    cout << "Want to query some word count?\n";
+    string answer;
+    do {
+        string word_to_query;
+        cin >> word_to_query;
+        if (word_counts.find(word_to_query) == word_counts.end()) {
+            cout << word_to_query << ": " << 0 << '\n';
+        } else {
+            cout << word_to_query << ": " << word_counts[word_to_query] << '\n';
+        }
+    } while (cin >> answer && answer == "y");
+
     for (map<string, unsigned>::iterator it = word_counts.begin();
          it != word_counts.end();
          it++) {
