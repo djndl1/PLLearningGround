@@ -1,6 +1,9 @@
 #include <string>
+#include <vector>
 #include <iostream>
+#include <algorithm>
 #include <iterator>
+#include <utility>
 #include <set>
 #include <map>
 
@@ -19,6 +22,15 @@ static std::set<std::string> make_excluded_words()
 }
 
 static set<string> excluded_words = make_excluded_words();
+
+struct key_length_comparer {
+    public:
+        bool operator()(const std::pair<std::string, unsigned> &a,
+                        const std::pair<std::string, unsigned> &b) const
+        {
+            return a.first.size() < b.first.size();
+        }
+};
 
 int main()
 {
@@ -46,8 +58,12 @@ int main()
         }
     } while (cin >> answer && answer == "y");
 
-    for (map<string, unsigned>::iterator it = word_counts.begin();
-         it != word_counts.end();
+    std::vector<std::pair<string, unsigned> > count_vec(word_counts.begin(), word_counts.end());
+
+    std::sort(count_vec.begin(), count_vec.end(), key_length_comparer());
+
+    for (std::vector<std::pair<string, unsigned> >::iterator it = count_vec.begin();
+         it != count_vec.end();
          it++) {
         cout << it->first << ": " << it->second << '\n';
     }
