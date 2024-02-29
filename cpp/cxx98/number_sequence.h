@@ -8,10 +8,6 @@ class number_sequence {
 public:
     virtual ~number_sequence() { };
 
-    number_sequence(int beg_pos, int len, std::vector<int>& elems)
-        : m_beg_pos(beg_pos), m_length(len), m_relems(elems)
-        { }
-
     /**
      * @brief element at pos
      * @param pos position
@@ -47,6 +43,10 @@ public:
     static int max_elems() { return _max_elemens; }
 
     protected:
+    number_sequence(int beg_pos, int len, std::vector<int>& elems)
+        : m_beg_pos(beg_pos), m_length(len), m_relems(elems)
+        { }
+
     /**
      * @brief generate the elements up to pos
      */
