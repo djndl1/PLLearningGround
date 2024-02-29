@@ -14,3 +14,4 @@ add_custom_command(
 )
 add_executable(odd_even_nums odd_even_nums.cc)
 add_executable(matrix matrix.cc)
+add_executable(number_sequence number_sequence.cc)
