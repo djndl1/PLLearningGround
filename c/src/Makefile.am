@@ -6,7 +6,9 @@ bin_PROGRAMS = init_test \
 	macro_def \
 	static_assert \
 	alignof \
-	matrix
+	matrix \
+	char_lit_is_int \
+	char_lit_is_not_int
 
 init_test_SOURCES = $(top_srcdir)/src/init_test.c
 
@@ -42,3 +44,5 @@ macro_def_SOURCES = $(top_srcdir)/src/macro_def.c
 static_assert_SOURCES = $(top_srcdir)/src/static_assert.c
 alignof_SOURCES = $(top_srcdir)/src/alignof.c
 matrix_SOURCES = $(top_srcdir)/src/matrix.c
+char_lit_is_int_SOURCES = $(top_srcdir)/src/char_lit_is_int.c
+char_lit_is_not_int_SOURCES = $(top_srcdir)/src/char_lit_is_not_int.cc
