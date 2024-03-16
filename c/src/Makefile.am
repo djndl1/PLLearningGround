@@ -8,7 +8,8 @@ bin_PROGRAMS = init_test \
 	alignof \
 	matrix \
 	char_lit_is_int \
-	char_lit_is_not_int
+	char_lit_is_not_int \
+    optional
 
 init_test_SOURCES = $(top_srcdir)/src/init_test.c
 
@@ -46,3 +47,4 @@ alignof_SOURCES = $(top_srcdir)/src/alignof.c
 matrix_SOURCES = $(top_srcdir)/src/matrix.c
 char_lit_is_int_SOURCES = $(top_srcdir)/src/char_lit_is_int.c
 char_lit_is_not_int_SOURCES = $(top_srcdir)/src/char_lit_is_not_int.cc
+optional_SOURCES = $(top_srcdir)/src/optional.c
