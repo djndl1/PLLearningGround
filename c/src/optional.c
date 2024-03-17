@@ -11,10 +11,15 @@
 #define optional_element_t bool
 #include "optional.h"
 
-optional(size_t) index_of(const int *arr, size_t len, int member)
+typedef struct dynarray_int_t {
+    int *elements;
+    size_t len;
+} dynarray_int_t;
+
+optional(size_t) index_of(const dynarray_int_t arr, int member)
 {
-    for (size_t i = 0; i < len; i++) {
-        if (arr[i] == member) {
+    for (size_t i = 0; i < arr.len; i++) {
+        if (arr.elements[i] == member) {
             return optional_some(size_t)(i);
         }
     }
@@ -34,8 +39,11 @@ bool is_odd(size_t n)
 
 int main(void)
 {
-    int f[] = { 1, 2, 3, 4, 5, 6, 7 };
-    optional(size_t) result = index_of(f, sizeof(f) / sizeof(f[0]), 1);
+    dynarray_int_t f = {
+        .elements = (int[]){ 1, 2, 3, 4, 5, 6, 7 },
+        .len = 7,
+    };
+    optional(size_t) result = index_of(f, 1);
 
     optional(bool) found = optional_map_to(bool, result, as_bool);
     printf(optional_present(found) ? "Found\n" : "Not found\n");
@@ -52,7 +60,7 @@ int main(void)
     optional(size_t) filtered = optional_filter(size_t)(result, is_odd);
     assert(optional_present(filtered));
 
-    optional(size_t) found_none = index_of(f, sizeof(f) / sizeof(f[0]), 8);
+    optional(size_t) found_none = index_of(f, 8);
     optional_match(found_none,
                    size_t, _,
             printf("Matched\n"),
