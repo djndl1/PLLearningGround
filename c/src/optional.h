@@ -41,6 +41,16 @@
 
 #ifdef optional_element_t
 
+struct optional(optional_element_t);
+
+/**
+ * The implementation should never be included in a header.
+ * Doing so might causes duplicated definitions.
+ * You have been warned.
+ */
+#ifdef OPTIONAL_IMPLEMENTATION
+#undef OPTIONAL_IMPLEMENTATION
+
 typedef struct optional(optional_element_t) {
     bool _present;
     struct {
@@ -69,6 +79,8 @@ static inline optional(optional_element_t) optional_filter(optional_element_t)(
         ? (pred(_optional_val(opt)) ? opt : optional_none(optional_element_t))
         : optional_none(optional_element_t);
 }
+
+#endif // OPTIONAL_IMPLEMENTATION
 
 #endif // optional_element_t
 #undef optional_element_t

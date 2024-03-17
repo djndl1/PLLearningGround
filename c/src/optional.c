@@ -3,9 +3,11 @@
 #include <stdbool.h>
 #include <assert.h>
 
+#define OPTIONAL_IMPLEMENTATION
 #define optional_element_t size_t
 #include "optional.h"
 
+#define OPTIONAL_IMPLEMENTATION
 #define optional_element_t bool
 #include "optional.h"
 
