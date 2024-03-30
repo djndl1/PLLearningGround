@@ -9,7 +9,8 @@ bin_PROGRAMS = init_test \
 	matrix \
 	char_lit_is_int \
 	char_lit_is_not_int \
-    optional
+    optional \
+    xmacro \
 
 init_test_SOURCES = $(top_srcdir)/src/init_test.c
 
@@ -48,3 +49,4 @@ matrix_SOURCES = $(top_srcdir)/src/matrix.c
 char_lit_is_int_SOURCES = $(top_srcdir)/src/char_lit_is_int.c
 char_lit_is_not_int_SOURCES = $(top_srcdir)/src/char_lit_is_not_int.cc
 optional_SOURCES = $(top_srcdir)/src/optional.c
+xmacro_SOURCES = $(top_srcdir)/src/xmacro.c
