@@ -11,7 +11,8 @@ bin_PROGRAMS = init_test \
 	char_lit_is_not_int \
     optional \
     xmacro \
-	smart_enum
+	smart_enum \
+    computed_include
 
 init_test_SOURCES = $(top_srcdir)/src/init_test.c
 
@@ -52,3 +53,4 @@ char_lit_is_not_int_SOURCES = $(top_srcdir)/src/char_lit_is_not_int.cc
 optional_SOURCES = $(top_srcdir)/src/optional.c
 xmacro_SOURCES = $(top_srcdir)/src/xmacro.c
 smart_enum_SOURCES = $(top_srcdir)/src/smart_enum.c
+computed_include_SOURCES = $(top_srcdir)/src/computed_include.c
