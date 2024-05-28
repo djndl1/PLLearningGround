@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Target Name="DebugMSBuild">
+      <Message Text="MSBuildExtensionsPath\MSBuildToolsVersion: $(MSBuildExtensionsPath)\$(MSBuildToolsVersion)"/>
+      <Message Text="MSBuildToolsPath: $(MSBuildToolsPath)"/>
+      <Message Text="CommonPropsAtTools: $(CommonPropsAtToolsPath)"/>
+    </Target>
+
+    <PropertyGroup>
+      <CommonPropsAtToolsPath Condition="Exists('$(MSBuildToolsPath)\Microsoft.Common.props')">true</CommonPropsAtToolsPath>
+    </PropertyGroup>
+    <ImportGroup Condition=" '$(CommonPropsAtToolsPath)' == 'true' ">
+      <Import Project="$(MSBuildToolsPath)\Microsoft.Common.props" />
+    </ImportGroup>
+    <ImportGroup Condition=" '$(CommonPropsAtToolsPath)' == '' or '$(CommonPropsAtToolsPath)' == 'false' ">
+      <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" />
+    </ImportGroup>
+
+    <PropertyGroup>
+      <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+      <LangVersion>8.0</LangVersion>
+      <Platform>Any CPU</Platform>
+      <OutputType>Exe</OutputType>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release'">
+      <DebugSymbols>false</DebugSymbols>
+      <DebugType>pdbonly</DebugType>
+      <OutputPath>bin\Release</OutputPath>
+      <DefineDebug>false</DefineDebug>
+      <DefineTrace>true</DefineTrace>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DebugType>portable</DebugType>
+      <DebugSymbols>true</DebugSymbols>
+      <OutputPath>bin\Debug</OutputPath>
+      <DefineDebug>true</DefineDebug>
+      <DefineTrace>true</DefineTrace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Include="Main.cs"/>
+    </ItemGroup>
+
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
