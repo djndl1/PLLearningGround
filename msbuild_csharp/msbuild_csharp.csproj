@@ -4,7 +4,11 @@
       <Message Text="MSBuildExtensionsPath\MSBuildToolsVersion: $(MSBuildExtensionsPath)\$(MSBuildToolsVersion)"/>
       <Message Text="MSBuildToolsPath: $(MSBuildToolsPath)"/>
       <Message Text="CommonPropsAtTools: $(CommonPropsAtToolsPath)"/>
+      <Message Text="AssemblyPath: $(RefAssemblyPath)"/>
+      <Message Text="Source files: @(Compile)"/>
+      <Message Text="Source File Names: @(Compile -> '%(FileName)')"/>
     </Target>
+
 
     <PropertyGroup>
       <CommonPropsAtToolsPath Condition="Exists('$(MSBuildToolsPath)\Microsoft.Common.props')">true</CommonPropsAtToolsPath>
@@ -18,15 +22,15 @@
 
     <PropertyGroup>
       <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-      <LangVersion>8.0</LangVersion>
-      <Platform>Any CPU</Platform>
+      <LangVersion>latest</LangVersion>
       <OutputType>Exe</OutputType>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+      <PolyPublic>true</PolyPublic>
+      <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release'">
       <DebugSymbols>false</DebugSymbols>
-      <DebugType>pdbonly</DebugType>
+      <DebugType>portable</DebugType>
       <OutputPath>bin\Release</OutputPath>
       <DefineDebug>false</DefineDebug>
       <DefineTrace>true</DefineTrace>
@@ -41,8 +45,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Include="Main.cs"/>
+      <Compile Include="*.cs"/>
     </ItemGroup>
 
-    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+    <ItemGroup>
+      <Reference Include="System"/>
+      <PackageReference Include="Theraot.Core" Version="3.2.11" />
+    </ItemGroup>
+
+ <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
 </Project>
