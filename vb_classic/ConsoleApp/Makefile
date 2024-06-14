@@ -35,6 +35,10 @@ build_ConsoleApp: build/ConsoleApp.exe
 build/C2Hook.exe: C2Hook.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $< -o $@
 
+.PHONY: tags
+tags:
+	ctags *.c *.bas
+
 .PHONY: clean
 clean:
 	-powershell.exe -NoProfile -Command \
