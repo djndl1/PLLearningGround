@@ -42,6 +42,10 @@ Private Sub Main()
     GuiFileOutput.Stream.WriteLine "µ±Ç°Ä¿Â¼" & CurDir$
     GuiFileOutput.Stream.WriteLine "Enter Main() at " & SystemTimeDateTime.SYSTEMTIMEAsISO8601(SystemTimeDateTime.LocalSystemTimeNow())
 
+	Dim utc As FileTimeDateTime, localT As FileTimeDateTime
+	Set utc = FileTimeDateTimes.GetUtcNow()
+	Set localT = FileTimeDateTimes.GetLocalNow()
+
         If AutoExitCheckBox.Value Then
                 Unload Me
         End If
