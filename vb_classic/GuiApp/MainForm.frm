@@ -36,15 +36,14 @@ Attribute VB_Exposed = False
 Private Sub Main()
     Dim curDirText As String
     curDirText = ChrW(24403) & ChrW(21069) & ChrW(30446) & ChrW(24405)
-    Debug.Print curDirText & " 当前目录" & CurDir$
-    Debug.Print "Enter Main() at " & SystemTimeDateTime.DateTimeAsISO8601(Now())
-    Debug.Print "Enter Main() at " & SystemTimeDateTime.SYSTEMTIMEAsISO8601(SystemTimeDateTime.LocalSystemTimeNow())
-    GuiFileOutput.Stream.WriteLine "当前目录" & CurDir$
-    GuiFileOutput.Stream.WriteLine "Enter Main() at " & SystemTimeDateTime.SYSTEMTIMEAsISO8601(SystemTimeDateTime.LocalSystemTimeNow())
-
-	Dim utc As FileTimeDateTime, localT As FileTimeDateTime
+	Dim utc As FileTimeDateTime, localT As FileTimeDateTime, manual As FileTimeDateTime
 	Set utc = FileTimeDateTimes.GetUtcNow()
 	Set localT = FileTimeDateTimes.GetLocalNow()
+	Set manual = FileTimeDateTimes.FromDateTime(2024, 1, 1, 2, 3, 4, 123, dtKind := DateTimeKind_Utc)
+
+	Call GuiFileOutput.Stream.WriteLine(utc.ToISOFormat())
+	Call GuiFileOutput.Stream.WriteLine(localT.ToISOFormat())
+	Call GuiFileOutput.Stream.WriteLine(manual.ToISOFormat())
 
         If AutoExitCheckBox.Value Then
                 Unload Me

@@ -12,16 +12,29 @@ Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 
-Private ftimestamp As CFileTime
+Public Enum DateTimeKind
+	DateTimeKind_Unspecified = 0
+	DateTimeKind_Utc = 1
+	DateTimeKind_Local = 2
+End Enum
 
-Public Sub InitFromFileTime(ByVal cft As CFileTime)
-        Set ftimestamp = cft
+Private m_ftimestamp As CFileTime
+
+Private m_dtKind As DateTimeKind
+
+Public Property Get Kind() As DateTimeKind
+	Kind = m_dtKind
+End Property
+
+Public Sub InitFromFileTime(ByVal cft As CFileTime, Optional ByVal dtKind As DateTimeKind = DateTimeKind_Unspecified)
+        Set m_ftimestamp = cft
+	m_dtKind = dtKind
 End Sub
 
 Public Function ToCFileTime() As CFileTime
         Dim cft As New CFileTime
-        cft.LowDateTime = ftimestamp.LowDateTime
-        cft.HighDateTime = ftimestamp.HighDateTime
+        cft.LowDateTime = m_ftimestamp.LowDateTime
+        cft.HighDateTime = m_ftimestamp.HighDateTime
 
         Set ToCFileTime = cft
 End Function
