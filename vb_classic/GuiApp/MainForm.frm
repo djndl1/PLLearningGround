@@ -39,11 +39,12 @@ Private Sub Main()
 	Dim utc As FileTimeDateTime, localT As FileTimeDateTime, manual As FileTimeDateTime
 	Set utc = FileTimeDateTimes.GetUtcNow()
 	Set localT = FileTimeDateTimes.GetLocalNow()
-	Set manual = FileTimeDateTimes.FromDateTime(2024, 1, 1, 2, 3, 4, 123, dtKind := DateTimeKind_Utc)
+	Set manual = FileTimeDateTimes.FromDateTime(2024, 1, 1, 2, 3, 4, 123, 456, dtKind := DateTimeKind_Utc)
 
 	Call GuiFileOutput.Stream.WriteLine(utc.ToISOFormat())
 	Call GuiFileOutput.Stream.WriteLine(localT.ToISOFormat())
-	Call GuiFileOutput.Stream.WriteLine(manual.ToISOFormat())
+	Call GuiFileOutput.Stream.WriteLine(manual.ToISOFormat() & ": (H: " & manual.HighDateTime & ", L: " & manual.LowDateTime & ")")
+	Call GuiFileOutput.Stream.WriteLine(FileTimedateTimes.GetToday().ToISOFormat())
 
         If AutoExitCheckBox.Value Then
                 Unload Me
