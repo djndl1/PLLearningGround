@@ -32,19 +32,30 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+Option Explicit
+
+Private GuiFileOutput As TextFileOutput
 
 Private Sub Main()
     Dim curDirText As String
     curDirText = ChrW(24403) & ChrW(21069) & ChrW(30446) & ChrW(24405)
-	Dim utc As FileTimeDateTime, localT As FileTimeDateTime, manual As FileTimeDateTime
-	Set utc = FileTimeDateTimes.GetUtcNow()
-	Set localT = FileTimeDateTimes.GetLocalNow()
-	Set manual = FileTimeDateTimes.FromDateTime(2024, 1, 1, 2, 3, 4, 123, 456, dtKind := DateTimeKind_Utc)
+        Dim utc As FileTimeDateTime, localT As FileTimeDateTime, manual As FileTimeDateTime
+        Set utc = FileTimeDateTimes.GetUtcNow()
+        Set localT = FileTimeDateTimes.GetLocalNow()
+        Set manual = FileTimeDateTimes.FromDateTime(2023, 2, 1, 2, 2, 4, 123, 452, dtKind:=DateTimeKind_Utc)
 
-	Call GuiFileOutput.Stream.WriteLine(utc.ToISOFormat())
-	Call GuiFileOutput.Stream.WriteLine(localT.ToISOFormat())
-	Call GuiFileOutput.Stream.WriteLine(manual.ToISOFormat() & ": (H: " & manual.HighDateTime & ", L: " & manual.LowDateTime & ")")
-	Call GuiFileOutput.Stream.WriteLine(FileTimedateTimes.GetToday().ToISOFormat())
+        Call GuiFileOutput.WriteLine(utc.ToISOFormat())
+        Call GuiFileOutput.WriteLine(localT.ToISOFormat())
+        Call GuiFileOutput.WriteLine(manual.ToISOFormat() & ": (H: " & manual.highDateTime & ", L: " & manual.lowDateTime & ")" & " Ticks: " & manual.TicksAsDecimal)
+
+        Dim manualFromTicks As FileTimeDateTime
+        Set manualFromTicks = New FileTimeDateTime
+        Call manualFromTicks.InitFromTicks(manual.TicksAsDecimal)
+        Call GuiFileOutput.WriteLine(manualFromTicks.ToISOFormat())
+
+        Call GuiFileOutput.WriteLine(FileTimeDateTimes.GetToday().AddDays(10).ToISOFormat())
+
+	Call DecimalsTest.RunTest()
 
         If AutoExitCheckBox.Value Then
                 Unload Me
@@ -52,6 +63,8 @@ Private Sub Main()
 End Sub
 
 Private Sub Form_Load()
+        Set GuiFileOutput = New TextFileOutput
+        GuiFileOutput.OutputPath = "./output"
         Call GuiFileOutput.OpenStream
         Call Main
 End Sub

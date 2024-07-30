@@ -4,7 +4,7 @@ VB_EXE="D:/Program Files/Microsoft Visual Studio/VB98/VB6.EXE"
 
 BUILD_DIR=build
 
-APP_APP_SRC = $(wildcard *.bas) $(wildcard *.cls) $(wildcard *.frm)
+GUI_APP_SRC = $(wildcard *.bas) $(wildcard *.cls) $(wildcard *.frm)
 
 .PHONY: all
 all: build_GuiApp 

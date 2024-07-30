@@ -25,36 +25,48 @@ Public Property Get HighDateTime() As Long
         HighDateTime = m_ftimestamp.dwHighDateTime
 End Property
 
+Public Property Get TicksAsDecimal() As Variant
+	TicksAsDecimal = FileTimeDateTimes.ConvertFileTimeToDecimal(m_ftimestamp)
+End Property
+
 Public Property Get Kind() As DateTimeKind
         Kind = m_dtKind
 End Property
 
 Public Property Get DatePart() As FileTimeDateTime
-        Dim sysTime As SYSTEMTIME
-        sysTime = FileTimeDateTimes.ToSystemTime(Me)
+	Dim y As Integer, m As Integer, d As Integer
+	Call GetDatePart(y, m, d)
 
-        Set DatePart = FileTimeDateTimes.FromDateTime(sysTime.wYear, sysTime.wMonth, sysTime.wDay, dtKind:=Me.Kind)
+        Set DatePart = FileTimeDateTimes.FromDateTime(y, m, d, dtKind:=Me.Kind)
 End Property
 
-Public Property Get YearPart() As Integer
+Private Sub GetDatePart(ByRef y As Integer, ByRef m As Integer, ByRef d As Integer)
         Dim sysTime As SYSTEMTIME
         sysTime = FileTimeDateTimes.ToSystemTime(Me)
+	y = sysTime.wYear
+        m = sysTime.wMonth
+	d = sysTime.wDay
+End Sub
+
+Public Property Get YearPart() As Integer
+	Dim y As Integer, m As Integer, d As Integer
+	Call GetDatePart(y, m, d)
                 
-        YearPart = sysTime.wYear
+        YearPart = y
 End Property
 
 Public Property Get MonthPart() As Integer
-        Dim sysTime As SYSTEMTIME
-        sysTime = FileTimeDateTimes.ToSystemTime(Me)
+	Dim y As Integer, m As Integer, d As Integer
+	Call GetDatePart(y, m, d)
                 
-        MonthPart = sysTime.wMonth
+        MonthPart = m
 End Property
 
 Public Property Get DayPart() As Integer
-        Dim sysTime As SYSTEMTIME
-        sysTime = FileTimeDateTimes.ToSystemTime(Me)
+	Dim y As Integer, m As Integer, d As Integer
+	Call GetDatePart(y, m, d)
                 
-        DayPart = sysTime.wDay
+        DayPart = d
 End Property
 
 Public Property Get HourPart() As Integer
@@ -113,6 +125,86 @@ Public Sub InitFromFileTime(ByVal lowPart As Long, ByVal highPart As Long, Optio
         m_dtKind = dtKind
 End Sub
 
+Public Sub InitFromTicks(ByVal ticks As Variant, Optional ByVal dtKind As DateTimeKind = FileTimeDateTimes.DateTimeKind_Unspecified)
+        m_ftimestamp = FileTimeDateTimes.ConvertDecimalToFileTime(ticks)
+        m_dtKind = dtKind
+End Sub
+
+Public Function AddTicks(ByVal diffTicks As Variant) As FileTimeDateTime
+	Dim sumTicks As Variant
+	sumTicks = diffTicks + Me.TicksAsDecimal
+
+	Dim result As New FileTimeDateTime
+	Call result.InitFromTicks(sumTicks, m_dtKind)
+
+	Set AddTicks = result
+End Function
+
+Public Function AddMicroseconds(ByVal d As Double) As FileTimeDateTime
+	Dim diffTicks As Variant
+	diffTicks = CDec(d) * FileTimeDateTimes.TicksPerMicrosecond
+
+	Set AddMicroseconds = AddTicks(diffTicks)
+End Function
+
+Public Function AddMilliseconds(ByVal d As Double) As FileTimeDateTime
+	Dim diffTicks As Variant
+	diffTicks = CDec(d) * FileTimeDateTimes.TicksPerMillisecond
+
+	Set AddMilliseconds = AddTicks(diffTicks)
+End Function
+
+Public Function AddSeconds(ByVal d As Double) As FileTimeDateTime
+	Dim diffTicks As Variant
+	diffTicks = CDec(d) * FileTimeDateTimes.TicksPerSecond
+
+	Set AddSeconds = AddTicks(diffTicks)
+End Function
+
+Public Function AddMinutes(ByVal d As Double) As FileTimeDateTime
+	Dim diffTicks As Variant
+	diffTicks = CDec(d) * FileTimeDateTimes.TicksPerMinute
+
+	Set AddMinutes = AddTicks(diffTicks)
+End Function
+
+Public Function AddHours(ByVal d As Double) As FileTimeDateTime
+	Dim diffTicks As Variant
+	diffTicks = CDec(d) * FileTimeDateTimes.TicksPerHour
+
+	Set AddHours = AddTicks(diffTicks)
+End Function
+
+Public Function AddDays(ByVal d As Double) As FileTimeDateTime
+	Dim diffTicks As Variant
+	diffTicks = CDec(d) * FileTimeDateTimes.TicksPerDay
+
+	Set AddDays = AddTicks(diffTicks)
+End Function
+
+Public Function AddMonths(ByVal months As Long) As FileTimeDateTime
+	' TODO check month range
+
+	Dim y As Integer, m As Integer, d As Integer, i As Integer
+	Call GetDatePart(y, m, d)
+
+	i = m - 1 + months
+	If i >= 0 Then ' this year or the years after
+		m = i Mod 12 + 1
+		y = y + i \ 12
+	Else           ' the years before this year
+		m = 12 + (i + 1) Mod 12	
+		y = y + (i - 11) \ 12
+	End If
+
+	' TOOD Check FILETIME range
+
+	Set AddMonths = Nothing
+End Function
+
+Private Function IsLeapYear(ByVal y As Integer) As Boolean
+	IsLeapYear = (y Mod 4 = 0) And (y Mod 100 <> 0 Or y Mod 400 = 0) 
+End Function
 
 Public Function ToISOFormat() As String
         Dim yearString As String

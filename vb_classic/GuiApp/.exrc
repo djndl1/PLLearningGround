@@ -4,3 +4,4 @@ set encoding=gbk
 
 set autoindent
 set filetype=basic
+syntax on
