@@ -57,6 +57,7 @@ Private Sub Main()
 
 	Call DecimalsTest.RunTest()
 
+
         If AutoExitCheckBox.Value Then
                 Unload Me
         End If

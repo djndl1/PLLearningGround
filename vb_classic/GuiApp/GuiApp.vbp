@@ -13,6 +13,7 @@ Class=TextFileOutput; TextFileOutput.cls
 Class=Asserter; Asserter.cls
 Class=IConsumer; IConsumer.cls
 Class=TextOutputErrorHandler; TextOutputErrorHandler.cls
+Module=OleDates; OleDates.bas
 Module=SystemTimeDateTime; SystemTime.bas
 Module=FileTimeDateTimes; FileTimeDateTimes.bas
 Module=Decimals; Decimals.bas
