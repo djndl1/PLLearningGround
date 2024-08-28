@@ -46,12 +46,12 @@ Public Function ReadAll() As String
         ReadAll = Stream.ReadAll()
 End Function
 
-Public Sub WriteText(Text As String)
-        Stream.Write Text
+Public Sub WriteText(Text As Variant)
+        Stream.Write CStr(Text)
 End Sub
 
-Public Sub WriteLine(Optional Text As String = "")
-        Stream.WriteLine Text
+Public Sub WriteLine(Optional Text As Variant = "")
+        Stream.WriteLine CStr(Text)
 End Sub
 
 
