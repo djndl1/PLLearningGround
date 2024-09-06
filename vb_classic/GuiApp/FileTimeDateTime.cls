@@ -116,16 +116,16 @@ Public Property Get NanosecondPart() As Integer
 End Property
 
 Sub Class_Initialize()
-        m_dtKind = DateTimeKind_Utc
+        m_dtKind = DateTimeKind.UtcKind
 End Sub
 
-Public Sub InitFromFileTime(ByVal lowPart As Long, ByVal highPart As Long, Optional ByVal dtKind As DateTimeKind = FileTimeDateTimes.DateTimeKind_Unspecified)
+Public Sub InitFromFileTime(ByVal lowPart As Long, ByVal highPart As Long, Optional ByVal dtKind As DateTimeKind = FileTimeDateTimes.DateTimeKind.UnspecifiedKind)
         m_ftimestamp.dwLowDateTime = lowPart
         m_ftimestamp.dwHighDateTime = highPart
         m_dtKind = dtKind
 End Sub
 
-Public Sub InitFromTicks(ByVal ticks As Variant, Optional ByVal dtKind As DateTimeKind = FileTimeDateTimes.DateTimeKind_Unspecified)
+Public Sub InitFromTicks(ByVal ticks As Variant, Optional ByVal dtKind As DateTimeKind = FileTimeDateTimes.DateTimeKind.UnspecifiedKind)
         m_ftimestamp = FileTimeDateTimes.ConvertDecimalToFileTime(ticks)
         m_dtKind = dtKind
 End Sub
@@ -229,7 +229,7 @@ Public Function ToISOFormat() As String
 	Dim s As String
          s = yearString & "-" & monthString & "-" & dayString & "T" _
                & hourString & ":" & minuteString & ":" & secondString & "." & milliString & microString & nanoString
-        If Me.Kind = DateTimeKind_Utc Then
+        If Me.Kind = DateTimeKind.UtcKind Then
                 s = s & "Z"
         End If
 	

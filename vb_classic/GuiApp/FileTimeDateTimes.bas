@@ -7,9 +7,9 @@ Public Type FILETIME
 End Type
 
 Public Enum DateTimeKind
-        DateTimeKind_Unspecified = 0
-        DateTimeKind_Utc = 1
-        DateTimeKind_Local = 2
+        UnspecifiedKind = 0
+        UtcKind = 1
+        LocalKind = 2
 End Enum
 
 Private Declare Sub GetSystemTimePreciseAsFileTime Lib "kernel32" (ByRef lpSystemTimeAsFileTime As FILETIME)
@@ -44,7 +44,7 @@ End Property
 
 Public Property Get UnixEpoch() As FileTimeDateTime
         If s_unixEpoch Is Nothing Then
-                Set s_unixEpoch = FromDateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind_Utc)
+                Set s_unixEpoch = FromDateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.UtcKind)
         End If
 
         Set UnixEpoch = s_unixEpoch
@@ -167,7 +167,7 @@ Public Function ConvertFileTimeToDecimal(ft As FILETIME) As Variant
 End Function
 
 
-Public Function FromFileTime(ft As FILETIME, Optional dtKind As DateTimeKind = DateTimeKind_Unspecified) As FileTimeDateTime
+Public Function FromFileTime(ft As FILETIME, Optional dtKind As DateTimeKind = DateTimeKind.UnspecifiedKind) As FileTimeDateTime
         Dim cft As FileTimeDateTime
         Set cft = New FileTimeDateTime
         cft.InitFromFileTime ft.dwLowDateTime, ft.dwHighDateTime, dtKind
@@ -184,7 +184,7 @@ Private Function ToFileTime(ByVal cft As FileTimeDateTime) As FILETIME
         ToFileTime = ft
 End Function
 
-Public Function FromSystemTime(sysTime As SYSTEMTIME, Optional dtKind As DateTimeKind = DateTimeKind_Unspecified) As FileTimeDateTime
+Public Function FromSystemTime(sysTime As SYSTEMTIME, Optional dtKind As DateTimeKind = DateTimeKind.UnspecifiedKind) As FileTimeDateTime
         Dim ft As FILETIME
         Call SystemTimeToFileTime(sysTime, ft)
         Set FromSystemTime = FromFileTime(ft, dtKind)
@@ -207,7 +207,7 @@ Public Function FromDateTime(ByVal year As Long, _
                              Optional ByVal second As Long = 0, _
                              Optional ByVal millisecond As Long = 0, _
 			     Optional Byval microsecond As Long = 0, _
-                             Optional ByVal dtKind As DateTimeKind = DateTimeKind_Unspecified) As FileTimeDateTime
+                             Optional ByVal dtKind As DateTimeKind = DateTimeKind.UnspecifiedKind) As FileTimeDateTime
         Dim sysT As SYSTEMTIME
         sysT.wYear = year
         sysT.wMonth = month
@@ -228,7 +228,7 @@ Public Function GetUtcNow() As FileTimeDateTime
         Dim ft As FILETIME
         GetSystemTimePreciseAsFileTime ft
 
-        Set GetUtcNow = FromFileTime(ft, DateTimeKind_Utc)
+        Set GetUtcNow = FromFileTime(ft, DateTimeKind.UtcKind)
 End Function
 
 Public Function GetLocalNow() As FileTimeDateTime
@@ -236,7 +236,7 @@ Public Function GetLocalNow() As FileTimeDateTime
         GetSystemTimePreciseAsFileTime uft
         FileTimeToLocalFileTime uft, ft
         
-        Set GetLocalNow = FromFileTime(ft, DateTimeKind_Local)
+        Set GetLocalNow = FromFileTime(ft, DateTimeKind.LocalKind)
 End Function
 
 Public Function GetToday() As FileTimeDateTime
@@ -248,7 +248,7 @@ Public Function FormatFileTimeDateTimeToISO(ftd As FileTimeDateTime) As String
         sysTime = ToSystemTime(ftd)
         Dim s As String
         s = SystemTimeDateTime.SYSTEMTIMEAsISO8601(sysTime)
-        If ftd.Kind = DateTimeKind_Utc Then
+        If ftd.Kind = DateTimeKind.UtcKind Then
                 s = s & "Z"
         End If
         FormatFileTimeDateTimeToISO = s

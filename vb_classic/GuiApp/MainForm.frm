@@ -42,7 +42,7 @@ Private Sub Main()
         Dim utc As FileTimeDateTime, localT As FileTimeDateTime, manual As FileTimeDateTime
         Set utc = FileTimeDateTimes.GetUtcNow()
         Set localT = FileTimeDateTimes.GetLocalNow()
-        Set manual = FileTimeDateTimes.FromDateTime(2023, 2, 1, 2, 2, 4, 123, 452, dtKind:=DateTimeKind_Utc)
+        Set manual = FileTimeDateTimes.FromDateTime(2023, 2, 1, 2, 2, 4, 123, 452, dtKind:=DateTimeKind.UtcKind)
 
         Call GuiFileOutput.WriteLine(utc.ToISOFormat())
         Call GuiFileOutput.WriteLine(localT.ToISOFormat())
@@ -54,9 +54,9 @@ Private Sub Main()
         Call GuiFileOutput.WriteLine(manualFromTicks.ToISOFormat())
 
         Call GuiFileOutput.WriteLine(FileTimeDateTimes.GetToday().AddDays(10).ToISOFormat())
-
+	Call GuiFileOutput.WriteLine("")
+	
 	Call DecimalsTest.RunTest()
-
 
         If AutoExitCheckBox.Value Then
                 Unload Me
