@@ -12,6 +12,8 @@ Public Enum DateTimeKind
         LocalKind = 2
 End Enum
 
+Private Declare Sub GetSystemTimeAsFileTime Lib "kernel32" (ByRef lpSystemTimeAsFileTime As FILETIME)
+
 Private Declare Sub GetSystemTimePreciseAsFileTime Lib "kernel32" (ByRef lpSystemTimeAsFileTime As FILETIME)
 
 Private Declare Function FileTimeToSystemTime Lib "kernel32" (lpFileTime As FILETIME, lpSystemTime As SYSTEMTIME) As Long
@@ -51,119 +53,119 @@ Public Property Get UnixEpoch() As FileTimeDateTime
 End Property
 
 Private Property Get Bit33UInteger() As Variant
-	If IsEmpty(s_Bit33UInteger) Then
-		s_Bit33UInteger = CDec("4294967296")
-	End if
+        If IsEmpty(s_Bit33UInteger) Then
+                s_Bit33UInteger = CDec("4294967296")
+        End If
 
-	Bit33UInteger = s_Bit33UInteger
+        Bit33UInteger = s_Bit33UInteger
 End Property
 
 Private Property Get MaxLong() As Variant
-	If IsEmpty(s_MaxLong) Then
-		s_MaxLong	= CDec("2147483647")
-	End if
+        If IsEmpty(s_MaxLong) Then
+                s_MaxLong = CDec("2147483647")
+        End If
 
-	MaxLong = s_MaxLong
+        MaxLong = s_MaxLong
 End Property
 
-Public Property Get TicksPerMicrosecond As Variant
-	If IsEmpty(s_TicksPerMicrosecond) Then
-		s_TicksPerMicrosecond	= CDec("10")
-	End if
+Public Property Get TicksPerMicrosecond() As Variant
+        If IsEmpty(s_ticksPerMicrosecond) Then
+                s_ticksPerMicrosecond = CDec("10")
+        End If
 
-	TicksPerMicrosecond = s_TicksPerMicrosecond
+        TicksPerMicrosecond = s_ticksPerMicrosecond
 End Property
 
-Public Property Get TicksPerMillisecond As Variant
-	If IsEmpty(s_TicksPerMillisecond) Then
-		s_TicksPerMillisecond	= CDec("1000") * TicksPerMicrosecond
-	End if
+Public Property Get TicksPerMillisecond() As Variant
+        If IsEmpty(s_ticksPerMillisecond) Then
+                s_ticksPerMillisecond = CDec("1000") * TicksPerMicrosecond
+        End If
 
-	TicksPerMillisecond = s_TicksPerMillisecond
+        TicksPerMillisecond = s_ticksPerMillisecond
 End Property
 
-Public Property Get TicksPerSecond As Variant
-	If IsEmpty(s_TicksPerSecond) Then
-		s_TicksPerSecond	= CDec("1000") * TicksPerMillisecond
-	End If
+Public Property Get TicksPerSecond() As Variant
+        If IsEmpty(s_ticksPerSecond) Then
+                s_ticksPerSecond = CDec("1000") * TicksPerMillisecond
+        End If
 
-	TicksPerSecond = s_TicksPerSecond
+        TicksPerSecond = s_ticksPerSecond
 End Property
 
-Public Property Get TicksPerMinute As Variant
-	If IsEmpty(s_TicksPerMinute) Then
-		s_TicksPerMinute	= CDec("60") * TicksPerSecond
-	End If
+Public Property Get TicksPerMinute() As Variant
+        If IsEmpty(s_ticksPerMinute) Then
+                s_ticksPerMinute = CDec("60") * TicksPerSecond
+        End If
 
-	TicksPerMinute = s_TicksPerMinute
+        TicksPerMinute = s_ticksPerMinute
 End Property
 
-Public Property Get TicksPerHour As Variant
-	If IsEmpty(s_TicksPerHour) Then
-		s_TicksPerHour	= CDec("60") * TicksPerMinute
-	End If
+Public Property Get TicksPerHour() As Variant
+        If IsEmpty(s_ticksPerHour) Then
+                s_ticksPerHour = CDec("60") * TicksPerMinute
+        End If
 
-	TicksPerHour = s_TicksPerHour
+        TicksPerHour = s_ticksPerHour
 End Property
 
-Public Property Get TicksPerDay As Variant
-	If IsEmpty(s_TicksPerDay) Then
-		s_TicksPerDay	= CDec("24") * TicksPerHour
-	End If
+Public Property Get TicksPerDay() As Variant
+        If IsEmpty(s_ticksPerDay) Then
+                s_ticksPerDay = CDec("24") * TicksPerHour
+        End If
 
-	TicksPerDay = s_TicksPerDay
+        TicksPerDay = s_ticksPerDay
 End Property
 
 Private Function ULongToLong(ul As Variant) As Long
-	Dim l As Long
-	If ul > MaxLong Then
-		l = CLng(ul - Bit33UInteger)
-	Else 
-		l = CLng(ul)
-	End If
+        Dim l As Long
+        If ul > MaxLong Then
+                l = CLng(ul - Bit33UInteger)
+        Else
+                l = CLng(ul)
+        End If
 
-	ULongToLong = l
+        ULongToLong = l
 End Function
 
 Private Function LongToULong(l As Long) As Variant
-	Dim ul As Variant
-	ul = CDec(l)
-	if ul < 0 Then
-		ul = ul + Bit33UInteger
-	End If
+        Dim ul As Variant
+        ul = CDec(l)
+        If ul < 0 Then
+                ul = ul + Bit33UInteger
+        End If
 
-	LongToULong = ul
+        LongToULong = ul
 End Function
 
 Public Function ConvertDecimalToFileTime(ticks As Variant) As FILETIME
-	Dim highPartInt As Variant	, highPart As Variant
-	highPart = ticks / Bit33UInteger
-	highPartInt = CLng(highPart)
+        Dim highPartInt As Variant, highPart As Variant
+        highPart = ticks / Bit33UInteger
+        highPartInt = CLng(highPart)
 
-	If highPart  < highPartInt Then
-		highPartInt = highPartInt - 1
-	End If
+        If highPart < highPartInt Then
+                highPartInt = highPartInt - 1
+        End If
 
-	Dim lowPartInt As Variant
-	lowPartInt = ticks - Bit33UInteger * highPartInt
+        Dim lowPartInt As Variant
+        lowPartInt = ticks - Bit33UInteger * highPartInt
 
-	Dim highDateTime As Long, lowDateTime As Long
-	highDateTime = ULongToLong(highPartInt)
-	lowDateTime = ULongToLong(lowPartInt)
+        Dim highDateTime As Long, lowDateTime As Long
+        highDateTime = ULongToLong(highPartInt)
+        lowDateTime = ULongToLong(lowPartInt)
 
-	Dim ft As FILETIME
-	ft.dwLowDateTime = lowDateTime
-	ft.dwHighDateTime = highDateTime
+        Dim ft As FILETIME
+        ft.dwLowDateTime = lowDateTime
+        ft.dwHighDateTime = highDateTime
 
-	ConvertDecimalToFileTime = ft
+        ConvertDecimalToFileTime = ft
 End Function
 
 Public Function ConvertFileTimeToDecimal(ft As FILETIME) As Variant
-	Dim h As Variant, l As Variant
-	h = LongToULong(ft.dwHighDateTime)
-	l = LongToULong(ft.dwLowDateTime)
+        Dim h As Variant, l As Variant
+        h = LongToULong(ft.dwHighDateTime)
+        l = LongToULong(ft.dwLowDateTime)
 
-	ConvertFileTimeToDecimal = h * Bit33UInteger + l
+        ConvertFileTimeToDecimal = h * Bit33UInteger + l
 End Function
 
 
@@ -178,8 +180,8 @@ End Function
 Private Function ToFileTime(ByVal cft As FileTimeDateTime) As FILETIME
         Dim ft As FILETIME
         
-        ft.dwLowDateTime = cft.LowDateTime
-        ft.dwHighDateTime = cft.HighDateTime
+        ft.dwLowDateTime = cft.lowDateTime
+        ft.dwHighDateTime = cft.highDateTime
 
         ToFileTime = ft
 End Function
@@ -206,7 +208,7 @@ Public Function FromDateTime(ByVal year As Long, _
                              Optional ByVal minute As Long = 0, _
                              Optional ByVal second As Long = 0, _
                              Optional ByVal millisecond As Long = 0, _
-			     Optional Byval microsecond As Long = 0, _
+                             Optional ByVal microsecond As Long = 0, _
                              Optional ByVal dtKind As DateTimeKind = DateTimeKind.UnspecifiedKind) As FileTimeDateTime
         Dim sysT As SYSTEMTIME
         sysT.wYear = year
@@ -217,30 +219,38 @@ Public Function FromDateTime(ByVal year As Long, _
         sysT.wSecond = second
         sysT.wMilliseconds = millisecond
 
-	Dim ft As FILETIME
-	SystemTimeToFileTime sysT, ft
-	ft.dwLowDateTime = ft.dwLowDateTime + microsecond * 10
+        Dim ft As FILETIME
+        SystemTimeToFileTime sysT, ft
+        ft.dwLowDateTime = ft.dwLowDateTime + microsecond * 10
 
         Set FromDateTime = FromFileTime(ft, dtKind)
 End Function
 
 Public Function GetUtcNow() As FileTimeDateTime
         Dim ft As FILETIME
+#If LEGACY_OS = 1 Then
+        GetSystemTimeAsFileTime ft
+#Else
         GetSystemTimePreciseAsFileTime ft
-
+#End If
         Set GetUtcNow = FromFileTime(ft, DateTimeKind.UtcKind)
 End Function
 
 Public Function GetLocalNow() As FileTimeDateTime
         Dim uft As FILETIME, ft As FILETIME
+        
+#If LEGACY_OS = 1 Then
+        GetSystemTimeAsFileTime uft
+#Else
         GetSystemTimePreciseAsFileTime uft
+#End If
         FileTimeToLocalFileTime uft, ft
         
         Set GetLocalNow = FromFileTime(ft, DateTimeKind.LocalKind)
 End Function
 
 Public Function GetToday() As FileTimeDateTime
-	Set GetToday = GetLocalNow().DatePart
+        Set GetToday = GetLocalNow().DatePart
 End Function
 
 Public Function FormatFileTimeDateTimeToISO(ftd As FileTimeDateTime) As String
