@@ -1,0 +1,6 @@
+*.bas eol=crlf
+*.frm eol=crlf
+*.cls eol=crlf
+*.exe.config eol=crlf
+*.vbp eol=crlf
+*.vbw eol=crlf
