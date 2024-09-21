@@ -29,6 +29,4 @@ tags:
 
 .PHONY: clean
 clean:
-	-powershell.exe -NoProfile -Command \
-                            "Remove-Item -ErrorAction SilentlyContinue -Force -Recurse $(BUILD_DIR); \
-                            exit 0"
+	-cmd.exe -c "del $(BUILD_DIR)"
