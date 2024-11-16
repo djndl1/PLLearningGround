@@ -17,6 +17,10 @@
     #define gmtime_s(a, b) (gmtime_r(a, b))
 #endif
 
+#ifdef __ANDROID__
+    #define timespec_get(ts, base) clock_gettime(CLOCK_REALTIME, ts)
+#endif
+
 #include "utest.h"
 
 #define ISO_DATE_TIME_FORMAT "%Y-%m-%dT%H:%M:%S"
