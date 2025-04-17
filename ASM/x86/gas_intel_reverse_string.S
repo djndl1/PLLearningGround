@@ -15,6 +15,7 @@ reverse_string:
     mov     rbp, rsp
 
     sub     rsp, 32
+    mov     [rsp + 8], rbx
     mov     [rsp + 24], rdi // s
 
     call    strlen
@@ -39,7 +40,7 @@ reverse_string:
 
     jmp     .meeting
 .end_reverse:
-    mov     rdi, [rsp + 24]
+    mov     rbx, [rsp + 8]
     add     rsp, 32
 
     pop     rbp
@@ -54,14 +55,16 @@ main:
     mov     dword ptr [rsp], edi // argc
     mov     qword ptr [rsp + 8], rsi       // argv
 
-    mov      eax, edi
+    mov     eax, edi
     cmp     eax, 1
-    jle      arg_error_handler
+    jle     arg_error_handler
 arg_correct:
     mov     rdi, [rsp + 8] // argv
     mov     rdi, [rdi + 8] // *(argv + 1)
 
+    mov     rbx, rdi
     call    reverse_string
+    mov     rdi, rbx
 
     mov     rsi, rdi
     lea     rdi, [rip + result_fmt]
