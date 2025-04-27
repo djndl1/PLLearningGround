@@ -3,7 +3,7 @@
 .section .data
 msg:    .string "Hello from %s!\n"
 
-.section .code
+.section .text
 
 .global _main
 .global _printf                  ;
