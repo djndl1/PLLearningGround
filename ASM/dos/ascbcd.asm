@@ -18,20 +18,76 @@ main    proc    far
     mov si, offset [asc]
 
     push    12
-    mov     ax, offset [asc]
+    lea     ax, [asc]
     push    ax
-    mov     ax, offset [bcd]
+    lea     ax, [bcd]
     push    ax
-    call    _asc2bcd
+    call    _asc2ubcd
     add     sp, 6
+
+    mov     ax, word ptr [bcd]
+    push    ax
+    call    _packbcd
+    add     sp, 2
+
+    push    ax
+    push    ax
+    call    _addpbcd
+    add     sp, 4
+
+    push    ax
+    call    _unpackbcd
+    add     sp, 2
+    mov     word ptr [bcd+10], ax
 
     mov ah, 4Ch
     int 21H
 
 main    endp
 
-    ;;  int16_t asc2bcd(uint8_t* dst, const uint8_t* src, uint16_t dstlen)
-_asc2bcd proc    near
+    ;; uint8_t addpbcd(uint8_t a, uint8_t b)
+_addpbcd    proc    near
+    push    bp
+    mov     bp, sp
+
+    mov     al, byte ptr [bp + 4]
+    add     al, byte ptr [bp + 6]
+    daa
+
+    pop     bp
+    ret
+_addpbcd    endp
+
+    ;;  uint16_t packbcd(uint8_t src)
+_unpackbcd proc     near
+    push    bp
+    mov     bp, sp
+
+    mov     ah, byte ptr [bp + 4] ; 0x00AB
+    mov     al, ah                ; 0xABAB
+    and     ax, 0F00Fh             ; 0xA00B
+    shr     ah, 4
+
+    pop     bp
+    ret
+_unpackbcd endp
+
+    ;;  uint8_t packbcd(uint16_t src)
+_packbcd proc   near
+    push    bp
+    mov     bp, sp
+
+    mov     ax, [bp + 4]        ; 0x0A0B
+    shl     ah, 4               ; 0xB00A
+    or      al, ah              ; 0x00BA
+    xor     ah, ah
+
+    pop     bp
+    ret
+_packbcd endp
+
+    ;;  int16_t asc2ubcd(uint8_t* dst, const uint8_t* src, uint16_t dstlen)
+_asc2ubcd proc    near
     push    bp
     mov     bp, sp
 
@@ -57,7 +113,7 @@ conv:
     test    cx, cx
     jz      end_conv
 
-    and     al, 0Fh
+    aaa
     mov     byte ptr [di], al
 
     inc     si
@@ -79,6 +135,6 @@ unwind:
 
     pop     bp
     ret
-_asc2bcd endp
+_asc2ubcd endp
 
 end main
