@@ -13,9 +13,14 @@ CXXFLAGS=
 
 VRUN_PROG=
 
-BARE_ASM = exit.bare \
-		   findmax.bare
-MAIN_ASM = exitmain.main
+BARE_ASM = template.bare \
+		exit.bare \
+		findmax.bare
+
+
+
+MAIN_ASM = template.main.main \
+		   exitmain.main
 
 all: build_bares build_mains
 

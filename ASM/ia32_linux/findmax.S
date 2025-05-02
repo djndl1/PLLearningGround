@@ -16,11 +16,16 @@ _start:
 
 .func   main,_main
 _main:
+    lea     ecx, [esp+4]
+    and     esp, -16
+    push    dword ptr [ecx-4]
     push    ebp
     mov     ebp, esp
+    push    ecx
+    sub     esp, 4
 
     sub     esp, 16
-    mov     dword ptr [ebp-4], ebx   # ebx at ebp + 4
+    mov     dword ptr [esp+12], ebx
 
     mov     edi, 0
     mov     eax, dword ptr [data_items+4*edi]
@@ -40,8 +45,11 @@ begin_find:
 end_find:
     mov     eax, ebx
 
-    mov     ebx, dword ptr [ebp-4]
+    mov     ebx, dword ptr [esp+12]
     add     esp, 16
-    pop     ebp
+
+    mov     ecx, dword ptr [ebp-4]
+    leave
+    lea     esp, [ecx-4]
     ret
 .endfunc
