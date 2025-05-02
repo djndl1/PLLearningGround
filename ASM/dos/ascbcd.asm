@@ -9,6 +9,10 @@ asc     db  '9562481273',0
 org     0010h
 bcd     db  12 dup(?)
 
+addend_bcd1 db  12h,34h,56h,78h,90h
+addend_bcd2 db  02h,04h,06h,08h,00h
+sum_bcd     db  5 dup(?)
+
 .code
 main    proc    far
 
@@ -40,12 +44,58 @@ main    proc    far
     add     sp, 2
     mov     word ptr [bcd+10], ax
 
+    push    5
+    lea     ax, [addend_bcd1]
+    push    ax
+    lea     ax, [addend_bcd2]
+    push    ax
+    lea     ax, [sum_bcd]
+    push    ax
+    call    _addmpbcd
+    add     sp, 8
+
     mov ah, 4Ch
     int 21H
 
 main    endp
 
-    ;; uint8_t addpbcd(uint8_t a, uint8_t b)
+    ;; void addpbcd(uint8_t *dst, uint8_t const *a, uint8_t const *b, uint16_t len)
+_addmpbcd   proc    near
+    push    bp
+    mov     bp, sp
+
+    sub     sp, 8
+    mov     word ptr [bp-2], si
+    mov     word ptr [bp-4], di
+
+    mov     di, word ptr [bp + 4]
+    mov     si, word ptr [bp + 6]
+    mov     bx, word ptr [bp + 8]
+    mov     cx, word ptr [bp + 10]
+
+    clc
+begin_add:
+    mov     al, byte ptr [si]
+    adc     al, byte ptr [bx]
+    daa
+    mov     byte ptr [di], al
+
+    inc     di
+    inc     si
+    inc     bx
+
+    loop    begin_add
+end_add:
+    mov     si, word ptr [bp-2]
+    mov     di, word ptr [bp-4]
+
+    add     sp, 8
+    pop     bp
+    ret
+
+_addmpbcd   endp
+
+    ;; uint8_t addpbcd
 _addpbcd    proc    near
     push    bp
     mov     bp, sp
@@ -58,7 +108,7 @@ _addpbcd    proc    near
     ret
 _addpbcd    endp
 
-    ;;  uint16_t packbcd(uint8_t src)
+    ;;  uint16_t unpackbcd(uint8_t src)
 _unpackbcd proc     near
     push    bp
     mov     bp, sp
