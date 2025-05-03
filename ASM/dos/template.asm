@@ -1,20 +1,20 @@
 ;;  MASM
-.model  small
+.model small
 
 .stack  1024
 
 .data
+    org 10 ;  reserved for NULL
 
 .code
+    ;; this directive sets up segment registers
+.startup
+    ;;  the system ar jumps to main
 main    proc    far
 
-    mov ax, @DATA
-    mov ds, ax
-
-;; exit
-    mov ah, 4Ch
-    int 21H
+    mov al, 0
 
 main    endp
+.exit                           ;  calling exit
 
-end main
+end
