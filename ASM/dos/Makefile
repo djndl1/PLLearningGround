@@ -4,7 +4,8 @@ ASFLAGS=-q -mz -6 -Fl
 LD=jwlink
 LDFLAGS=
 
-EXE = example.exe \
+EXE = template.exe \
+	example.exe \
 	add5bytes.exe \
 	mov6bytes.exe \
 	testflags.exe \
@@ -12,7 +13,9 @@ EXE = example.exe \
 	findmax.exe	  \
 	qword_add.exe \
 	toupper.exe	\
-	subtraction.exe
+	subtraction.exe \
+	rotation.exe \
+	sum.exe
 
 all: $(EXE)
 
