@@ -12,6 +12,7 @@ bcd     db  12 dup(?)
 addend_bcd1 db  12h,34h,56h,78h,90h
 addend_bcd2 db  02h,04h,06h,08h,00h
 sum_bcd     db  5 dup(?)
+sub_bcd     db  5 dup(?)
 
 .code
 main    proc    far
@@ -45,19 +46,65 @@ main    proc    far
     mov     word ptr [bcd+10], ax
 
     push    5
-    lea     ax, [addend_bcd1]
-    push    ax
     lea     ax, [addend_bcd2]
+    push    ax
+    lea     ax, [addend_bcd1]
     push    ax
     lea     ax, [sum_bcd]
     push    ax
     call    _addmpbcd
     add     sp, 8
 
+    push    5
+    lea     ax, [addend_bcd2]
+    push    ax
+    lea     ax, [addend_bcd1]
+    push    ax
+    lea     ax, [sub_bcd]
+    push    ax
+    call    _submpbcd
+    add     sp, 8
+
     mov ah, 4Ch
     int 21H
 
 main    endp
+
+    ;; void subpbcd(uint8_t *dst, uint8_t const *a, uint8_t const *b, uint16_t len)
+_submpbcd   proc    near
+    push    bp
+    mov     bp, sp
+
+    sub     sp, 8
+    mov     word ptr [bp-2], si
+    mov     word ptr [bp-4], di
+
+    mov     di, word ptr [bp + 4]
+    mov     si, word ptr [bp + 6]
+    mov     bx, word ptr [bp + 8]
+    mov     cx, word ptr [bp + 10]
+
+    clc
+begin_sub:
+    mov     al, byte ptr [si]
+    sbb     al, byte ptr [bx]
+    das
+    mov     byte ptr [di], al
+
+    inc     di
+    inc     si
+    inc     bx
+
+    loop    begin_sub
+end_sub:
+    mov     si, word ptr [bp-2]
+    mov     di, word ptr [bp-4]
+
+    add     sp, 8
+    pop     bp
+    ret
+
+_submpbcd   endp
 
     ;; void addpbcd(uint8_t *dst, uint8_t const *a, uint8_t const *b, uint16_t len)
 _addmpbcd   proc    near
