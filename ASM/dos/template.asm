@@ -1,6 +1,8 @@
 ;;  MASM
 .model small
 
+include util.inc
+
 .stack  1024
 
 .data

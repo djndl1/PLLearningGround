@@ -1,10 +1,19 @@
-AS=jwasm
-ASFLAGS=-q -mz -6 -Fl
+MASM=jwasm
+MASMFLAGS=-q -c -6 -Fl
 
-LD=jwlink
-LDFLAGS=
+NASM=nasm
+NASMFLAGS=-g -f obj
 
-EXE = template.exe \
+LINK=jwlink
+LINKFLAGS=Option Quiet \
+	Option Map \
+	Option Symfile \
+	System Dos \
+	Debug Dwarf
+
+NASM_EXE = template.nasm.exe
+
+MASM_EXE = template.exe \
 	example.exe \
 	add5bytes.exe \
 	mov6bytes.exe \
@@ -17,14 +26,28 @@ EXE = template.exe \
 	rotation.exe \
 	sum.exe
 
-all: $(EXE)
+all: $(NASM_EXE) $(MASM_EXE)
 
-%.exe: %.asm
-	$(AS) $(ASFLAGS) -Fo$@  $<
+%.asm.obj: %.asm
+	$(MASM) $(MASMFLAGS) -Fo$@  $<
+
+%.exe: %.asm.obj
+	$(LINK) $(LINKFLAGS) Name $@ File $<
+
+%.nasm.obj: %.nasm
+	$(NASM) $(NASMFLAGS) -l $<.lst -o $@ $<
+
+%.nasm.exe: %.nasm.obj
+	$(LINK) $(LINKFLAGS) Name $@ File $<
+
+# do not delete object files
+.PRECIOUS: %.asm.obj %.nasm.obj
 
 .PHONY:	clean
 clean:
 	-rm -f *.o *.obj *.OBJ
 	-rm -f *.lst
+	-rm -f *.map
+	-rm -f *.sym
 	-rm -f *.err
-	-rm -f $(EXE)
+	-rm -f $(MASM_EXE) $(NASM_EXE)
