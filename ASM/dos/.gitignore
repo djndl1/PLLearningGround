@@ -2,3 +2,5 @@
 *.exe
 *.EXE
 *.err
+*.map
+*.sym
