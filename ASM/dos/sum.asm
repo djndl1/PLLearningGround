@@ -41,8 +41,7 @@ fsum proc  near, pnums:word, len:word
     finit
     fldz
 begin_add:
-    fld     dword ptr [si]
-    faddp   st(1), st(0)
+    fadd   dword ptr [si]
     add     si, 4
     loop    begin_add
 end_add:
