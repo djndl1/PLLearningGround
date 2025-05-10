@@ -24,7 +24,8 @@ MASM_EXE = template.exe \
 	toupper.exe	\
 	subtraction.exe \
 	rotation.exe \
-	sum.exe
+	sum.exe \
+	x87fpu.exe
 
 all: $(NASM_EXE) $(MASM_EXE)
 

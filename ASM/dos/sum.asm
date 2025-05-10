@@ -11,12 +11,17 @@ sums    dw  0
 fnums   dd  1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.1
 fsums   dd  0.0
 
+area    dq  0.0
+fintsum dd  ?
+
 .code
 
 ;;;  int16_t sum(int16_t const *nums, uint16_t len)
 
 sum proto   near, pnums:word, len:word
 fsum proto  near, pnums:word, len:word
+circle_area proto near, diameter:qword
+x87_int_sum proto near, a:dword, b:dword
 
 .startup
 main    proc    far
@@ -29,8 +34,33 @@ main    proc    far
     mov     ax, offset fnums
     invoke  fsum, ax, 8
     fstp    dword ptr [fsums]
+
+    invoke  circle_area, 10.0
+    fstp    qword ptr [area]
+
+    invoke  x87_int_sum, 00000010h, 00000020h
+    fistp    dword ptr [fintsum]
+
 main    endp
 .exit
+
+x87_int_sum proc near, a:dword, b:dword
+    finit
+    fild     dword ptr [bp+4]
+    fiadd   dword ptr [bp+8]
+
+    ret
+x87_int_sum endp
+
+circle_area proc near, diameter:qword
+    finit
+    fld     qword ptr [bp+4]
+    fmul    st(0), st(0)
+    fldpi
+    fmulp    st(1), st(0)
+
+    ret
+circle_area endp
 
 fsum proc  near, pnums:word, len:word
     push    si
@@ -41,7 +71,7 @@ fsum proc  near, pnums:word, len:word
     finit
     fldz
 begin_add:
-    fadd   dword ptr [si]
+    fadd    dword ptr [si]
     add     si, 4
     loop    begin_add
 end_add:
