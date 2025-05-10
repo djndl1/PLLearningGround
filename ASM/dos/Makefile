@@ -25,7 +25,9 @@ MASM_EXE = template.exe \
 	subtraction.exe \
 	rotation.exe \
 	sum.exe \
-	x87fpu.exe
+	x87fpu.exe \
+	cls.exe \
+	realmode32bit.exe
 
 all: $(NASM_EXE) $(MASM_EXE)
 
