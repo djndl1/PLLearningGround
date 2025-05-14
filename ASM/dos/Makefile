@@ -2,7 +2,7 @@ MASM=jwasm
 MASMFLAGS=-q -c -6 -Fl
 
 NASM=nasm
-NASMFLAGS=-g -f obj
+NASMFLAGS=-g -f obj -l $<.lst
 
 LINK=jwlink
 LINKFLAGS=Option Quiet \
@@ -29,7 +29,10 @@ MASM_EXE = template.exe \
 	cls.exe \
 	realmode32bit.exe
 
-all: $(NASM_EXE) $(MASM_EXE)
+all: $(NASM_EXE) $(MASM_EXE) unreal.com
+
+unreal.com: unreal.asm
+	$(NASM) -l unreal.lst -o $@ $<
 
 %.asm.obj: %.asm
 	$(MASM) $(MASMFLAGS) -Fo$@  $<
@@ -38,7 +41,7 @@ all: $(NASM_EXE) $(MASM_EXE)
 	$(LINK) $(LINKFLAGS) Name $@ File $<
 
 %.nasm.obj: %.nasm
-	$(NASM) $(NASMFLAGS) -l $<.lst -o $@ $<
+	$(NASM) $(NASMFLAGS) -o $@ $<
 
 %.nasm.exe: %.nasm.obj
 	$(LINK) $(LINKFLAGS) Name $@ File $<
@@ -53,4 +56,5 @@ clean:
 	-rm -f *.map
 	-rm -f *.sym
 	-rm -f *.err
+	-rm -f *.com
 	-rm -f $(MASM_EXE) $(NASM_EXE)
