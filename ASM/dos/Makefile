@@ -27,14 +27,15 @@ MASM_EXE = template.exe \
 	sum.exe \
 	x87fpu.exe \
 	cls.exe \
-	realmode32bit.exe
+	realmode32bit.exe \
+	prod.exe
 
 all: $(NASM_EXE) $(MASM_EXE) unreal.com
 
 unreal.com: unreal.asm
 	$(NASM) -l unreal.lst -o $@ $<
 
-%.asm.obj: %.asm
+%.asm.obj: %.asm util.inc
 	$(MASM) $(MASMFLAGS) -Fo$@  $<
 
 %.exe: %.asm.obj
