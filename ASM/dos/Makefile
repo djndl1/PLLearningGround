@@ -11,7 +11,7 @@ LINKFLAGS=Option Quiet \
 	System Dos \
 	Debug Dwarf
 
-NASM_EXE = template.nasm.exe
+NASM_EXE = template_nasm.exe
 
 MASM_EXE = template.exe \
 	example.exe \
@@ -44,7 +44,7 @@ unreal.com: unreal.asm
 %.nasm.obj: %.nasm
 	$(NASM) $(NASMFLAGS) -o $@ $<
 
-%.nasm.exe: %.nasm.obj
+%_nasm.exe: %.nasm.obj
 	$(LINK) $(LINKFLAGS) Name $@ File $<
 
 # do not delete object files
