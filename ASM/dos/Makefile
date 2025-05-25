@@ -33,7 +33,8 @@ MASM_EXE = template.exe \
 	x87fpu.exe \
 	cls.exe \
 	realmode32bit.exe \
-	prod.exe
+	prod.exe \
+	transfer_string.exe
 
 all: $(NASM_EXE) $(MASM_EXE) unreal.com # build all executables
 
