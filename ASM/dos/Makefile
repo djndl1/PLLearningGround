@@ -1,6 +1,6 @@
 MASM ?= # path to MASM-compabilt assembler
 MASM=jwasm
-MASMFLAGS=-q -c -6 -Fl        # MASM-compatible assembler options
+MASMFLAGS=-q -c -8 -Fl        # MASM-compatible assembler options
 
 NASM ?= # path to NASM assembler
 NASM=nasm
