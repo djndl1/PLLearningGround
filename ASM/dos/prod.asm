@@ -38,6 +38,7 @@ begin_prod_while:
 
     mul     word ptr [si]
 
+    add     si, 2
     dec     cx
     jmp     begin_prod_while
 end_prod_while:
