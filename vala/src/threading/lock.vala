@@ -24,8 +24,6 @@ public class Test {
 public class TestCallables {
     public Test test = new Test();
 
-    GLib.Thread;
-
     public int Value
     {
         get
