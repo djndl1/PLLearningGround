@@ -587,3 +587,5 @@ tags
 TAGS
 tags.temp
 tags.lock
+
+compile_commands.json
