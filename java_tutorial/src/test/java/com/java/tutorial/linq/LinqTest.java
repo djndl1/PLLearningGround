@@ -1,5 +1,6 @@
 package com.java.tutorial.linq;
 
+
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Stream;
@@ -40,7 +41,7 @@ public class LinqTest {
     void testAggregate_Reduce() {
         String longestName = FRUITS.stream().reduce("banana", (result, next) ->
             result.length() < next.length() ? next : result)
-            .toUpperCase();
+            .toUpperCase()
 
         assertThat(longestName).isEqualTo("PASSIONFRUIT");
 
@@ -55,7 +56,7 @@ public class LinqTest {
         int maxLength = FRUITS.stream().reduce(0, (maxLen, next) ->
             next.length() > maxLen ? next.length() : maxLen,
             Comparators::max);
-            
+
         assertThat(maxLength).isEqualTo(12);
 
         maxLength = FRUITS.stream().map(f -> f.length()).max((a, b) -> a > b ? 1 : a == b ? 0 : -1).get();
@@ -64,7 +65,7 @@ public class LinqTest {
 
     @Test
     void testSumLength_Reduce() {
-        int sumLength = FRUITS.stream().reduce(0, (sum, next) -> 
+        int sumLength = FRUITS.stream().reduce(0, (sum, next) ->
             sum + next.length(), (a, b) -> a + b);
 
         assertThat(sumLength).isEqualTo(33);
@@ -98,7 +99,7 @@ public class LinqTest {
 
     @Test
     void testCountIf_Stream() {
-        int hasBCount = PETS.stream().reduce(0, (cnt, p) -> 
+        int hasBCount = PETS.stream().reduce(0, (cnt, p) ->
             cnt + (p.getName().startsWith("B") ? 1 : 0), (a, b) -> a + b);
 
         assertThat(hasBCount).isEqualTo(2);
