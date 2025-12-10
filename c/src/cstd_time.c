@@ -1,5 +1,4 @@
 #include "config.h"
-#include <time.h>
 
 #if defined(__MINGW64__) || defined(__MINGW32__) || defined (_MSC_VER)
 #include <windows.h>
@@ -11,6 +10,7 @@
     #define __STDC_WANT_LIB_EXT1__ 1
 #else
 #define _XOPEN_SOURCE 700
+#include <time.h>
 #include <unistd.h>
 
     #define localtime_s(a, b) (localtime_r(a, b))
