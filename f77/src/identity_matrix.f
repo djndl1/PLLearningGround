@@ -9,5 +9,10 @@
             end do
          end do
 
+         do i = 1, 10
+            write(*, 1000), (V(i, j), j=1,10)
+1000        format (10I4)
+         end do
+
          stop
       end
