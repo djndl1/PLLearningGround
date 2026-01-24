@@ -1,10 +1,38 @@
+Attribute VB_Name = "VariantTest"
 Option Explicit
 
 Public Sub Run()
+   EqvTest
    DefaultVariantValueTest
    NullVariantTest
    EmptyCharStringVariantTest
    ErrorVariantTest
+End Sub
+
+Private Sub EqvTest()
+    Console.WriteLine "EqvTest"
+
+    Dim OneEqvOne As Integer
+    OneEqvOne = 1 Eqv 1
+    Console.WriteLine vbTab & "1 Eqv 1 is " & CStr(OneEqvOne)
+    AssertThat.IsTrue (OneEqvOne = -1), "1 Eqv 1 should be " & CStr(OneEqvOne)
+
+    Dim TwoEqvOne As Integer
+    TwoEqvOne = 2 Eqv 1
+    Console.WriteLine vbTab & "2 Eqv 1 is " & CStr(TwoEqvOne)
+    AssertThat.IsTrue (TwoEqvOne = -4), "2 Eqv 1 should be " & CStr(TwoEqvOne)
+
+    Dim TwoEqvZero As Integer
+    TwoEqvZero = 2 Eqv 0
+    Console.WriteLine vbTab & "2 Eqv 0 is " & CStr(TwoEqvZero)
+    AssertThat.IsTrue (TwoEqvZero = -3), "2 Eqv 0 should be " & CStr(TwoEqvZero)
+
+    Dim ZeroEqvZero As Integer
+    ZeroEqvZero = 0 Eqv 0
+    Console.WriteLine vbTab & "0 Eqv 0 is " & CStr(ZeroEqvZero)
+    AssertThat.IsTrue (ZeroEqvZero = -1), "0 Eqv 0 should be " & CStr(ZeroEqvZero)
+
+    AssertThat.IsTrue (True Eqv False = False), "True Eqv False should be False"
 End Sub
 
 Private Sub ErrorVariantTest()
