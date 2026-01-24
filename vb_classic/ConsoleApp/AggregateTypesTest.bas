@@ -1,3 +1,4 @@
+Attribute VB_Name = "AggregateTypesTest"
 Option Explicit
 
 Private Type TestUserUDT

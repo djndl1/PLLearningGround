@@ -1,3 +1,4 @@
+Attribute VB_Name = "ClassTest"
 Option Explicit
 
 Public Sub Run()

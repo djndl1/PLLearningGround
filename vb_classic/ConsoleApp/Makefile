@@ -1,5 +1,5 @@
 # this script is meant to run in bash
-LINK_EXE="D:/Program Files/Microsoft Visual Studio/VB98/LINK.EXE"
+LINK_EXE="C:/Program Files/Microsoft Visual Studio/VB98/LINK.EXE"
 LINKER_FLAGS=-NOLOGO
 LINKER_CONSOLE_SUBSYSTEM=-SUBSYSTEM:CONSOLE
 
@@ -8,7 +8,7 @@ CPPFLAGS=-DUNICODE -D_UNICODE
 CFLAGS=-std=c17  -municode -g
 LDFLAGS=-mconsole
 
-VB_EXE="D:/Program Files/Microsoft Visual Studio/VB98/VB6.EXE"
+VB_EXE="C:/Program Files/Microsoft Visual Studio/VB98/VB6.EXE"
 
 BUILD_DIR=build
 
@@ -45,4 +45,4 @@ clean:
                             "Remove-Item -ErrorAction SilentlyContinue -Force -Recurse $(BUILD_DIR); \
                             Remove-Item -ErrorAction SilentlyContinue -Force HOOK_*.txt; \
                             Remove-Item -ErrorAction SilentlyContinue -Force C2Hook.exe; " \
-                            exit 0 
+                            exit 0

@@ -1,3 +1,4 @@
+Attribute VB_Name = "AssertThat"
 Option Explicit
 
 Public Enum AssertCode
