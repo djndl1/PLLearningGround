@@ -59,34 +59,34 @@ Private Sub DisplayRecordSetFeatures(cursorTyp As CursorTypeEnum)
 
    Dim b As Boolean
    b = rs.Supports(adAddNew)
-   Console.WriteLine "Supports adAddNew: " & CStr(b)
+   Console.WriteLine "Supports adAddNew: " & b
 
    b = rs.Supports(adApproxPosition)
-   Console.WriteLine "Supports adApproxPosition: " & CStr(b)
+   Console.WriteLine "Supports adApproxPosition: " & b
 
    b = rs.Supports(adBookmark)
-   Console.WriteLine "Supports adBookmark: " & CStr(b)
+   Console.WriteLine "Supports adBookmark: " & b
 
    b = rs.Supports(adDelete)
-   Console.WriteLine "Supports adDelete: " & CStr(b)
+   Console.WriteLine "Supports adDelete: " & b
 
    b = rs.Supports(adFind)
-   Console.WriteLine "Supports adFind: " & CStr(b)
+   Console.WriteLine "Supports adFind: " & b
 
    b = rs.Supports(adHoldRecords)
-   Console.WriteLine "Supports adHoldRecords: " & CStr(b)
+   Console.WriteLine "Supports adHoldRecords: " & b
 
    b = rs.Supports(adMovePrevious)
-   Console.WriteLine "Supports adMovePrevious: " & CStr(b)
+   Console.WriteLine "Supports adMovePrevious: " & b
 
    b = rs.Supports(adNotify)
-   Console.WriteLine "Supports adNotify: " & CStr(b)
+   Console.WriteLine "Supports adNotify: " & b
 
    b = rs.Supports(adUpdate)
-   Console.WriteLine "Supports adUpdate: " & CStr(b)
+   Console.WriteLine "Supports adUpdate: " & b
 
    b = rs.Supports(adUpdateBatch)
-   Console.WriteLine "Supports adUpdateBatch: " & CStr(b)
+   Console.WriteLine "Supports adUpdateBatch: " & b
 
 CleanUp:
    rs.Close
@@ -156,7 +156,7 @@ Private Sub SimpleReadTest()
       .Open
    End With
 
-   Console.WriteLine "V$INSTANCE ROW: " & CStr(rs.RecordCount)
+   Console.WriteLine "V$INSTANCE ROW: " & rs.RecordCount
    If rs.RecordCount > 0 Then
       rs.MoveFirst
 
@@ -191,7 +191,7 @@ Private Sub SimpleReadTest()
    Dim rs2 As ADODB.RecordSet
    Set rs2 = cmd.Execute
 
-   Console.WriteLine "V$INSTANCE ROW: " & CStr(rs.RecordCount)
+   Console.WriteLine "V$INSTANCE ROW: " & rs.RecordCount
    If rs.RecordCount > 0 Then
       rs.MoveFirst
 

@@ -31,7 +31,7 @@ Private Sub CalendarTest()
    Dim d As Variant
    d = Date
 
-   AssertThat.IsTrue o.GetYear(d) = 2023, "Should be year 2023"
+   AssertThat.IsTrue o.GetYear(d) = Year(Date()), "Should be year 2026"
 End Sub
 
 Private Sub StringBuilderTest()

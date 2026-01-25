@@ -39,7 +39,7 @@ Private Sub GetUnixEpochAsFileTime()
    ft.dwHighDateTime = 27111902
    ft.dwLowDateTime = -717324288
 
-   Console.WriteLine (CStr(ft.dwHighDateTime) & " " & CStr(ft.dwLowDateTime))
+   Console.WriteLine (ft.dwHighDateTime & " " & ft.dwLowDateTime)
 End Sub
 
 Private Sub ShowInC()

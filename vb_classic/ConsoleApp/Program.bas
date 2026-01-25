@@ -24,7 +24,7 @@ Sub Main()
    GoTo CleanUp
 FailedTest:
    Dim printOut As String
-   printOut = "Failed test: " & CStr(Err.Number) & " " _
+   printOut = "Failed test: " & Err.Number & " " _
             & Err.Description & " at " & Err.Source ' line continuation
    Console.WriteLine printOut
 CleanUp:

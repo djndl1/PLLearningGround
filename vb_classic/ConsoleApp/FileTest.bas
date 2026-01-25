@@ -1,3 +1,4 @@
+Attribute VB_Name = "FileTest"
 Option Explicit
 
 Public Sub Run()
@@ -21,8 +22,8 @@ Private Sub ShowAttributesTest()
    d = FileDateTime("build/ConsoleApp.exe.config")
 
    Dim s As String
-   s = "build\ConsoleApp.exe.config has an attribute value of " & CStr(Hex(a)) _
-     & " file length of " & CStr(siz) _
+   s = "build\ConsoleApp.exe.config has an attribute value of " & Hex(a) _
+     & " file length of " & siz _
      & " and file date of " & DateTimeTest.DateTimeAsISO8601(d)
 
 

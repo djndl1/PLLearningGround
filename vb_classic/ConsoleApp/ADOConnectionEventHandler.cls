@@ -30,23 +30,23 @@ Private Sub source_ConnectComplete(ByVal pError As ADODB.Error, _
                                    adStatus As ADODB.EventStatusEnum, _
                                    ByVal conn As ADODB.Connection)
    Console.WriteLine "Connected to test Database: " _
-          &  CStr(conn.Properties("DBMS Name")) & " " & _
-          CStr(conn.Properties("DBMS Version")) & " " & _
-          CStr(conn.Properties("Data Source Name"))
+          &  conn.Properties("DBMS Name") & " " & _
+          conn.Properties("DBMS Version") & " " & _
+          conn.Properties("Data Source Name")
 
-   Console.WriteLine "State: " & CStr(conn.State)  & " Mode: " & CStr(conn.Mode)
+   Console.WriteLine "State: " & conn.State  & " Mode: " & conn.Mode
 
-   Console.WriteLine "Provider: " & CStr(conn.Properties("Provider Name")) _
-          & " " & CStr(conn.Properties("Provider Friendly Name"))  _
-          & " " & CStr(conn.Properties("Provider Version"))
-   Console.WriteLine "Conncted through ODBC " & CStr(conn.Properties("Driver ODBC Version"))  _
-             & " " & CStr(conn.Properties("Driver Name"))  _
-             & " " & CStr(conn.Properties("SQL Grammar Support"))
+   Console.WriteLine "Provider: " & conn.Properties("Provider Name") _
+          & " " & conn.Properties("Provider Friendly Name")  _
+          & " " & conn.Properties("Provider Version")
+   Console.WriteLine "Conncted through ODBC " & conn.Properties("Driver ODBC Version")  _
+             & " " & conn.Properties("Driver Name")  _
+             & " " & conn.Properties("SQL Grammar Support")
 End Sub
 
 
 Private Sub source_Disconnect(adStatus As ADODB.EventStatusEnum, _
                               ByVal conn As ADODB.Connection)
-   Console.WriteLine "Disconnected: " + CStr(adStatus)
-   Console.WriteLine "State: " & CStr(conn.State)  & " Mode: " & CStr(conn.Mode)
+   Console.WriteLine "Disconnected: " + adStatus
+   Console.WriteLine "State: " & conn.State  & " Mode: " & conn.Mode
 End Sub

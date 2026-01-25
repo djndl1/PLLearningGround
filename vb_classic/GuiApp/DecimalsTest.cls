@@ -35,7 +35,7 @@ Private Sub RoundToZeroTest()
 		result = Decimals.RoundToZero(unrounded)
 		expected = rounded(i)
 		Call m_asserter.IsTrue(result = expected, "RoundToZeroTest", _
-			CStr(unrounded) & " rounds to " & CStr(expected))
+			unrounded & " rounds to " & expected)
 	Next
 
 End Sub

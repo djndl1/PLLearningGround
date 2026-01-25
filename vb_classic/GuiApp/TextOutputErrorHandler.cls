@@ -31,5 +31,5 @@ Public Sub IErrorHandler_Handle(errCode As Long, Optional source As String, Opti
         Dim errResultString As String
         errResultString = IIF(errCode = 0, ChrW$(&H2713), ChrW$(&H2717))
         Call m_output.WriteLine( _
-                "|" & s & "|" & source & "|" & CStr(errCode) & "|" &  errResultString & "|" & description)
+                "|" & s & "|" & source & "|" & errCode & "|" &  errResultString & "|" & description)
 End Sub
