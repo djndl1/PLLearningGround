@@ -19,12 +19,35 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net35'">
+    <PackageReference Include="NHibernate" Version="3.4.1.4000" />
+    <PackageReference Include="FluentNHibernate" Version="1.4.0" />
+    <PackageReference Include="Dapper" Version="1.42.0" />
+    <PackageReference Include="MySql.Data" Version="6.7.9" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
+    <PackageReference Include="StackExchange.Redis" Version="1.2.1" />
+    <PackageReference Include="MySql.Data" Version="6.9.12" />
+    <PackageReference Include="FluentNHibernate" Version="2.0.3" />
+    <PackageReference Include="NHibernate" Version="4.1.2.4000" />
+    <PackageReference Include="Dapper" Version="1.50.2" />
+    <PackageReference Include="Microsoft.Net.Http" Version="2.2.29" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="Theraot\Framework.Core\Framework.Core.csproj" />
+    <PackageReference Include="Npgsql" Version="2.2.7" />
+    <PackageReference Include="RestSharp" Version="105.2.3" />
+    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.269">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="dotConnect.Express.for.Oracle" Version="10.4.290" />
+    <PackageReference Include="dotConnect.Express.for.PostgreSQL" Version="8.4.290" />
+    <PackageReference Include="dotConnect.Express.for.MySQL" Version="9.4.290" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="NLog" Version="6.1.0" />
+    <PackageReference Include="morelinq" Version="2.10.0" />
+    <PackageReference Include="KGySoft.CoreLibraries" Version="10.5.0" />
   </ItemGroup>
 </Project>
