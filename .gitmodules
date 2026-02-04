@@ -4,3 +4,6 @@
 [submodule "c_stdlib/STC/lib/STC"]
 	path = c_stdlib/STC/lib/STC
 	url = https://github.com/stclib/STC.git
+[submodule "legacy_dotnet/Theraot"]
+	path = legacy_dotnet/Theraot
+	url = https://github.com/djndl1/Theraot.git
