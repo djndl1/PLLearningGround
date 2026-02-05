@@ -54,9 +54,9 @@ Private Sub Main()
         Call GuiFileOutput.WriteLine(manualFromTicks.ToISOFormat())
 
         Call GuiFileOutput.WriteLine(FileTimeDateTimes.GetToday().AddDays(10).ToISOFormat())
-	Call GuiFileOutput.WriteLine("")
-	
-	Call DecimalsTest.RunTest()
+        Call GuiFileOutput.WriteLine("")
+        
+        Call DecimalsTest.RunTest
 
         If AutoExitCheckBox.Value Then
                 Unload Me
