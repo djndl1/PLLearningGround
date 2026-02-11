@@ -1,7 +1,11 @@
 Type=Exe
 Form=Form1.frm
+Module=GuiDataBinder; GuiDataBinder.bas
 Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#C:\WINDOWS\system32\stdole2.tlb#OLE Automation
+IconForm="MainForm"
 Startup="MainForm"
+HelpFile=""
+Title="FirstForm"
 Command32=""
 Name="RectangleForm"
 HelpContextID="0"
