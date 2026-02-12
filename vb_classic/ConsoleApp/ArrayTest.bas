@@ -1,6 +1,8 @@
 Attribute VB_Name = "ArrayTest"
 Option Explicit
 
+Public Declare Function ArrPtr Lib "msvbvm60" Alias "VarPtr" (a() As Any) As Long
+
 Private Type MyDUT
    A As Long
    B As Long
@@ -88,6 +90,7 @@ Private Sub RedimensionPreserveTest()
 End Sub
 
 Private Sub UDTArrayTest()
+   Console.WriteLine "UDTArrayTest"
    ReDim duts(5) AS MyDUT
 
    duts(1).A = 5
@@ -98,6 +101,7 @@ Private Sub UDTArrayTest()
 End Sub
 
 Private Sub ArrayInVariantTest()
+   Console.WriteLine "ArrayInVariantTest"
    ReDim arr(5) As Long
 
    Dim v As Variant
@@ -112,6 +116,7 @@ Private Sub ArrayInVariantTest()
 End Sub
 
 Private Sub ByteArrayFromStringTest()
+   Console.WriteLine "ByteArrayFromStringTest"
    Dim b() As Byte
    Dim s As String
    s = "ABC"
@@ -126,6 +131,7 @@ Private Sub ByteArrayFromStringTest()
 End Sub
 
 private Sub ArrayAssignmentTest()
+   Console.WriteLine "ArrayAssignmentTest"
    ReDim a(5) As Long
 
    Dim idx As Long
@@ -146,4 +152,18 @@ private Sub ArrayAssignmentTest()
       AssertThat.IsTrue a(idx) = idx, ""
       AssertThat.IsTrue b(idx) = idx * 2, ""
    Next
+
+   Dim h() As Long
+   h = a
+   h(2) = 1234
+   Console.WriteLine h(2) & " " & a(2)
+   AssertThat.IsTrue h(2) = 1234, "this should be copy assignment"
+   AssertThat.IsTrue a(2) = 2, "this should be copy assignment"
+
+   Dim v as Variant
+   v = a
+   v(2) = 1234
+   Console.WriteLine h(2) & " " & a(2)
+   AssertThat.IsTrue v(2) = 1234, "this should be copy assignment"
+   AssertThat.IsTrue a(2) = 2, "this should be copy assignment"
 End Sub
