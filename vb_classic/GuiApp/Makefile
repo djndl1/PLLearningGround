@@ -1,13 +1,13 @@
 # this script is meant to run in powershell
-LINK_EXE="D:/Program Files/Microsoft Visual Studio/VB98/LINK.EXE"
-VB_EXE="D:/Program Files/Microsoft Visual Studio/VB98/VB6.EXE"
+LINK_EXE="C:/Program Files/Microsoft Visual Studio/VB98/LINK.EXE"
+VB_EXE="C:/Program Files/Microsoft Visual Studio/VB98/VB6.EXE"
 
 BUILD_DIR=build
 
 GUI_APP_SRC = $(wildcard *.bas) $(wildcard *.cls) $(wildcard *.frm)
 
 .PHONY: all
-all: build_GuiApp 
+all: build_GuiApp
 
 build:
 	mkdir $(BUILD_DIR)
@@ -29,4 +29,6 @@ tags:
 
 .PHONY: clean
 clean:
-	-cmd.exe -c "del $(BUILD_DIR)"
+	-powershell.exe -NoProfile -Command \
+                            "Remove-Item -ErrorAction SilentlyContinue -Force -Recurse $(BUILD_DIR); \
+                            exit 0

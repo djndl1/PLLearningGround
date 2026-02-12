@@ -15,13 +15,6 @@ Option Explicit
 
 Private m_asserter As Asserter
 
-Private Sub Class_Initialize()
-	Set m_asserter = New Asserter
-	Dim handler As IErrorHandler
-	Set handler = New TextOutputErrorHandler
-	m_asserter.Init handler
-End Sub
-
 Private Sub RoundToZeroTest()
 	Dim before As Variant, rounded As Variant
 	before = Array( CDec(1.5), CDec(1.1), CDec(2.5), CDec(3.1), _
@@ -40,6 +33,7 @@ Private Sub RoundToZeroTest()
 
 End Sub
 
-Public Sub RunTest()
+Public Sub RunTest(ByRef myasserter As Asserter)
+    Set m_asserter = myasserter
 	Call RoundToZeroTest()
 End Sub

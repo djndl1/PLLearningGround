@@ -1,5 +1,5 @@
 VERSION 5.00
-Begin VB.Form MainForm 
+Begin VB.Form MainForm
    Caption         =   "MainForm"
    ClientHeight    =   660
    ClientLeft      =   120
@@ -9,7 +9,7 @@ Begin VB.Form MainForm
    ScaleHeight     =   660
    ScaleWidth      =   2805
    StartUpPosition =   3  'Windows Default
-   Begin VB.CheckBox AutoExitCheckBox 
+   Begin VB.CheckBox AutoExitCheckBox
       Caption         =   "AutoExit"
       Height          =   375
       Left            =   1680
@@ -18,7 +18,7 @@ Begin VB.Form MainForm
       Value           =   1  'Checked
       Width           =   975
    End
-   Begin VB.CommandButton RunMain 
+   Begin VB.CommandButton RunMain
       Caption         =   "Run"
       Height          =   375
       Left            =   120
@@ -35,8 +35,14 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private GuiFileOutput As TextFileOutput
+Private m_asserter As Asserter
 
 Private Sub Main()
+    Set m_asserter = New Asserter
+    Dim handler As IErrorHandler
+    Set handler = New TextOutputErrorHandler
+    m_asserter.Init handler
+
     Dim curDirText As String
     curDirText = ChrW(24403) & ChrW(21069) & ChrW(30446) & ChrW(24405)
         Dim utc As FileTimeDateTime, localT As FileTimeDateTime, manual As FileTimeDateTime
@@ -46,7 +52,7 @@ Private Sub Main()
 
         Call GuiFileOutput.WriteLine(utc.ToISOFormat())
         Call GuiFileOutput.WriteLine(localT.ToISOFormat())
-        Call GuiFileOutput.WriteLine(manual.ToISOFormat() & ": (H: " & manual.highDateTime & ", L: " & manual.lowDateTime & ")" & " Ticks: " & manual.TicksAsDecimal)
+        Call GuiFileOutput.WriteLine(manual.ToISOFormat() & ": (H: " & manual.HighDateTime & ", L: " & manual.LowDateTime & ")" & " Ticks: " & manual.TicksAsDecimal)
 
         Dim manualFromTicks As FileTimeDateTime
         Set manualFromTicks = New FileTimeDateTime
@@ -55,8 +61,9 @@ Private Sub Main()
 
         Call GuiFileOutput.WriteLine(FileTimeDateTimes.GetToday().AddDays(10).ToISOFormat())
         Call GuiFileOutput.WriteLine("")
-        
-        Call DecimalsTest.RunTest
+
+        Call DecimalsTest.RunTest(m_asserter)
+        Call ArraysTest.Run(m_asserter)
 
         If AutoExitCheckBox.Value Then
                 Unload Me
