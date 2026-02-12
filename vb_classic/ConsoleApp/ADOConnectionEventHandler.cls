@@ -24,6 +24,10 @@ Public Sub Unsubscribe()
    Set source = Nothing
 End Sub
 
+Private Sub Class_Terminate()
+    Call Unsubscribe
+End Sub
+
 
 
 Private Sub source_ConnectComplete(ByVal pError As ADODB.Error, _
@@ -41,12 +45,12 @@ Private Sub source_ConnectComplete(ByVal pError As ADODB.Error, _
           & " " & conn.Properties("Provider Version")
    Console.WriteLine "Conncted through ODBC " & conn.Properties("Driver ODBC Version")  _
              & " " & conn.Properties("Driver Name")  _
-             & " " & conn.Properties("SQL Grammar Support")
+             & " SQL Grammer Support " & conn.Properties("SQL Grammar Support")
 End Sub
 
 
 Private Sub source_Disconnect(adStatus As ADODB.EventStatusEnum, _
                               ByVal conn As ADODB.Connection)
-   Console.WriteLine "Disconnected: " + adStatus
+   Console.WriteLine "Disconnected: " & adStatus
    Console.WriteLine "State: " & conn.State  & " Mode: " & conn.Mode
 End Sub

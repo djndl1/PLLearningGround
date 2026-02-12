@@ -1,15 +1,17 @@
 Attribute VB_Name = "ADOTest"
 Option Explicit
 
-Private Const TestDBConnectionString As String = "Driver={Oracle in oracle_instant_client};" _
-       & "DBQ=10.10.0.3:1521/pdbmgyard.cisdi.com.cn;Uid=djn;Pwd=freebird;"
+Private Const TestDBConnectionString As String = "Driver={SQL Server Native Client 10.0};" _
+       & "Server=127.0.0.1;Database=VB6Learn;Uid=djn;Pwd=djn123;"
 
 Public Sub Run()
-   InitialConnectionTest
-   SimpleReadTest
-   SimpleCommandTest
-   DisplayRecordSetFeaturesTest
-   ImmediateRecordsetUpdateTest
+    Console.WriteLine ""
+    Console.WriteLine vbTab & "Connecting to Local MSSQL: "
+    InitialConnectionTest
+    SimpleReadTest
+    SimpleCommandTest
+    DisplayRecordSetFeaturesTest
+    ImmediateRecordsetUpdateTest
 End Sub
 
 Private Sub InitialConnectionTest()
@@ -25,7 +27,7 @@ Private Sub InitialConnectionTest()
 
 Cleanup:
    conn.Close
-   hndler.Unsubscribe
+   Set hndler = Nothing
 End Sub
 
 Private Sub DisplayRecordSetFeaturesTest()
@@ -33,7 +35,7 @@ Private Sub DisplayRecordSetFeaturesTest()
    DisplayRecordSetFeatures adOpenDynamic
 
    Console.WriteLine "KeySet Cursor"
-   DisplayRecordSetFeatures adOpenKeySet
+   DisplayRecordSetFeatures adOpenKeyset
 
    Console.WriteLine "Static Cursor"
    DisplayRecordSetFeatures adOpenStatic
@@ -43,7 +45,7 @@ Private Sub DisplayRecordSetFeaturesTest()
 End Sub
 
 Private Sub DisplayRecordSetFeatures(cursorTyp As CursorTypeEnum)
-   On Error GoTo CleanUp
+   On Error GoTo Cleanup
 
    Dim conn As New ADODB.Connection
    conn.ConnectionString = TestDBConnectionString
@@ -52,43 +54,43 @@ Private Sub DisplayRecordSetFeatures(cursorTyp As CursorTypeEnum)
    Dim rs As New ADODB.Recordset
    With rs
       Set .ActiveConnection = conn
-      .Source = "SELECT * FROM SQLALCHEMY.USER_ACCOUNT"
+      .source = "SELECT * FROM INFORMATION_SCHEMA.TABLES"
       .CursorType = cursorTyp
-      .Open LockType := adLockOptimistic
+      .Open LockType:=adLockOptimistic
    End With
 
    Dim b As Boolean
    b = rs.Supports(adAddNew)
-   Console.WriteLine "Supports adAddNew: " & b
+   Console.WriteLine vbTab & "Supports adAddNew: " & b
 
    b = rs.Supports(adApproxPosition)
-   Console.WriteLine "Supports adApproxPosition: " & b
+   Console.WriteLine vbTab & "Supports adApproxPosition: " & b
 
    b = rs.Supports(adBookmark)
-   Console.WriteLine "Supports adBookmark: " & b
+   Console.WriteLine vbTab & "Supports adBookmark: " & b
 
    b = rs.Supports(adDelete)
-   Console.WriteLine "Supports adDelete: " & b
+   Console.WriteLine vbTab & "Supports adDelete: " & b
 
    b = rs.Supports(adFind)
-   Console.WriteLine "Supports adFind: " & b
+   Console.WriteLine vbTab & "Supports adFind: " & b
 
    b = rs.Supports(adHoldRecords)
-   Console.WriteLine "Supports adHoldRecords: " & b
+   Console.WriteLine vbTab & "Supports adHoldRecords: " & b
 
    b = rs.Supports(adMovePrevious)
-   Console.WriteLine "Supports adMovePrevious: " & b
+   Console.WriteLine vbTab & "Supports adMovePrevious: " & b
 
    b = rs.Supports(adNotify)
-   Console.WriteLine "Supports adNotify: " & b
+   Console.WriteLine vbTab & "Supports adNotify: " & b
 
    b = rs.Supports(adUpdate)
-   Console.WriteLine "Supports adUpdate: " & b
+   Console.WriteLine vbTab & "Supports adUpdate: " & b
 
    b = rs.Supports(adUpdateBatch)
-   Console.WriteLine "Supports adUpdateBatch: " & b
+   Console.WriteLine vbTab & "Supports adUpdateBatch: " & b
 
-CleanUp:
+Cleanup:
    rs.Close
    If conn.State = adStateOpen Then
       conn.Close
@@ -103,16 +105,17 @@ Private Sub ImmediateRecordsetUpdateTest()
    Dim rs As New ADODB.Recordset
    With rs
       Set .ActiveConnection = conn
-      .Source = "SELECT ROWID, ua.* FROM SQLALCHEMY.USER_ACCOUNT ua"
+      .source = "SELECT ua.* FROM USER_ACCOUNT ua"
       .CursorType = adOpenDynamic
-      .Open LockType := adLockOptimistic
+      .Open LockType:=adLockOptimistic
    End With
 
    rs.MoveFirst
-   ' update failed probably due to ODBC provider, better use an explicit command to avoid locking
+   ' update failed sometimes due to provider issues,
+   ' SQL Server works but oracle does not
    Do While Not rs.EOF
-      'rs("FULL_NAME").Value = "SELECT"
-      'rs.Update "NAME", "SELECT"
+      rs("FULLNAME").Value = "SELECT"
+      rs.Update "NAME", "SELECT"
       rs.MoveNext
    Loop
 
@@ -124,7 +127,7 @@ Private Sub SimpleCommandTest()
    conn.Open
 
    Dim cmd As New ADODB.Command
-   cmd.CommandText = "UPDATE SQLALCHEMY.USER_ACCOUNT SET name = ? WHERE id = ?" ' only positional parameters are supported
+   cmd.CommandText = "UPDATE USER_ACCOUNT SET name = ? WHERE id = ?" ' only positional parameters are supported
 
    Dim p As ADODB.Parameter
    ' length is required for variable length
@@ -136,7 +139,7 @@ Private Sub SimpleCommandTest()
    Set cmd.ActiveConnection = conn
    cmd.Execute
 
-CleanUp:
+Cleanup:
    If conn.State = adStateOpen Then
       conn.Close
    End If
@@ -144,19 +147,19 @@ End Sub
 
 Private Sub SimpleReadTest()
    Dim conn As New ADODB.Connection
-   Dim  rs As New ADODB.Recordset
+   Dim rs As New ADODB.Recordset
 
    conn.ConnectionString = TestDBConnectionString
    conn.Open
 
    With rs
       Set .ActiveConnection = conn
-      .Source = "SELECT * FROM V$INSTANCE"
+      .source = "SELECT * FROM information_schema.TABLES"
       .CursorLocation = adUseClient
       .Open
    End With
 
-   Console.WriteLine "V$INSTANCE ROW: " & rs.RecordCount
+   Console.WriteLine ": " & rs.RecordCount
    If rs.RecordCount > 0 Then
       rs.MoveFirst
 
@@ -179,23 +182,23 @@ Private Sub SimpleReadTest()
       Next
 
       Dim colsString As String
-      colsString = Join(col, vbCrlf)
-      Console.WriteLine "V$INSTANCE COLUMNS: " & colsString
+      colsString = Join(col, vbCrLf)
+      Console.WriteLine "information_schema.tables columns: " & colsString
    End If
 
 
    Dim cmd As New ADODB.Command
-   cmd.CommandText = "SELECT * FROM V$INSTANCE"
+   cmd.CommandText = "SELECT * FROM information_schema.TABLES"
    cmd.CommandType = adCmdText
    Set cmd.ActiveConnection = conn
-   Dim rs2 As ADODB.RecordSet
+   Dim rs2 As ADODB.Recordset
    Set rs2 = cmd.Execute
 
-   Console.WriteLine "V$INSTANCE ROW: " & rs.RecordCount
+   Console.WriteLine "TABLES ROW: " & rs.RecordCount
    If rs.RecordCount > 0 Then
       rs.MoveFirst
 
-      Console.WriteLine "Oracle Instance: " & rs("INSTANCE_NAME")
+      Console.WriteLine "SQL Server tables: " & rs("TABLE_NAME")
    End If
 
 Cleanup:
