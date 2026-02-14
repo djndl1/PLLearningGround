@@ -27,7 +27,7 @@ Private Sub RoundToZeroTest()
 		unrounded = before(i)
 		result = Decimals.RoundToZero(unrounded)
 		expected = rounded(i)
-		Call m_asserter.IsTrue(result = expected, "RoundToZeroTest", _
+		Call m_asserter.IsTrue(result = expected, "DecimalsTest.RoundToZeroTest", _
 			unrounded & " rounds to " & expected)
 	Next
 
