@@ -1,11 +1,11 @@
 Type=OleDll
 Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#C:\WINDOWS\system32\stdole2.tlb#OLE Automation
 Reference=*\G{420B2830-E718-11CF-893D-00A0C9054228}#1.0#0#C:\WINDOWS\system32\scrrun.dll#Microsoft Scripting Runtime
-Class=Arrays; CArrays.cls
+Class=Arrays; Arrays.cls
 Class=CDateTimeKind; CDateTimeKind.cls
 Class=Numerics; Numerics.cls
 Class=CSlice; CSlice.cls
-Class=Decimals; CDecimals.cls
+Class=Decimals; Decimals.cls
 Module=Ensure; Ensure.bas
 Class=FileTimeDateTime; FileTimeDateTime.cls
 Class=FileTimeDateTimeFactory; FileTimeDateTimeFactory.cls
