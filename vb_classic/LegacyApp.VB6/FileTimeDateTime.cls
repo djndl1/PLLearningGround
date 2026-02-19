@@ -182,24 +182,90 @@ Public Function AddDays(ByVal d As Double) As FileTimeDateTime
         Set AddDays = AddTicks(diffTicks)
 End Function
 
+Public Function Clone() As FileTimeDateTime
+        ' Create a new FileTimeDateTime with the same time components and DateTimeKind
+        Set Clone = FileTimeDateTimes.FromDateTime(Me.YearPart, Me.MonthPart, Me.DayPart, _
+                                                   Me.HourPart, Me.MinutePart, Me.SecondPart, _
+                                                   Me.MillisecondPart, Me.MicrosecondPart, Me.Kind)
+End Function
+
 Public Function AddMonths(ByVal months As Long) As FileTimeDateTime
-        ' TODO check month range
-
-        Dim y As Integer, m As Integer, d As Integer, i As Integer
-        Call GetDatePart(y, m, d)
-
-        i = m - 1 + months
-        If i >= 0 Then ' this year or the years after
-                m = i Mod 12 + 1
-                y = y + i \ 12
-        Else           ' the years before this year
-                m = 12 + (i + 1) Mod 12
-                y = y + (i - 11) \ 12
+        ' Step 1: Check if months is zero
+        If months = 0 Then
+            ' Step 2: If parameter is zero, create new FileTimeDateTime with same time
+            Set AddMonths = Me.Clone()
+            Exit Function
         End If
 
-        ' TOOD Check FILETIME range
+        Dim y As Integer, m As Integer, d As Integer
+        Call GetDatePart(y, m, d)
 
-        Set AddMonths = Nothing
+        Dim divisionResult As VariantPair
+        If months > 0 Then
+            ' Step 3: Positive months
+            Dim remainingMonths As Integer
+            remainingMonths = 12 - m ' Months remaining in current year
+
+            If months <= remainingMonths Then
+                ' Within current year
+                m = m + months
+            Else
+                ' Move to next year(s)
+                Dim monthsOfFutureYears As Integer
+                monthsOfFutureYears = months - remainingMonths
+
+                divisionResult = Numerics.CeilingDivisionLong(monthsOfFutureYears, 12)
+                ' until 13, the added year is 1, the remainder is the negative of the lacking months
+                y = y + divisionResult.first
+                m = 12 + divisionResult.second
+            End If
+        Else
+            ' Step 4: Negative months
+            Dim elapsedMonths As Integer
+            elapsedMonths = m - 1 ' Months elapsed in current year (0-based)
+
+            Dim monthsToMoveBack As Integer
+            monthsToMoveBack = Abs(months) - elapsedMonths
+
+            If monthsToMoveBack <= 0 Then
+                ' Within current year
+                m = m + months
+            Else
+                ' Move to previous year(s)
+                divisionResult = Numerics.CeilingDivisionLong(monthsToMoveBack, 12)
+                y = y - divisionResult.first
+                m = 1 - divisionResult.second
+            End If
+        End If
+
+        ' Step 4: Handle invalid day in resulting month
+        ' Use the last valid day of the resulting month if needed
+        Dim maxDaysInMonth As Integer
+        maxDaysInMonth = DaysInMonth(m, y)
+
+        If d > maxDaysInMonth Then
+            d = maxDaysInMonth
+        End If
+
+        ' Create new FileTimeDateTime using FileTimeDateTimes.FromDateTime
+        Set AddMonths = FileTimeDateTimes.FromDateTime(y, m, d, _
+                                                       Me.HourPart, Me.MinutePart, Me.SecondPart, _
+                                                       Me.MillisecondPart, Me.MicrosecondPart, Me.Kind)
+End Function
+
+Private Function DaysInMonth(ByVal month As Integer, ByVal year As Integer) As Integer
+    Select Case month
+        Case 1, 3, 5, 7, 8, 10, 12
+            DaysInMonth = 31
+        Case 4, 6, 9, 11
+            DaysInMonth = 30
+        Case 2
+            If IsLeapYear(year) Then
+                DaysInMonth = 29
+            Else
+                DaysInMonth = 28
+            End If
+    End Select
 End Function
 
 Private Function IsLeapYear(ByVal y As Integer) As Boolean
