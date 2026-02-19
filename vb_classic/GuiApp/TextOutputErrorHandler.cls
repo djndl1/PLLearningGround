@@ -26,10 +26,11 @@ End Sub
 
 Private Function GenerateUniqueFileName() As String
         Dim nowTime As FileTimeDateTime
-        Set nowTime = FileTimeDateTimes.GetLocalNow()
+        Dim factory As New FileTimeDateTimeFactory
+        Set nowTime = factory.GetLocalNow()
         
         Dim sysTime As SYSTEMTIME
-        sysTime = FileTimeDateTimes.ToSystemTime(nowTime)
+        sysTime = nowTime.ToSystemTime()
         
         ' Format: asserter_YYYYMMDD_HHMMSSmmm.log
         Dim timestamp As String
@@ -46,10 +47,11 @@ End Function
 
 Public Sub IErrorHandler_Handle(errCode As Long, Optional source As String, Optional description As String)
         Dim s As String
-        s = FileTimeDateTimes.GetLocalNow().ToISOFormat()
+        Dim factory As New FileTimeDateTimeFactory
+        s = factory.GetLocalNow().ToISOFormat()
 
         Dim errResultString As String
-        errResultString = IIF(errCode = 0, ChrW$(&H2713), ChrW$(&H2717))
+        errResultString = IIf(errCode = 0, ChrW$(&H2713), ChrW$(&H2717))
         Call m_output.WriteLine( _
-                "|" & s & "|" & source & "|" & errCode & "|" &  errResultString & "|" & description)
+                "|" & s & "|" & source & "|" & errCode & "|" & errResultString & "|" & description)
 End Sub

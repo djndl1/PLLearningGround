@@ -26,18 +26,18 @@ Private Sub TestResizeArray()
     For i = LBound(a) To UBound(a)
         a(i) = i
     Next
-
-    Arrays.ResizeArray a, 3
-    m_asserter.IsTrue Arrays.GetArrayLength(a) = 3, "ArraysTest.TestResizeArray", "a should have 3 elements"
+    
+    ResizeArray a, 3
+    m_asserter.IsTrue GetArrayLength(a) = 3, "ArraysTest.TestResizeArray", "a should have 3 elements"
     For i = LBound(a) To UBound(a)
         m_asserter.IsTrue a(i) = i, "ArraysTest.TestResizeArray", "a(" & i & ") = " & a(i)
     Next
 
-    Arrays.ResizeArray a, 10
-    m_asserter.IsTrue Arrays.GetArrayLength(a) = 10, "ArraysTest.TestResizeArray", "a should have 10 elements"
+    ResizeArray a, 10
+    m_asserter.IsTrue GetArrayLength(a) = 10, "ArraysTest.TestResizeArray", "a should have 10 elements"
     Dim expectedValue As Long
     For i = LBound(a) To UBound(a)
-        expectedValue = IIF(i < 3, i, 0)
+        expectedValue = IIf(i < 3, i, 0)
         m_asserter.IsTrue a(i) = expectedValue, "ArraysTest.TestResizeArray", "a(" & i & ") = " & a(i) & " expectedValue = " & expectedValue
     Next
 End Sub
