@@ -11,7 +11,7 @@ End Sub
 
 Public Sub IsFalse(ByVal b As Boolean, ByVal errCode As Long, Optional source As String = "")
         If b Then
-                Err.Raise ErrorCodes.TypeMismatch, source
+                Err.Raise errCode, source
         End If
 End Sub
 
@@ -19,4 +19,8 @@ Public Sub IsTrue(ByVal b As Boolean, ByVal errCode As Long, Optional source As 
         If Not b Then
                 Err.Raise errCode, source
         End If
+End Sub
+
+Public Sub NotEqual(ByVal a As Variant, ByVal b As Variant, ByVal errCode As Long, Optional source As String = "")
+        Ensure.IsFalse a = b, errCode, source
 End Sub

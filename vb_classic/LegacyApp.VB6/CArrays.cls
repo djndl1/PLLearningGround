@@ -6,8 +6,8 @@ BEGIN
   DataSourceBehavior  = 0  'vbNone
   MTSTransactionMode  = 0  'NotAnMTSObject
 END
-Attribute VB_Name = "CArrays"
-Attribute VB_GlobalNameSpace = True
+Attribute VB_Name = "Arrays"
+Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
@@ -214,7 +214,7 @@ Public Sub SliceCopy(ByRef dest As ArraySlice, ByRef source As ArraySlice)
     Dim copyLength As Long
     Dim i As Long
 
-    copyLength = MinLong(SliceLength(source), SliceLength(dest))
+    copyLength = MinMax.MinLong(SliceLength(source), SliceLength(dest))
 
     For i = 0 To copyLength - 1
         SliceSet dest, i, SliceGet(source, i)

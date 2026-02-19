@@ -32,6 +32,7 @@ Public Type SYSTEMTIME
 End Type
 
 Public Enum ErrorCodes
+    DivisionByZero = 11
     TypeMismatch = 13
     ObjectVariableNotSet = 91
 End Enum
