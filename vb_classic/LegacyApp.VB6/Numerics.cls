@@ -24,7 +24,7 @@ Attribute EuclideanDivisionLong.VB_Description = "Performs Euclidean division on
     Dim result As VariantPair
 
     ' Handle division by zero
-    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "EuclideanDivisionLong"
+    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.EuclideanDivisionLong"
 
     ' Calculate quotient and remainder
     Dim quotient As Long
@@ -74,7 +74,7 @@ Attribute CeilingDivisionLong.VB_Description = "Performs ceiling division on two
     Dim result As VariantPair
 
     ' Handle division by zero
-    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "CeilingDivisionLong"
+    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.CeilingDivisionLong"
 
     ' Calculate quotient and remainder using ceiling division
     Dim quotient As Long
@@ -124,7 +124,7 @@ Attribute FloorDivisionLong.VB_Description = "Performs floor division on two Lon
     Dim result As VariantPair
 
     ' Handle division by zero
-    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "FloorDivisionLong"
+    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.FloorDivisionLong"
 
     ' Calculate quotient and remainder using floor division
     Dim quotient As Long
