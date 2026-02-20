@@ -4,7 +4,35 @@ This file provides guidelines for agentic coding assistants working in this Visu
 
 ## Project Overview
 
-This is a legacy Visual Basic 6 application that demonstrates various programming concepts including array manipulation, date/time handling, and custom error handling. The project includes both GUI components and utility modules.
+This repository contains a legacy Visual Basic 6 application with a multi-component architecture:
+
+### Main VB6 Application
+- **Primary project**: GUI application demonstrating various programming concepts including array manipulation, date/time handling, and custom error handling
+- **Components**: GUI forms, utility modules, and custom error handling classes
+
+### LegacyApp.VB6 Subproject
+- **VB6 ActiveX DLL**: Utility library (`LegacyAppVB6.vbp`) containing classes for arrays, date/time handling, file operations, and error validation
+- **.NET Infrastructure**: Cross-platform utility library (`LegacyApp/`) with data access, GUI utilities, and testing frameworks
+
+## Project Structure
+
+```
+GuiApp/
+├── LegacyApp.VB6/           # Subproject directory
+│   ├── LegacyAppVB6.vbp     # VB6 ActiveX DLL project
+│   ├── Arrays.cls           # Array manipulation utilities
+│   ├── Ensure.cls           # Error validation and assertions
+│   ├── TextFileOutput.cls   # File I/O operations
+│   ├── build/               # Compiled VB6 DLL outputs
+│   └── LegacyApp/           # .NET infrastructure solution
+│       ├── Infrastructure/  # Core utilities and data access
+│       ├── Gui/             # WinForms utilities
+│       ├── Test/            # NUnit test projects
+│       └── LegacyApp.sln    # .NET solution file
+└── [Main VB6 project files]
+```
+
+## Build Commands
 
 ## Build Commands
 
@@ -18,6 +46,11 @@ The agent should never build or test this project automatically after editing co
 - **File Structure**: Separate files for forms (.frm), classes (.cls), and modules (.bas)
 - **Naming**: Files should match their primary class/module name
 - **Build Output**: Compiled to `build/` directory
+
+### LegacyApp.VB6 Subproject Structure
+- **VB6 DLL**: ActiveX DLL project with utility classes for arrays, date/time, file operations
+- **.NET Solution**: Multi-project solution with infrastructure, GUI, testing components
+- **Cross-Platform**: Supports .NET Framework and .NET 8 targets
 
 ### Formatting
 - **Indentation**: 4 spaces (consistent with existing code)
@@ -41,27 +74,26 @@ The agent should never build or test this project automatically after editing co
 
 #### Error Handling
 ```vb
-' Use custom error handling classes
+' Use custom error handling with Ensure module
 Private Sub SomeMethod()
     On Error GoTo ErrorHandler
     ' Code here
+    Ensure.IsTrue condition, ErrorCodes.TypeMismatch, "SomeMethod"
     Exit Sub
 ErrorHandler:
-    ' Handle error using custom error handler
-    m_asserter.HandleError Err.Number, Err.Description
+    Err.Raise Err.Number, Err.Source, Err.Description
 End Sub
 ```
 
 #### Comments and Documentation
 - Use single quote comments for explanations
-- Document public methods with purpose, arguments, and return values
-- Keep comments focused and relevant
-- Remove commented-out code before committing
-
-#### Memory Management
-- Set objects to `Nothing` when no longer needed
-- Use `ReDim Preserve` for dynamic array resizing
-- Properly manage COM object references
+- Document public methods with purpose, arguments, and return values using the format seen in Arrays.cls
+- Use `ReDim Preserve` for dynamic array resizing (see Arrays.cls:25-30)
+- **Array Operations**: Use the `Arrays` singleton class for array manipulation
+- **Error Checking**: Use `Ensure.bas` for validation and precondition checking
+- **Type Safety**: Use `VariantType` function for type validation
+- **File Operations**: Use `TextFileOutput` class for file I/O with Scripting.FileSystemObject
+- **Date/Time**: Use specialized date/time classes like `FileTimeDateTime` and `CDateTimeKind`
 
 ### Project-Specific Patterns
 
@@ -143,9 +175,9 @@ When working in this codebase, agents should:
 
 1. **Always verify VB6 compatibility** before implementing features
 2. **Follow the existing code style** and naming conventions
-3. **Use the custom test framework** for new functionality
-4. **Implement proper error handling** using the IErrorHandler pattern
-5. **Test through the GUI interface** to ensure functionality
+3. **Use the custom error handling framework** (Ensure.bas) for new functionality
+4. **Implement proper error handling** using the Ensure module patterns
+5. **Reference existing patterns** from core modules like Arrays.cls and TextFileOutput.cls
 6. **Document breaking changes** when updating APIs
 
 This AGENTS.md file will be updated as the project evolves and new conventions are established.

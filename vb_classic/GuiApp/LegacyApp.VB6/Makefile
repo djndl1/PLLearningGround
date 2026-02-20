@@ -4,25 +4,24 @@ VB_EXE="C:/Program Files/Microsoft Visual Studio/VB98/VB6.EXE"
 
 BUILD_DIR=build
 
-GUI_APP_SRC = $(wildcard *.bas) $(wildcard *.cls) $(wildcard *.frm)
+LEGACYAPPVB6_SRC = $(wildcard *.bas) $(wildcard *.cls) $(wildcard *.frm)
 
 .PHONY: all
-all: build_GuiApp
+all: build_LegacyAppVB6
 
 build:
 	mkdir $(BUILD_DIR)
 
-run: build_GuiApp
-	cd build
-	./GuiApp.exe
+build/LegacyAppVB6.dll: LegacyAppVB6.vbp $(LEGACYAPPVB6_SRC) build
+	$(VB_EXE) -MAKE LegacyAppVB6.vbp -D LEGACY_OS=1 -OUTDIR $(BUILD_DIR)
 
-build/GuiApp.exe.config: GuiApp.exe.config
-	cp $< $@
+build_LegacyAppVB6: build/LegacyAppVB6.dll
 
-build/GuiApp.exe: GuiApp.vbp $(GUI_APP_SRC) build build/GuiApp.exe.config
-	$(VB_EXE) -MAKE GuiApp.vbp -OUTDIR $(BUILD_DIR)/GuiApp.exe
+.PHONY: install
+install: build_LegacyAppVB6
+	-cp build/LegacyAppVB6.dll "C:/Program Files/Common Files/"
+	-regsvr32.exe -s "C:/Program Files/Common Files/LegacyAppVB6.dll"
 
-build_GuiApp: build/GuiApp.exe
 
 .PHONY: tags
 tags:

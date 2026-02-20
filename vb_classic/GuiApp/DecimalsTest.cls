@@ -25,7 +25,7 @@ Private Sub RoundToZeroTest()
         Dim i As Integer, result As Variant, expected As Variant, unrounded As Variant
         For i = LBound(before) To UBound(before)
                 unrounded = before(i)
-                result = RoundToZero(unrounded)
+                result = Decimals.RoundToZero(unrounded)
                 expected = rounded(i)
                 Call m_asserter.IsTrue(result = expected, "DecimalsTest.RoundToZeroTest", _
                         unrounded & " rounds to " & expected)
