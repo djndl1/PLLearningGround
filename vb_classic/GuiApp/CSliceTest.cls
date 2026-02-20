@@ -21,6 +21,7 @@ Public Sub Run(ByRef myasserter As Asserter)
     TestFrom
     TestBetween
     TestFromEmpty
+    TestForEachLoop
 End Sub
 
 Private Sub TestOf()
@@ -80,4 +81,37 @@ Private Sub TestFromEmpty()
     slice.Append 42
     m_asserter.IsTrue slice.Length = 1, "CSliceTest.TestFromEmpty", "Length should be 1 after append"
     m_asserter.IsTrue slice.Item(0) = 42, "CSliceTest.TestFromEmpty", "Appended element should be 42"
+End Sub
+
+Private Sub TestForEachLoop()
+    ' Test For Each loop functionality with CSlice
+    Dim slice As New CSlice
+    Dim testArray(2) As Variant
+    
+    ' Create test data
+    testArray(0) = "First"
+    testArray(1) = "Second"
+    testArray(2) = "Third"
+    
+    ' Initialize slice with array
+    slice.Of testArray
+    
+    ' Test For Each loop
+    Dim element As Variant
+    Dim count As Long
+    count = 0
+    
+    For Each element In slice
+        Select Case count
+            Case 0
+                m_asserter.AreEqual element, "First", "CSliceTest.TestForEachLoop", "First element should be 'First'"
+            Case 1
+                m_asserter.AreEqual element, "Second", "CSliceTest.TestForEachLoop", "Second element should be 'Second'"
+            Case 2
+                m_asserter.AreEqual element, "Third", "CSliceTest.TestForEachLoop", "Third element should be 'Third'"
+        End Select
+        count = count + 1
+    Next element
+    
+    m_asserter.AreEqual count, 3, "CSliceTest.TestForEachLoop", "Should iterate through 3 elements"
 End Sub

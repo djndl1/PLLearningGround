@@ -14,6 +14,7 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Private m_slice As ArraySlice
+Private m_enumCollection As Collection
 
 Public Sub FromEmpty()
 Attribute FromEmpty.VB_Description = "Initializes the slice as an empty array.\r\nCreates an underlying array with capacity for one element but sets the slice length to zero."
@@ -98,3 +99,21 @@ Attribute ToArray.VB_Description = "Converts the slice to a standard VB array.\r
     Next i
     ToArray = result
 End Function
+
+' Property required for For Each support - must have DISPID of -4
+Public Property Get NewEnum() As IUnknown
+Attribute NewEnum.VB_Description = "Returns an enumerator for For Each loops.\r\nReturns:\r\n  IUnknown: An enumerator object for iterating through slice elements."
+Attribute NewEnum.VB_UserMemId = -4
+    ' Create a collection containing all slice elements and return its enumerator
+    Set m_enumCollection = New Collection
+    Dim i As Long
+    For i = 0 To Me.Length - 1
+        If IsObject(Me.Item(i)) Then
+            m_enumCollection.Add Me.Item(i)
+        Else
+            m_enumCollection.Add Me.Item(i)
+        End If
+    Next i
+    
+    Set NewEnum = m_enumCollection.[_NewEnum]
+End Property

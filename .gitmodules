@@ -7,3 +7,6 @@
 [submodule "legacy_dotnet/Theraot"]
 	path = legacy_dotnet/Theraot
 	url = https://github.com/djndl1/Theraot.git
+[submodule "vb_classic/GuiApp/LegacyApp.VB6/LegacyApp.DotNet"]
+	path = vb_classic/GuiApp/LegacyApp.VB6/LegacyApp.DotNet
+	url = http://43.128.11.210:3001/020959/LegacyApp.git

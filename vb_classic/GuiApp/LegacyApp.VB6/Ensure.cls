@@ -77,3 +77,156 @@ Public Sub AreEqual(ByVal a As Variant, ByVal b As Variant, ByVal errCode As Lon
 Attribute AreEqual.VB_Description = "Ensures that two values are equal\r\nArgs:\r\n  a (Variant): First value to compare\r\n  b (Variant): Second value to compare\r\n  errCode (Long): The error code to raise if values are not equal\r\n  source (String): Optional source identifier for error reporting"
     IsTrue a = b, errCode, source
 End Sub
+
+' Guards-style parameter validation methods
+
+' Ensures that a value is greater than a reference value
+' Args:
+'   value (Variant): The value to check
+'   refValue (Variant): The reference value to compare against
+'   paramName (String): The parameter name for error reporting
+Public Sub GreaterThan(ByVal value As Variant, ByVal refValue As Variant, ByVal paramName As String)
+Attribute GreaterThan.VB_Description = "Ensures that a value is greater than a reference value\r\nArgs:\r\n  value (Variant): The value to check\r\n  refValue (Variant): The reference value to compare against\r\n  paramName (String): The parameter name for error reporting"
+    If value <= refValue Then
+        Err.Raise ErrorCodes.InvalidProcedureCall, "Ensure.GreaterThan", paramName & " cannot be less than or equal to " & CStr(refValue)
+    End If
+End Sub
+
+' Ensures that a value is greater than or equal to a reference value
+' Args:
+'   value (Variant): The value to check
+'   refValue (Variant): The reference value to compare against
+'   paramName (String): The parameter name for error reporting
+Public Sub GreaterThanOrEqual(ByVal value As Variant, ByVal refValue As Variant, ByVal paramName As String)
+Attribute GreaterThanOrEqual.VB_Description = "Ensures that a value is greater than or equal to a reference value\r\nArgs:\r\n  value (Variant): The value to check\r\n  refValue (Variant): The reference value to compare against\r\n  paramName (String): The parameter name for error reporting"
+    If value < refValue Then
+        Err.Raise ErrorCodes.InvalidProcedureCall, "Ensure.GreaterThanOrEqual", paramName & " cannot be less than " & CStr(refValue)
+    End If
+End Sub
+
+' Ensures that a value is less than a reference value
+' Args:
+'   value (Variant): The value to check
+'   refValue (Variant): The reference value to compare against
+'   paramName (String): The parameter name for error reporting
+Public Sub LessThan(ByVal value As Variant, ByVal refValue As Variant, ByVal paramName As String)
+Attribute LessThan.VB_Description = "Ensures that a value is less than a reference value\r\nArgs:\r\n  value (Variant): The value to check\r\n  refValue (Variant): The reference value to compare against\r\n  paramName (String): The parameter name for error reporting"
+    If value >= refValue Then
+        Err.Raise ErrorCodes.InvalidProcedureCall, "Ensure.LessThan", paramName & " cannot be greater than or equal to " & CStr(refValue)
+    End If
+End Sub
+
+' Ensures that a value is less than or equal to a reference value
+' Args:
+'   value (Variant): The value to check
+'   refValue (Variant): The reference value to compare against
+'   paramName (String): The parameter name for error reporting
+Public Sub LessThanOrEqual(ByVal value As Variant, ByVal refValue As Variant, ByVal paramName As String)
+Attribute LessThanOrEqual.VB_Description = "Ensures that a value is less than or equal to a reference value\r\nArgs:\r\n  value (Variant): The value to check\r\n  refValue (Variant): The reference value to compare against\r\n  paramName (String): The parameter name for error reporting"
+    If value > refValue Then
+        Err.Raise ErrorCodes.InvalidProcedureCall, "Ensure.LessThanOrEqual", paramName & " cannot be greater than " & CStr(refValue)
+    End If
+End Sub
+
+' Ensures that a value is between minimum and maximum values
+' Args:
+'   value (Variant): The value to check
+'   min (Variant): The minimum allowed value
+'   max (Variant): The maximum allowed value
+'   inclusive (Boolean): Whether to include boundaries
+'   paramName (String): The parameter name for error reporting
+Public Sub Between(ByVal value As Variant, ByVal min As Variant, ByVal max As Variant, ByVal inclusive As Boolean, ByVal paramName As String)
+Attribute Between.VB_Description = "Ensures that a value is between minimum and maximum values\r\nArgs:\r\n  value (Variant): The value to check\r\n  min (Variant): The minimum allowed value\r\n  max (Variant): The maximum allowed value\r\n  inclusive (Boolean): Whether to include boundaries\r\n  paramName (String): The parameter name for error reporting"
+    Dim atBoundary As Boolean
+    atBoundary = (value = min) Or (value = max)
+    
+    If value < min Or value > max Or (Not inclusive And atBoundary) Then
+        Err.Raise ErrorCodes.InvalidProcedureCall, "Ensure.Between", paramName & " is out of the range between " & CStr(min) & " and " & CStr(max) & "!"
+    End If
+End Sub
+
+' Ensures that a boolean value is not True
+' Args:
+'   b (Boolean): The boolean value to check
+'   paramName (String): The parameter name for error reporting
+Public Sub NotTrue(ByVal b As Boolean, ByVal paramName As String)
+Attribute NotTrue.VB_Description = "Ensures that a boolean value is not True\r\nArgs:\r\n  b (Boolean): The boolean value to check\r\n  paramName (String): The parameter name for error reporting"
+    If b Then
+        Err.Raise ErrorCodes.InvalidProcedureCall, "Ensure.NotTrue", paramName & " cannot be true!"
+    End If
+End Sub
+
+' Ensures that a boolean value is not False
+' Args:
+'   b (Boolean): The boolean value to check
+'   paramName (String): The parameter name for error reporting
+Public Sub NotFalse(ByVal b As Boolean, ByVal paramName As String)
+Attribute NotFalse.VB_Description = "Ensures that a boolean value is not False\r\nArgs:\r\n  b (Boolean): The boolean value to check\r\n  paramName (String): The parameter name for error reporting"
+    If Not b Then
+        Err.Raise ErrorCodes.InvalidProcedureCall, "Ensure.NotFalse", paramName & " cannot be false!"
+    End If
+End Sub
+
+' Ensures that an object reference is not Nothing
+' Args:
+'   obj (Object): The object reference to check
+'   paramName (String): The parameter name for error reporting
+Public Sub ArgumentNotNull(ByVal obj As Object, ByVal paramName As String)
+Attribute ArgumentNotNull.VB_Description = "Ensures that an object reference is not Nothing\r\nArgs:\r\n  obj (Object): The object reference to check\r\n  paramName (String): The parameter name for error reporting"
+    If obj Is Nothing Then
+        Err.Raise ErrorCodes.ObjectVariableNotSet, "Ensure.ArgumentNotNull", paramName & " cannot be Nothing!"
+    End If
+End Sub
+
+' Ensures that a string is not empty or null
+' Args:
+'   strValue (String): The string value to check
+'   paramName (String): The parameter name for error reporting
+Public Sub StringNotEmpty(ByVal strValue As String, ByVal paramName As String)
+Attribute StringNotEmpty.VB_Description = "Ensures that a string is not empty or null\r\nArgs:\r\n  strValue (String): The string value to check\r\n  paramName (String): The parameter name for error reporting"
+    If strValue = "" Or IsNull(strValue) Then
+        Err.Raise ErrorCodes.InvalidProcedureCall, "Ensure.StringNotEmpty", paramName & " cannot be empty or null!"
+    End If
+End Sub
+
+' Ensures that a string is not whitespace or null
+' Args:
+'   strValue (String): The string value to check
+'   paramName (String): The parameter name for error reporting
+Public Sub StringNotWhiteSpace(ByVal strValue As String, ByVal paramName As String)
+Attribute StringNotWhiteSpace.VB_Description = "Ensures that a string is not whitespace or null\r\nArgs:\r\n  strValue (String): The string value to check\r\n  paramName (String): The parameter name for error reporting"
+    If Trim(strValue) = "" Or IsNull(strValue) Then
+        Err.Raise ErrorCodes.InvalidProcedureCall, "Ensure.StringNotWhiteSpace", paramName & " cannot be whitespace or null!"
+    End If
+End Sub
+
+' Ensures that an array or collection is not empty
+' Args:
+'   arr (Variant): The array or collection to check
+'   paramName (String): The parameter name for error reporting
+Public Sub EnumerableNotEmpty(ByVal arr As Variant, ByVal paramName As String)
+Attribute EnumerableNotEmpty.VB_Description = "Ensures that an array or collection is not empty\r\nArgs:\r\n  arr (Variant): The array or collection to check\r\n  paramName (String): The parameter name for error reporting"
+    If IsArray(arr) Then
+        If UBound(arr) - LBound(arr) + 1 <= 0 Then
+            Err.Raise ErrorCodes.InvalidProcedureCall, "Ensure.EnumerableNotEmpty", paramName & " cannot be empty!"
+        End If
+    ElseIf IsObject(arr) Then
+        ' For collections, we need to check if they have items
+        If arr Is Nothing Then
+            Err.Raise ErrorCodes.ObjectVariableNotSet, "Ensure.EnumerableNotEmpty", paramName & " is Nothing!"
+        ElseIf TypeOf arr Is CSlice Then
+            ' Handle CSlice objects by checking their Length property
+            Dim slice As CSlice
+            Set slice = arr
+            If slice.Length <= 0 Then
+                Err.Raise ErrorCodes.InvalidProcedureCall, "Ensure.EnumerableNotEmpty", paramName & " cannot be empty!"
+            End If
+        Else
+            ' For other object types, we can't easily determine if they're empty
+            ' This is a basic implementation that can be extended for specific collection types
+            ' For now, we'll assume non-Nothing objects are not empty
+        End If
+    Else
+        Err.Raise ErrorCodes.InvalidProcedureCall, "Ensure.EnumerableNotEmpty", paramName & " is not an array or collection!"
+    End If
+End Sub
