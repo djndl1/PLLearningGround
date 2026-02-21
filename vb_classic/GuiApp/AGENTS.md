@@ -34,11 +34,30 @@ GuiApp/
 
 ## Build Commands
 
-## Build Commands
+### Building the Project
 
-### Building or Testing the Project
+**Windows-only build environment required** - This is a legacy VB6 project that requires the Visual Basic 6.0 IDE for compilation.
 
-The agent should never build or test this project automatically after editing code.
+Available build commands (for reference only - do not run automatically):
+
+```bash
+# Main GUI application
+make build_GuiApp
+
+# LegacyApp VB6 DLL
+make -C LegacyApp.VB6 build_LegacyAppVB6
+
+# Install DLL to system (requires admin privileges)
+make -C LegacyApp.VB6 install
+```
+
+### Testing the Project
+
+**No automated test framework** - Testing must be performed manually through the VB6 IDE or external test applications.
+
+**IMPORTANT**: Agents should never attempt to build or test this project automatically after editing code.
+
+**CRITICAL RULE**: Do not build or test this project automatically without explicit instructions from the user.
 
 ## Code Style Guidelines
 
@@ -51,6 +70,12 @@ The agent should never build or test this project automatically after editing co
 - **VB6 DLL**: ActiveX DLL project with utility classes for arrays, date/time, file operations
 - **.NET Solution**: Multi-project solution with infrastructure, GUI, testing components
 - **Cross-Platform**: Supports .NET Framework and .NET 8 targets
+
+### Key Components
+- **Main Application**: GUI application with test runner functionality (MainForm.frm)
+- **Test Framework**: Custom test classes following Asserter pattern (ArraysTest.cls, CSliceTest.cls, etc.)
+- **Utility Library**: LegacyAppVB6.dll containing core functionality
+- **Error Handling**: Custom IErrorHandler interface and implementations
 
 ### Formatting
 - **Indentation**: 4 spaces (consistent with existing code)
@@ -99,7 +124,7 @@ End Sub
 
 #### Test Framework Pattern
 ```vb
-' Test classes follow this pattern
+' Test classes follow this pattern (see ArraysTest.cls:18-21)
 Public Sub Run(ByRef myasserter As Asserter)
     Set m_asserter = myasserter
     TestMethod1
@@ -108,6 +133,21 @@ End Sub
 
 Private Sub TestMethod1()
     m_asserter.IsTrue condition, "TestClass.TestMethod1", "Description"
+End Sub
+```
+
+#### Array Operations Pattern
+```vb
+' Use Arrays singleton class for array manipulation (see Arrays.cls:27-42)
+Public Function GetArrayLength(ByRef arr As Variant) As Long
+    GetArrayLength = UBound(arr) - LBound(arr) + 1
+End Function
+
+Public Sub ResizeArray(ByRef arr As Variant, ByVal newSize As Long)
+    Dim l, u As Long
+    l = LBound(arr)
+    u = l + newSize - 1
+    ReDim Preserve arr(u)
 End Sub
 ```
 
@@ -179,5 +219,16 @@ When working in this codebase, agents should:
 4. **Implement proper error handling** using the Ensure module patterns
 5. **Reference existing patterns** from core modules like Arrays.cls and TextFileOutput.cls
 6. **Document breaking changes** when updating APIs
+7. **Use exact line references** when referring to code (e.g., `ArraysTest.cls:18-21`)
+8. **Never attempt automated builds or tests** without explicit user instruction
+
+## Code References
+
+When referencing specific functions or pieces of code, include the pattern `file_path:line_number` to allow the user to easily navigate to the source code location.
+
+<example>
+user: Where are errors from the client handled?
+assistant: Clients are marked as failed in the `connectToServer` function in src/services/process.ts:712.
+</example>
 
 This AGENTS.md file will be updated as the project evolves and new conventions are established.
