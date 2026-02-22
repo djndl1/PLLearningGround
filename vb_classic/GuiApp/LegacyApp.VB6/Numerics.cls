@@ -24,7 +24,7 @@ Attribute EuclideanDivisionLong.VB_Description = "Performs Euclidean division on
     Dim result As VariantPair
 
     ' Handle division by zero
-    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.EuclideanDivisionLong"
+    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.EuclideanDivisionLong", "divisor cannot be zero"
 
     ' Calculate quotient and remainder
     Dim quotient As Long
@@ -62,7 +62,7 @@ Attribute EuclideanDivisionInteger.VB_Description = "Performs Euclidean division
     Dim result As VariantPair
 
     ' Handle division by zero
-    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.EuclideanDivisionInteger"
+    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.EuclideanDivisionInteger", "divisor cannot be zero"
 
     ' Calculate quotient and remainder
     Dim quotient As Integer
@@ -100,7 +100,7 @@ Attribute CeilingDivisionLong.VB_Description = "Performs ceiling division on two
     Dim result As VariantPair
 
     ' Handle division by zero
-    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.CeilingDivisionLong"
+    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.CeilingDivisionLong", "divisor cannot be zero"
 
     ' Calculate quotient and remainder using ceiling division
     Dim quotient As Long
@@ -138,7 +138,7 @@ Attribute CeilingDivisionInteger.VB_Description = "Performs ceiling division on 
     Dim result As VariantPair
 
     ' Handle division by zero
-    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.CeilingDivisionInteger"
+    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.CeilingDivisionInteger", "divisor cannot be zero"
 
     ' Calculate quotient and remainder using ceiling division
     Dim quotient As Integer
@@ -176,7 +176,7 @@ Attribute FloorDivisionLong.VB_Description = "Performs floor division on two Lon
     Dim result As VariantPair
 
     ' Handle division by zero
-    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.FloorDivisionLong"
+    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.FloorDivisionLong", "divisor cannot be zero"
 
     ' Calculate quotient and remainder using floor division
     Dim quotient As Long
@@ -214,7 +214,7 @@ Attribute FloorDivisionInteger.VB_Description = "Performs floor division on two 
     Dim result As VariantPair
 
     ' Handle division by zero
-    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.FloorDivisionInteger"
+    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.FloorDivisionInteger", "divisor cannot be zero"
 
     ' Calculate quotient and remainder using floor division
     Dim quotient As Integer
@@ -251,7 +251,7 @@ End Function
 Public Function MathematicalModuloLong(ByVal dividend As Long, ByVal divisor As Long) As Long
 Attribute MathematicalModuloLong.VB_Description = "Performs mathematical modulo operation on two Long values\r\nThis ensures the result is always non-negative (0 <= result < |divisor|)\r\nArgs:\r\n  dividend (Long): The number to be divided\r\n  divisor (Long): The number to divide by (cannot be zero)\r\nReturns:\r\n  Long: The non-negative remainder of the division"
     ' Handle division by zero
-    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.MathematicalModuloLong"
+    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.MathematicalModuloLong", "divisor cannot be zero"
 
     ' Mathematical modulo: more efficient implementation matching C# version
     Dim remainder As Long
@@ -274,7 +274,7 @@ End Function
 Public Function MathematicalModuloInteger(ByVal dividend As Integer, ByVal divisor As Integer) As Integer
 Attribute MathematicalModuloInteger.VB_Description = "Performs mathematical modulo operation on two Integer values\r\nThis ensures the result is always non-negative (0 <= result < |divisor|)\r\nArgs:\r\n  dividend (Integer): The number to be divided\r\n  divisor (Integer): The number to divide by (cannot be zero)\r\nReturns:\r\n  Integer: The non-negative remainder of the division"
     ' Handle division by zero
-    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.MathematicalModuloInteger"
+    Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.MathematicalModuloInteger", "divisor cannot be zero"
 
     ' Mathematical modulo: more efficient implementation matching C# version
     Dim remainder As Integer
@@ -355,7 +355,7 @@ Attribute ClampSingle.VB_Description = "Clamp function: restricts a value to spe
     EnforceMinMaxRelation min, max
 
     ' Validate that value is not NaN
-    Ensure.IsFalse IsNaNSingle(value), ErrorCodes.InvalidProcedureCall, "Numerics.ClampSingle"
+    Ensure.IsFalse IsNaNSingle(value), ErrorCodes.InvalidProcedureCall, "Numerics.ClampSingle", "value cannot be NaN"
 
     Dim maxClamped As Single
     maxClamped = IIf(value > max, max, value)
@@ -374,7 +374,7 @@ Attribute ClampDouble.VB_Description = "Clamp function: restricts a value to spe
     EnforceMinMaxRelation min, max
 
     ' Validate that value is not NaN
-    Ensure.IsFalse IsNaNDouble(value), ErrorCodes.InvalidProcedureCall, "Numerics.ClampDouble"
+    Ensure.IsFalse IsNaNDouble(value), ErrorCodes.InvalidProcedureCall, "Numerics.ClampDouble", "value cannot be NaN"
 
     Dim maxClamped As Double
     maxClamped = IIf(value > max, max, value)
@@ -409,11 +409,11 @@ End Function
 ' Helper function to check if a Single value is NaN
 Public Function IsNaNSingle(ByVal value As Single) As Boolean
 Attribute IsNaNSingle.VB_Description = "Helper function to check if a Single value is NaN"
-    IsNaNSingle = (value <> value)
+    IsNaNSingle = CStr(value) = "-1.#IND"
 End Function
 
 ' Helper function to check if a Double value is NaN
 Public Function IsNaNDouble(ByVal value As Double) As Boolean
 Attribute IsNaNDouble.VB_Description = "Helper function to check if a Double value is NaN"
-    IsNaNDouble = (value <> value)
+    IsNaNDouble = CStr(value) = "-1.#IND"
 End Function

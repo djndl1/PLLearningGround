@@ -14,7 +14,7 @@ Attribute VB_Exposed = True
 Option Explicit
 
 ' Windows API declaration for memory copying
-Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (Destination As Any, Source As Any, ByVal Length As Long)
+Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (Destination As Any, source As Any, ByVal Length As Long)
 
 ' Fixed-size buffer structures for byte manipulation
 Private Type ByteBuffer2
@@ -90,7 +90,6 @@ Public Function ToIntegerLE(ByRef bytes() As Byte) As Integer
 Attribute ToIntegerLE.VB_Description = "ToIntegerLE converts a little-endian byte array to a 16-bit Integer value.\r\nArgs:\r\n  bytes (Byte()): A 2-element byte array containing little-endian bytes.\r\nReturns:\r\n  Integer: The 16-bit Integer value represented by the little-endian bytes."
     ' Validate array size
     Ensure.GreaterThanOrEqual Arrays.GetArrayLength(bytes), 2, "bytes"
-
     ' Copy bytes directly to the result (little-endian order is native)
     CopyMemory ToIntegerLE, bytes(0), 2
 End Function

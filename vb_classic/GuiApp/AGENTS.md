@@ -103,7 +103,7 @@ make -C LegacyApp.VB6 install
 Private Sub SomeMethod()
     On Error GoTo ErrorHandler
     ' Code here
-    Ensure.IsTrue condition, ErrorCodes.TypeMismatch, "SomeMethod"
+    Ensure.IsTrue condition, ErrorCodes.TypeMismatch, "SomeMethod", "Error message"
     Exit Sub
 ErrorHandler:
     Err.Raise Err.Number, Err.Source, Err.Description

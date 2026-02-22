@@ -14,7 +14,7 @@ Attribute VB_Exposed = True
 Option Explicit
 
 ' Windows API declaration for memory copying
-Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (Destination As Any, Source As Any, ByVal Length As Long)
+Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (Destination As Any, source As Any, ByVal Length As Long)
 
 ' Fixed-size buffer structures for byte manipulation
 Private Type ByteBuffer2
@@ -174,7 +174,6 @@ Public Function ToSingleBE(ByRef bytes() As Byte) As Single
 Attribute ToSingleBE.VB_Description = "ToSingleBE converts a big-endian byte array to a 32-bit Single value.\r\nArgs:\r\n  bytes (Byte()): A 4-element byte array containing big-endian bytes.\r\nReturns:\r\n  Single: The 32-bit Single value represented by the big-endian bytes."
     ' Validate array size
     Ensure.GreaterThanOrEqual Arrays.GetArrayLength(bytes), 4, "bytes"
-
     Dim buffer As ByteBuffer4
 
     ' Copy bytes to buffer in reverse order (big-endian to little-endian)

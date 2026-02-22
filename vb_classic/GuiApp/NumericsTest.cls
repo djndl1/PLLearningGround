@@ -347,110 +347,110 @@ Private Sub TestClampFunctions()
     ' Test ClampInbetween
     ' byte
     m_asserter.AreEqual Numerics.ClampByte(5, 1, 6), 5, "NumericsTest.TestClampFunctions", "ClampByte(5, 1, 6) should be 5 but got " & Numerics.ClampByte(5, 1, 6)
-    
+
     ' short (using ClampInteger in VB6)
     m_asserter.AreEqual Numerics.ClampInteger(5, 1, 6), 5, "NumericsTest.TestClampFunctions", "ClampInteger(5, 1, 6) should be 5 but got " & Numerics.ClampInteger(5, 1, 6)
-    
+
     ' int (using ClampInteger in VB6)
     m_asserter.AreEqual Numerics.ClampInteger(5, 1, 6), 5, "NumericsTest.TestClampFunctions", "ClampInteger(5, 1, 6) should be 5 but got " & Numerics.ClampInteger(5, 1, 6)
-    
+
     ' long
     m_asserter.AreEqual Numerics.ClampLong(5, 1, 6), 5, "NumericsTest.TestClampFunctions", "ClampLong(5, 1, 6) should be 5 but got " & Numerics.ClampLong(5, 1, 6)
-    
+
     ' float
     m_asserter.AreEqual Numerics.ClampSingle(5#, 1#, 6#), 5#, "NumericsTest.TestClampFunctions", "ClampSingle(5.0, 1.0, 6.0) should be 5.0 but got " & Numerics.ClampSingle(5#, 1#, 6#)
-    
+
     ' double
     m_asserter.AreEqual Numerics.ClampDouble(5#, 1#, 6#), 5#, "NumericsTest.TestClampFunctions", "ClampDouble(5.0, 1.0, 6.0) should be 5.0 but got " & Numerics.ClampDouble(5#, 1#, 6#)
-    
+
     ' decimal
     m_asserter.AreEqual Numerics.Clamp(5#, 1#, 6#), 5#, "NumericsTest.TestClampFunctions", "Clamp(5.0, 1.0, 6.0) should be 5.0 but got " & Numerics.Clamp(5#, 1#, 6#)
-    
+
     ' Test ClampLessThan
     ' byte
     m_asserter.AreEqual Numerics.ClampByte(0, 1, 6), 1, "NumericsTest.TestClampFunctions", "ClampByte(0, 1, 6) should be 1 but got " & Numerics.ClampByte(0, 1, 6)
-    
+
     ' short
     m_asserter.AreEqual Numerics.ClampInteger(-11, -10, 6), -10, "NumericsTest.TestClampFunctions", "ClampInteger(-11, -10, 6) should be -10 but got " & Numerics.ClampInteger(-11, -10, 6)
-    
+
     ' int
     m_asserter.AreEqual Numerics.ClampInteger(-11, -10, 6), -10, "NumericsTest.TestClampFunctions", "ClampInteger(-11, -10, 6) should be -10 but got " & Numerics.ClampInteger(-11, -10, 6)
-    
+
     ' long
     m_asserter.AreEqual Numerics.ClampLong(-11, -10, 6), -10, "NumericsTest.TestClampFunctions", "ClampLong(-11, -10, 6) should be -10 but got " & Numerics.ClampLong(-11, -10, 6)
-    
+
     ' float
     m_asserter.AreEqual Numerics.ClampSingle(-110#, -10#, 6#), -10#, "NumericsTest.TestClampFunctions", "ClampSingle(-110.0, -10.0, 6.0) should be -10.0 but got " & Numerics.ClampSingle(-110#, -10#, 6#)
-    
+
     ' double
     m_asserter.AreEqual Numerics.ClampDouble(-55#, -10#, 6#), -10#, "NumericsTest.TestClampFunctions", "ClampDouble(-55.0, -10.0, 6.0) should be -10.0 but got " & Numerics.ClampDouble(-55#, -10#, 6#)
-    
+
     ' decimal
     m_asserter.AreEqual Numerics.Clamp(-15#, -10#, 6#), -10#, "NumericsTest.TestClampFunctions", "Clamp(-15.0, -10.0, 6.0) should be -10.0 but got " & Numerics.Clamp(-15#, -10#, 6#)
-    
+
     ' Test ClampGreaterThan
     ' byte
     m_asserter.AreEqual Numerics.ClampByte(7, 1, 6), 6, "NumericsTest.TestClampFunctions", "ClampByte(7, 1, 6) should be 6 but got " & Numerics.ClampByte(7, 1, 6)
-    
+
     ' short
     m_asserter.AreEqual Numerics.ClampInteger(7, -10, 6), 6, "NumericsTest.TestClampFunctions", "ClampInteger(7, -10, 6) should be 6 but got " & Numerics.ClampInteger(7, -10, 6)
-    
+
     ' int
     m_asserter.AreEqual Numerics.ClampInteger(8, -10, 6), 6, "NumericsTest.TestClampFunctions", "ClampInteger(8, -10, 6) should be 6 but got " & Numerics.ClampInteger(8, -10, 6)
-    
+
     ' long
     m_asserter.AreEqual Numerics.ClampLong(11, -10, 6), 6, "NumericsTest.TestClampFunctions", "ClampLong(11, -10, 6) should be 6 but got " & Numerics.ClampLong(11, -10, 6)
-    
+
     ' float
     m_asserter.AreEqual Numerics.ClampSingle(110#, -10#, 6#), 6#, "NumericsTest.TestClampFunctions", "ClampSingle(110.0, -10.0, 6.0) should be 6.0 but got " & Numerics.ClampSingle(110#, -10#, 6#)
-    
+
     ' double
     m_asserter.AreEqual Numerics.ClampDouble(8.3, -10#, 6#), 6#, "NumericsTest.TestClampFunctions", "ClampDouble(8.3, -10.0, 6.0) should be 6.0 but got " & Numerics.ClampDouble(8.3, -10#, 6#)
-    
+
     ' decimal
     m_asserter.AreEqual Numerics.Clamp(15#, -10#, 6#), 6#, "NumericsTest.TestClampFunctions", "Clamp(15.0, -10.0, 6.0) should be 6.0 but got " & Numerics.Clamp(15#, -10#, 6#)
-    
+
     ' Test ClampAtLowerBoundaries
     ' byte
     m_asserter.AreEqual Numerics.ClampByte(1, 1, 6), 1, "NumericsTest.TestClampFunctions", "ClampByte(1, 1, 6) should be 1 but got " & Numerics.ClampByte(1, 1, 6)
-    
+
     ' short
     m_asserter.AreEqual Numerics.ClampInteger(-10, -10, 6), -10, "NumericsTest.TestClampFunctions", "ClampInteger(-10, -10, 6) should be -10 but got " & Numerics.ClampInteger(-10, -10, 6)
-    
+
     ' int
     m_asserter.AreEqual Numerics.ClampInteger(0, 0, 6), 0, "NumericsTest.TestClampFunctions", "ClampInteger(0, 0, 6) should be 0 but got " & Numerics.ClampInteger(0, 0, 6)
-    
+
     ' long
     m_asserter.AreEqual Numerics.ClampLong(-10, -10, 6), -10, "NumericsTest.TestClampFunctions", "ClampLong(-10, -10, 6) should be -10 but got " & Numerics.ClampLong(-10, -10, 6)
-    
+
     ' float
     m_asserter.AreEqual Numerics.ClampSingle(-10#, -10#, 6#), -10#, "NumericsTest.TestClampFunctions", "ClampSingle(-10.0, -10.0, 6.0) should be -10.0 but got " & Numerics.ClampSingle(-10#, -10#, 6#)
-    
+
     ' double
     m_asserter.AreEqual Numerics.ClampDouble(-10#, -10#, 6#), -10#, "NumericsTest.TestClampFunctions", "ClampDouble(-10.0, -10.0, 6.0) should be -10.0 but got " & Numerics.ClampDouble(-10#, -10#, 6#)
-    
+
     ' decimal
     m_asserter.AreEqual Numerics.Clamp(-10#, -10#, 6#), -10#, "NumericsTest.TestClampFunctions", "Clamp(-10.0, -10.0, 6.0) should be -10.0 but got " & Numerics.Clamp(-10#, -10#, 6#)
-    
+
     ' Test ClampAtUpperBoundaries
     ' byte
     m_asserter.AreEqual Numerics.ClampByte(6, 1, 6), 6, "NumericsTest.TestClampFunctions", "ClampByte(6, 1, 6) should be 6 but got " & Numerics.ClampByte(6, 1, 6)
-    
+
     ' short
     m_asserter.AreEqual Numerics.ClampInteger(6, -10, 6), 6, "NumericsTest.TestClampFunctions", "ClampInteger(6, -10, 6) should be 6 but got " & Numerics.ClampInteger(6, -10, 6)
-    
+
     ' int
     m_asserter.AreEqual Numerics.ClampInteger(6, 0, 6), 6, "NumericsTest.TestClampFunctions", "ClampInteger(6, 0, 6) should be 6 but got " & Numerics.ClampInteger(6, 0, 6)
-    
+
     ' long
     m_asserter.AreEqual Numerics.ClampLong(6, -10, 6), 6, "NumericsTest.TestClampFunctions", "ClampLong(6, -10, 6) should be 6 but got " & Numerics.ClampLong(6, -10, 6)
-    
+
     ' float
     m_asserter.AreEqual Numerics.ClampSingle(6#, -10#, 6#), 6#, "NumericsTest.TestClampFunctions", "ClampSingle(6.0, -10.0, 6.0) should be 6.0 but got " & Numerics.ClampSingle(6#, -10#, 6#)
-    
+
     ' double
     m_asserter.AreEqual Numerics.ClampDouble(6#, -10#, 6#), 6#, "NumericsTest.TestClampFunctions", "ClampDouble(6.0, -10.0, 6.0) should be 6.0 but got " & Numerics.ClampDouble(6#, -10#, 6#)
-    
+
     ' decimal
     m_asserter.AreEqual Numerics.Clamp(6#, -10#, 6#), 6#, "NumericsTest.TestClampFunctions", "Clamp(6.0, -10.0, 6.0) should be 6.0 but got " & Numerics.Clamp(6#, -10#, 6#)
 End Sub
@@ -470,6 +470,7 @@ ClampByteError:
     Resume ClampByteSuccess
 ClampByteSuccess:
     On Error GoTo 0
+    On Error GoTo -1
     m_asserter.IsTrue errorRaised, "NumericsTest.TestClampErrorHandling", "ClampByte should raise error when min > max but errorRaised = " & errorRaised
 
     ' short (using ClampInteger in VB6)
@@ -483,6 +484,7 @@ ClampShortError:
     Resume ClampShortSuccess
 ClampShortSuccess:
     On Error GoTo 0
+    On Error GoTo -1
     m_asserter.IsTrue errorRaised, "NumericsTest.TestClampErrorHandling", "ClampInteger should raise error when min > max but errorRaised = " & errorRaised
 
     ' int (using ClampInteger in VB6)
@@ -496,6 +498,7 @@ ClampIntError:
     Resume ClampIntSuccess
 ClampIntSuccess:
     On Error GoTo 0
+    On Error GoTo -1
     m_asserter.IsTrue errorRaised, "NumericsTest.TestClampErrorHandling", "ClampInteger should raise error when min > max but errorRaised = " & errorRaised
 
     ' long
@@ -509,6 +512,7 @@ ClampLongError:
     Resume ClampLongSuccess
 ClampLongSuccess:
     On Error GoTo 0
+    On Error GoTo -1
     m_asserter.IsTrue errorRaised, "NumericsTest.TestClampErrorHandling", "ClampLong should raise error when min > max but errorRaised = " & errorRaised
 
     ' float
@@ -522,6 +526,7 @@ ClampFloatError:
     Resume ClampFloatSuccess
 ClampFloatSuccess:
     On Error GoTo 0
+    On Error GoTo -1
     m_asserter.IsTrue errorRaised, "NumericsTest.TestClampErrorHandling", "ClampSingle should raise error when min > max but errorRaised = " & errorRaised
 
     ' double
@@ -535,6 +540,7 @@ ClampDoubleError:
     Resume ClampDoubleSuccess
 ClampDoubleSuccess:
     On Error GoTo 0
+    On Error GoTo -1
     m_asserter.IsTrue errorRaised, "NumericsTest.TestClampErrorHandling", "ClampDouble should raise error when min > max but errorRaised = " & errorRaised
 
     ' decimal
@@ -548,6 +554,7 @@ ClampDecimalError:
     Resume ClampDecimalSuccess
 ClampDecimalSuccess:
     On Error GoTo 0
+    On Error GoTo -1
     m_asserter.IsTrue errorRaised, "NumericsTest.TestClampErrorHandling", "Clamp should raise error when min > max but errorRaised = " & errorRaised
 
     ' Test NaN handling for Single - should raise error now
@@ -564,6 +571,7 @@ ClampSingleNaNError:
     Resume ClampSingleNaNSuccess
 ClampSingleNaNSuccess:
     On Error GoTo 0
+    On Error GoTo -1
     m_asserter.IsTrue errorRaised, "NumericsTest.TestClampErrorHandling", "ClampSingle should raise error for NaN input but errorRaised = " & errorRaised
 
     ' Test NaN handling for Double - should raise error now
@@ -580,5 +588,6 @@ ClampDoubleNaNError:
     Resume ClampDoubleNaNSuccess
 ClampDoubleNaNSuccess:
     On Error GoTo 0
+    On Error GoTo -1
     m_asserter.IsTrue errorRaised, "NumericsTest.TestClampErrorHandling", "ClampDouble should raise error for NaN input but errorRaised = " & errorRaised
 End Sub

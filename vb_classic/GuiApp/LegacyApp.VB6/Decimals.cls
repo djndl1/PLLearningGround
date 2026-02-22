@@ -14,7 +14,7 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Public Function RoundToZero(ByVal dec As Variant) As Variant
-        Ensure.VariantType dec, vbDecimal, "Decimals.RoundToZero(Variant)"
+        Ensure.VariantType dec, vbDecimal, "Decimals.RoundToZero(Variant)", "dec is not a decimal type"
 
         Dim rounded As Variant, toZero As Variant
         rounded = Round(dec)
