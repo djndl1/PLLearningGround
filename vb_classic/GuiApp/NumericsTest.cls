@@ -23,6 +23,8 @@ Public Sub Run(ByRef myasserter As Asserter)
     TestCeilingDivisionInteger
     TestFloorDivisionLong
     TestFloorDivisionInteger
+    TestMathematicalModuloLong
+    TestMathematicalModuloInteger
     TestDivisionByZeroErrors
 End Sub
 
@@ -183,6 +185,59 @@ Private Sub TestFloorDivisionInteger()
     m_asserter.AreEqual result.Second, 0, "NumericsTest.TestFloorDivisionInteger", "32767/32767 floor remainder should be 0 but got " & result.Second
 End Sub
 
+Private Sub TestMathematicalModuloLong()
+    Dim result As Long
+    
+    ' Test positive dividend, positive divisor (same as EuclideanDivisionLong remainder)
+    result = Numerics.MathematicalModuloLong(7, 3)
+    m_asserter.AreEqual result, 1, "NumericsTest.TestMathematicalModuloLong", "7 mod 3 should be 1 (same as Euclidean remainder) but got " & result
+    
+    ' Test negative dividend, positive divisor (same as EuclideanDivisionLong remainder)
+    result = Numerics.MathematicalModuloLong(-7, 3)
+    m_asserter.AreEqual result, 2, "NumericsTest.TestMathematicalModuloLong", "-7 mod 3 should be 2 (same as Euclidean remainder) but got " & result
+    
+    ' Test positive dividend, negative divisor (same as EuclideanDivisionLong remainder)
+    result = Numerics.MathematicalModuloLong(7, -3)
+    m_asserter.AreEqual result, 1, "NumericsTest.TestMathematicalModuloLong", "7 mod -3 should be 1 (same as Euclidean remainder) but got " & result
+    
+    ' Test negative dividend, negative divisor (same as EuclideanDivisionLong remainder)
+    result = Numerics.MathematicalModuloLong(-7, -3)
+    m_asserter.AreEqual result, 2, "NumericsTest.TestMathematicalModuloLong", "-7 mod -3 should be 2 (same as Euclidean remainder) but got " & result
+    
+    ' Test zero dividend
+    result = Numerics.MathematicalModuloLong(0, 5)
+    m_asserter.AreEqual result, 0, "NumericsTest.TestMathematicalModuloLong", "0 mod 5 should be 0 but got " & result
+    
+    ' Test boundary values (same as EuclideanDivisionLong remainder)
+    result = Numerics.MathematicalModuloLong(32767, 32767)
+    m_asserter.AreEqual result, 0, "NumericsTest.TestMathematicalModuloLong", "32767 mod 32767 should be 0 (same as Euclidean remainder) but got " & result
+    
+    result = Numerics.MathematicalModuloLong(-32768, 32767)
+    m_asserter.AreEqual result, 32766, "NumericsTest.TestMathematicalModuloLong", "-32768 mod 32767 should be 32766 (same as Euclidean remainder) but got " & result
+End Sub
+
+Private Sub TestMathematicalModuloInteger()
+    Dim result As Integer
+    
+    ' Test positive dividend, positive divisor (same as EuclideanDivisionInteger remainder)
+    result = Numerics.MathematicalModuloInteger(7, 3)
+    m_asserter.AreEqual result, 1, "NumericsTest.TestMathematicalModuloInteger", "7 mod 3 should be 1 (same as Euclidean remainder) but got " & result
+    
+    ' Test negative dividend, positive divisor (same as EuclideanDivisionInteger remainder)
+    result = Numerics.MathematicalModuloInteger(-7, 3)
+    m_asserter.AreEqual result, 2, "NumericsTest.TestMathematicalModuloInteger", "-7 mod 3 should be 2 (same as Euclidean remainder) but got " & result
+    
+    ' Test boundary values for Integer type (same as EuclideanDivisionInteger remainder)
+    result = Numerics.MathematicalModuloInteger(0, 5)
+    m_asserter.AreEqual result, 0, "NumericsTest.TestMathematicalModuloInteger", "0 mod 5 should be 0 but got " & result
+    
+    result = Numerics.MathematicalModuloInteger(32767, 32767)
+    m_asserter.AreEqual result, 0, "NumericsTest.TestMathematicalModuloInteger", "32767 mod 32767 should be 0 (same as Euclidean remainder) but got " & result
+    
+    result = Numerics.MathematicalModuloInteger(-32768, 32767)
+    m_asserter.AreEqual result, 32766, "NumericsTest.TestMathematicalModuloInteger", "-32768 mod 32767 should be 32766 (same as Euclidean remainder) but got " & result
+End Sub
+
 Private Sub TestDivisionByZeroErrors()
     Dim errorRaised As Boolean
     Dim result As VariantPair
@@ -258,4 +313,30 @@ FloorIntegerError:
 FloorIntegerSuccess:
     On Error GoTo 0
     m_asserter.IsTrue errorRaised, "NumericsTest.TestDivisionByZeroErrors", "FloorDivisionInteger should raise error for zero divisor but errorRaised = " & errorRaised
+
+    ' Test MathematicalModuloLong with zero divisor
+    errorRaised = False
+    On Error GoTo ModuloLongError
+    Dim moduloResult As Long
+    moduloResult = Numerics.MathematicalModuloLong(5, 0)
+    GoTo ModuloLongSuccess
+ModuloLongError:
+    errorRaised = True
+    Resume ModuloLongSuccess
+ModuloLongSuccess:
+    On Error GoTo 0
+    m_asserter.IsTrue errorRaised, "NumericsTest.TestDivisionByZeroErrors", "MathematicalModuloLong should raise error for zero divisor but errorRaised = " & errorRaised
+
+    ' Test MathematicalModuloInteger with zero divisor
+    errorRaised = False
+    On Error GoTo ModuloIntegerError
+    Dim moduloResultInt As Integer
+    moduloResultInt = Numerics.MathematicalModuloInteger(5, 0)
+    GoTo ModuloIntegerSuccess
+ModuloIntegerError:
+    errorRaised = True
+    Resume ModuloIntegerSuccess
+ModuloIntegerSuccess:
+    On Error GoTo 0
+    m_asserter.IsTrue errorRaised, "NumericsTest.TestDivisionByZeroErrors", "MathematicalModuloInteger should raise error for zero divisor but errorRaised = " & errorRaised
 End Sub

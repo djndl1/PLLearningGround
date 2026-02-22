@@ -1,5 +1,5 @@
 VERSION 5.00
-Begin VB.Form MainForm
+Begin VB.Form MainForm 
    Caption         =   "MainForm"
    ClientHeight    =   660
    ClientLeft      =   120
@@ -9,7 +9,7 @@ Begin VB.Form MainForm
    ScaleHeight     =   660
    ScaleWidth      =   2805
    StartUpPosition =   3  'Windows Default
-   Begin VB.CheckBox AutoExitCheckBox
+   Begin VB.CheckBox AutoExitCheckBox 
       Caption         =   "AutoExit"
       Height          =   375
       Left            =   1680
@@ -18,7 +18,7 @@ Begin VB.Form MainForm
       Value           =   1  'Checked
       Width           =   975
    End
-   Begin VB.CommandButton RunMain
+   Begin VB.CommandButton RunMain 
       Caption         =   "Run"
       Height          =   375
       Left            =   120
