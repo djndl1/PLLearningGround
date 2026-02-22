@@ -252,11 +252,11 @@ Public Function MathematicalModuloLong(ByVal dividend As Long, ByVal divisor As 
 Attribute MathematicalModuloLong.VB_Description = "Performs mathematical modulo operation on two Long values\r\nThis ensures the result is always non-negative (0 <= result < |divisor|)\r\nArgs:\r\n  dividend (Long): The number to be divided\r\n  divisor (Long): The number to divide by (cannot be zero)\r\nReturns:\r\n  Long: The non-negative remainder of the division"
     ' Handle division by zero
     Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.MathematicalModuloLong"
-    
+
     ' Mathematical modulo: more efficient implementation matching C# version
     Dim remainder As Long
     remainder = dividend Mod divisor
-    
+
     If remainder >= 0 Then
         MathematicalModuloLong = remainder
     Else
@@ -275,14 +275,145 @@ Public Function MathematicalModuloInteger(ByVal dividend As Integer, ByVal divis
 Attribute MathematicalModuloInteger.VB_Description = "Performs mathematical modulo operation on two Integer values\r\nThis ensures the result is always non-negative (0 <= result < |divisor|)\r\nArgs:\r\n  dividend (Integer): The number to be divided\r\n  divisor (Integer): The number to divide by (cannot be zero)\r\nReturns:\r\n  Integer: The non-negative remainder of the division"
     ' Handle division by zero
     Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.MathematicalModuloInteger"
-    
+
     ' Mathematical modulo: more efficient implementation matching C# version
     Dim remainder As Integer
     remainder = dividend Mod divisor
-    
+
     If remainder >= 0 Then
         MathematicalModuloInteger = remainder
     Else
         MathematicalModuloInteger = remainder + Abs(divisor)
     End If
+End Function
+
+' Enforces that min <= max for clamping operations
+Private Sub EnforceMinMaxRelation(ByVal min As Variant, ByVal max As Variant)
+Attribute EnforceMinMaxRelation.VB_Description = "Enforces that min <= max for clamping operations"
+    If min > max Then
+        Err.Raise ErrorCodes.InvalidProcedureCall, "Numerics.EnforceMinMaxRelation", "min (" & CStr(min) & ") cannot be greater than max (" & CStr(max) & ")"
+    End If
+End Sub
+
+' Clamp function: restricts a value to specified upper and lower bounds
+' Args:
+'   value (Byte): The value to be clamped
+'   min (Byte): The lower bound
+'   max (Byte): The upper bound
+' Returns:
+'   Byte: The clamped value
+Public Function ClampByte(ByVal value As Byte, ByVal min As Byte, ByVal max As Byte) As Byte
+Attribute ClampByte.VB_Description = "Clamp function: restricts a value to specified upper and lower bounds\r\nArgs:\r\n  value (Byte): The value to be clamped\r\n  min (Byte): The lower bound\r\n  max (Byte): The upper bound\r\nReturns:\r\n  Byte: The clamped value"
+    EnforceMinMaxRelation min, max
+
+    Dim maxClamped As Byte
+    maxClamped = IIf(value > max, max, value)
+    ClampByte = IIf(maxClamped < min, min, maxClamped)
+End Function
+
+' Clamp function: restricts a value to specified upper and lower bounds
+' Args:
+'   value (Integer): The value to be clamped
+'   min (Integer): The lower bound
+'   max (Integer): The upper bound
+' Returns:
+'   Integer: The clamped value
+Public Function ClampInteger(ByVal value As Integer, ByVal min As Integer, ByVal max As Integer) As Integer
+Attribute ClampInteger.VB_Description = "Clamp function: restricts a value to specified upper and lower bounds\r\nArgs:\r\n  value (Integer): The value to be clamped\r\n  min (Integer): The lower bound\r\n  max (Integer): The upper bound\r\nReturns:\r\n  Integer: The clamped value"
+    EnforceMinMaxRelation min, max
+
+    Dim maxClamped As Integer
+    maxClamped = IIf(value > max, max, value)
+    ClampInteger = IIf(maxClamped < min, min, maxClamped)
+End Function
+
+' Clamp function: restricts a value to specified upper and lower bounds
+' Args:
+'   value (Long): The value to be clamped
+'   min (Long): The lower bound
+'   max (Long): The upper bound
+' Returns:
+'   Long: The clamped value
+Public Function ClampLong(ByVal value As Long, ByVal min As Long, ByVal max As Long) As Long
+Attribute ClampLong.VB_Description = "Clamp function: restricts a value to specified upper and lower bounds\r\nArgs:\r\n  value (Long): The value to be clamped\r\n  min (Long): The lower bound\r\n  max (Long): The upper bound\r\nReturns:\r\n  Long: The clamped value"
+    EnforceMinMaxRelation min, max
+
+    Dim maxClamped As Long
+    maxClamped = IIf(value > max, max, value)
+    ClampLong = IIf(maxClamped < min, min, maxClamped)
+End Function
+
+' Clamp function: restricts a value to specified upper and lower bounds
+' Args:
+'   value (Single): The value to be clamped
+'   min (Single): The lower bound
+'   max (Single): The upper bound
+' Returns:
+'   Single: The clamped value
+Public Function ClampSingle(ByVal value As Single, ByVal min As Single, ByVal max As Single) As Single
+Attribute ClampSingle.VB_Description = "Clamp function: restricts a value to specified upper and lower bounds\r\nArgs:\r\n  value (Single): The value to be clamped\r\n  min (Single): The lower bound\r\n  max (Single): The upper bound\r\nReturns:\r\n  Single: The clamped value"
+    EnforceMinMaxRelation min, max
+
+    ' Validate that value is not NaN
+    Ensure.IsFalse IsNaNSingle(value), ErrorCodes.InvalidProcedureCall, "Numerics.ClampSingle"
+
+    Dim maxClamped As Single
+    maxClamped = IIf(value > max, max, value)
+    ClampSingle = IIf(maxClamped < min, min, maxClamped)
+End Function
+
+' Clamp function: restricts a value to specified upper and lower bounds
+' Args:
+'   value (Double): The value to be clamped
+'   min (Double): The lower bound
+'   max (Double): The upper bound
+' Returns:
+'   Double: The clamped value
+Public Function ClampDouble(ByVal value As Double, ByVal min As Double, ByVal max As Double) As Double
+Attribute ClampDouble.VB_Description = "Clamp function: restricts a value to specified upper and lower bounds\r\nArgs:\r\n  value (Double): The value to be clamped\r\n  min (Double): The lower bound\r\n  max (Double): The upper bound\r\nReturns:\r\n  Double: The clamped value"
+    EnforceMinMaxRelation min, max
+
+    ' Validate that value is not NaN
+    Ensure.IsFalse IsNaNDouble(value), ErrorCodes.InvalidProcedureCall, "Numerics.ClampDouble"
+
+    Dim maxClamped As Double
+    maxClamped = IIf(value > max, max, value)
+    ClampDouble = IIf(maxClamped < min, min, maxClamped)
+End Function
+
+' Clamp function: restricts a value to specified upper and lower bounds
+' Args:
+'   value (Variant): The value to be clamped (must be comparable)
+'   min (Variant): The lower bound
+'   max (Variant): The upper bound
+' Returns:
+'   Variant: The clamped value
+Public Function Clamp(ByVal value As Variant, ByVal min As Variant, ByVal max As Variant) As Variant
+Attribute Clamp.VB_Description = "Clamp function: restricts a value to specified upper and lower bounds\r\nArgs:\r\n  value (Variant): The value to be clamped (must be comparable)\r\n  min (Variant): The lower bound\r\n  max (Variant): The upper bound\r\nReturns:\r\n  Variant: The clamped value"
+    EnforceMinMaxRelation min, max
+
+    Dim maxClamped As Variant
+    If value > max Then
+        maxClamped = max
+    Else
+        maxClamped = value
+    End If
+
+    If maxClamped < min Then
+        Clamp = min
+    Else
+        Clamp = maxClamped
+    End If
+End Function
+
+' Helper function to check if a Single value is NaN
+Public Function IsNaNSingle(ByVal value As Single) As Boolean
+Attribute IsNaNSingle.VB_Description = "Helper function to check if a Single value is NaN"
+    IsNaNSingle = (value <> value)
+End Function
+
+' Helper function to check if a Double value is NaN
+Public Function IsNaNDouble(ByVal value As Double) As Boolean
+Attribute IsNaNDouble.VB_Description = "Helper function to check if a Double value is NaN"
+    IsNaNDouble = (value <> value)
 End Function
