@@ -28,6 +28,10 @@ Public Sub Run(ByRef myasserter As Asserter)
     TestReverseByteOrderLong
     TestReverseByteOrderSingle
     TestReverseByteOrderDouble
+    TestToBytesInteger
+    TestToBytesLong
+    TestToBytesSingle
+    TestToBytesDouble
 End Sub
 
 ' TestLeftShiftInteger tests the LeftShiftInteger function with various values.
@@ -218,4 +222,118 @@ Private Sub TestReverseByteOrderDouble()
     result = NativeConverter.ReverseByteOrderDouble(123.456)
     roundTrip = NativeConverter.ReverseByteOrderDouble(result)
     m_asserter.AreEqual 123.456, roundTrip, "NativeConverterTest.TestReverseByteOrderDouble", "123.456 -> reversed -> 123.456, roundTrip = " & roundTrip
+End Sub
+
+' TestToBytesInteger tests the ToBytesInteger function with various values.
+Private Sub TestToBytesInteger()
+    Dim result() As Byte
+    
+    ' Test case: 0x1234 -> [&H34, &H12] (little-endian)
+    result = NativeConverter.ToBytesInteger(&H1234)
+    m_asserter.AreEqual 2, UBound(result) - LBound(result) + 1, "NativeConverterTest.TestToBytesInteger", "Array length should be 2"
+    m_asserter.AreEqual &H34, result(0), "NativeConverterTest.TestToBytesInteger", "Byte 0 should be &H34, actual=" & result(0)
+    m_asserter.AreEqual &H12, result(1), "NativeConverterTest.TestToBytesInteger", "Byte 1 should be &H12, actual=" & result(1)
+    
+    ' Test case: 0 -> [0, 0]
+    result = NativeConverter.ToBytesInteger(0)
+    m_asserter.AreEqual 0, result(0), "NativeConverterTest.TestToBytesInteger", "Byte 0 should be 0, actual=" & result(0)
+    m_asserter.AreEqual 0, result(1), "NativeConverterTest.TestToBytesInteger", "Byte 1 should be 0, actual=" & result(1)
+    
+    ' Test case: -1 -> [&HFF, &HFF] (two's complement)
+    result = NativeConverter.ToBytesInteger(-1)
+    m_asserter.AreEqual &HFF, result(0), "NativeConverterTest.TestToBytesInteger", "Byte 0 should be &HFF, actual=" & result(0)
+    m_asserter.AreEqual &HFF, result(1), "NativeConverterTest.TestToBytesInteger", "Byte 1 should be &HFF, actual=" & result(1)
+End Sub
+
+' TestToBytesLong tests the ToBytesLong function with various values.
+Private Sub TestToBytesLong()
+    Dim result() As Byte
+    
+    ' Test case: 0x12345678 -> [&H78, &H56, &H34, &H12] (little-endian)
+    result = NativeConverter.ToBytesLong(&H12345678)
+    m_asserter.AreEqual 4, UBound(result) - LBound(result) + 1, "NativeConverterTest.TestToBytesLong", "Array length should be 4"
+    m_asserter.AreEqual &H78, result(0), "NativeConverterTest.TestToBytesLong", "Byte 0 should be &H78, actual=" & result(0)
+    m_asserter.AreEqual &H56, result(1), "NativeConverterTest.TestToBytesLong", "Byte 1 should be &H56, actual=" & result(1)
+    m_asserter.AreEqual &H34, result(2), "NativeConverterTest.TestToBytesLong", "Byte 2 should be &H34, actual=" & result(2)
+    m_asserter.AreEqual &H12, result(3), "NativeConverterTest.TestToBytesLong", "Byte 3 should be &H12, actual=" & result(3)
+    
+    ' Test case: 0 -> [0, 0, 0, 0]
+    result = NativeConverter.ToBytesLong(0)
+    m_asserter.AreEqual 0, result(0), "NativeConverterTest.TestToBytesLong", "Byte 0 should be 0, actual=" & result(0)
+    m_asserter.AreEqual 0, result(1), "NativeConverterTest.TestToBytesLong", "Byte 1 should be 0, actual=" & result(1)
+    m_asserter.AreEqual 0, result(2), "NativeConverterTest.TestToBytesLong", "Byte 2 should be 0, actual=" & result(2)
+    m_asserter.AreEqual 0, result(3), "NativeConverterTest.TestToBytesLong", "Byte 3 should be 0, actual=" & result(3)
+    
+    ' Test case: -1 -> [&HFF, &HFF, &HFF, &HFF] (two's complement)
+    result = NativeConverter.ToBytesLong(-1)
+    m_asserter.AreEqual &HFF, result(0), "NativeConverterTest.TestToBytesLong", "Byte 0 should be &HFF, actual=" & result(0)
+    m_asserter.AreEqual &HFF, result(1), "NativeConverterTest.TestToBytesLong", "Byte 1 should be &HFF, actual=" & result(1)
+    m_asserter.AreEqual &HFF, result(2), "NativeConverterTest.TestToBytesLong", "Byte 2 should be &HFF, actual=" & result(2)
+    m_asserter.AreEqual &HFF, result(3), "NativeConverterTest.TestToBytesLong", "Byte 3 should be &HFF, actual=" & result(3)
+End Sub
+
+' TestToBytesSingle tests the ToBytesSingle function with various values.
+Private Sub TestToBytesSingle()
+    Dim result() As Byte
+    
+    ' Test case: 1.0 -> [0, 0, &H80, &H3F] (IEEE 754 single: 0x3F800000)
+    result = NativeConverter.ToBytesSingle(1!)
+    m_asserter.AreEqual 4, UBound(result) - LBound(result) + 1, "NativeConverterTest.TestToBytesSingle", "Array length should be 4"
+    m_asserter.AreEqual 0, result(0), "NativeConverterTest.TestToBytesSingle", "Byte 0 should be 0, actual=" & result(0)
+    m_asserter.AreEqual 0, result(1), "NativeConverterTest.TestToBytesSingle", "Byte 1 should be 0, actual=" & result(1)
+    m_asserter.AreEqual &H80, result(2), "NativeConverterTest.TestToBytesSingle", "Byte 2 should be &H80, actual=" & result(2)
+    m_asserter.AreEqual &H3F, result(3), "NativeConverterTest.TestToBytesSingle", "Byte 3 should be &H3F, actual=" & result(3)
+    
+    ' Test case: 0.0 -> [0, 0, 0, 0]
+    result = NativeConverter.ToBytesSingle(0!)
+    m_asserter.AreEqual 0, result(0), "NativeConverterTest.TestToBytesSingle", "Byte 0 should be 0, actual=" & result(0)
+    m_asserter.AreEqual 0, result(1), "NativeConverterTest.TestToBytesSingle", "Byte 1 should be 0, actual=" & result(1)
+    m_asserter.AreEqual 0, result(2), "NativeConverterTest.TestToBytesSingle", "Byte 2 should be 0, actual=" & result(2)
+    m_asserter.AreEqual 0, result(3), "NativeConverterTest.TestToBytesSingle", "Byte 3 should be 0, actual=" & result(3)
+    
+    ' Test case: -1.0 -> [0, 0, &H80, &HBF] (IEEE 754 single: 0xBF800000)
+    result = NativeConverter.ToBytesSingle(-1!)
+    m_asserter.AreEqual 0, result(0), "NativeConverterTest.TestToBytesSingle", "Byte 0 should be 0, actual=" & result(0)
+    m_asserter.AreEqual 0, result(1), "NativeConverterTest.TestToBytesSingle", "Byte 1 should be 0, actual=" & result(1)
+    m_asserter.AreEqual &H80, result(2), "NativeConverterTest.TestToBytesSingle", "Byte 2 should be &H80, actual=" & result(2)
+    m_asserter.AreEqual &HBF, result(3), "NativeConverterTest.TestToBytesSingle", "Byte 3 should be &HBF, actual=" & result(3)
+End Sub
+
+' TestToBytesDouble tests the ToBytesDouble function with various values.
+Private Sub TestToBytesDouble()
+    Dim result() As Byte
+    
+    ' Test case: 1.0 -> [0, 0, 0, 0, 0, 0, &HF0, &H3F] (IEEE 754 double: 0x3FF0000000000000)
+    result = NativeConverter.ToBytesDouble(1#)
+    m_asserter.AreEqual 8, UBound(result) - LBound(result) + 1, "NativeConverterTest.TestToBytesDouble", "Array length should be 8"
+    m_asserter.AreEqual 0, result(0), "NativeConverterTest.TestToBytesDouble", "Byte 0 should be 0, actual=" & result(0)
+    m_asserter.AreEqual 0, result(1), "NativeConverterTest.TestToBytesDouble", "Byte 1 should be 0, actual=" & result(1)
+    m_asserter.AreEqual 0, result(2), "NativeConverterTest.TestToBytesDouble", "Byte 2 should be 0, actual=" & result(2)
+    m_asserter.AreEqual 0, result(3), "NativeConverterTest.TestToBytesDouble", "Byte 3 should be 0, actual=" & result(3)
+    m_asserter.AreEqual 0, result(4), "NativeConverterTest.TestToBytesDouble", "Byte 4 should be 0, actual=" & result(4)
+    m_asserter.AreEqual 0, result(5), "NativeConverterTest.TestToBytesDouble", "Byte 5 should be 0, actual=" & result(5)
+    m_asserter.AreEqual &HF0, result(6), "NativeConverterTest.TestToBytesDouble", "Byte 6 should be &HF0, actual=" & result(6)
+    m_asserter.AreEqual &H3F, result(7), "NativeConverterTest.TestToBytesDouble", "Byte 7 should be &H3F, actual=" & result(7)
+    
+    ' Test case: 0.0 -> [0, 0, 0, 0, 0, 0, 0, 0]
+    result = NativeConverter.ToBytesDouble(0#)
+    m_asserter.AreEqual 0, result(0), "NativeConverterTest.TestToBytesDouble", "Byte 0 should be 0, actual=" & result(0)
+    m_asserter.AreEqual 0, result(1), "NativeConverterTest.TestToBytesDouble", "Byte 1 should be 0, actual=" & result(1)
+    m_asserter.AreEqual 0, result(2), "NativeConverterTest.TestToBytesDouble", "Byte 2 should be 0, actual=" & result(2)
+    m_asserter.AreEqual 0, result(3), "NativeConverterTest.TestToBytesDouble", "Byte 3 should be 0, actual=" & result(3)
+    m_asserter.AreEqual 0, result(4), "NativeConverterTest.TestToBytesDouble", "Byte 4 should be 0, actual=" & result(4)
+    m_asserter.AreEqual 0, result(5), "NativeConverterTest.TestToBytesDouble", "Byte 5 should be 0, actual=" & result(5)
+    m_asserter.AreEqual 0, result(6), "NativeConverterTest.TestToBytesDouble", "Byte 6 should be 0, actual=" & result(6)
+    m_asserter.AreEqual 0, result(7), "NativeConverterTest.TestToBytesDouble", "Byte 7 should be 0, actual=" & result(7)
+    
+    ' Test case: -1.0 -> [0, 0, 0, 0, 0, 0, &HF0, &HBF] (IEEE 754 double: 0xBFF0000000000000)
+    result = NativeConverter.ToBytesDouble(-1#)
+    m_asserter.AreEqual 0, result(0), "NativeConverterTest.TestToBytesDouble", "Byte 0 should be 0, actual=" & result(0)
+    m_asserter.AreEqual 0, result(1), "NativeConverterTest.TestToBytesDouble", "Byte 1 should be 0, actual=" & result(1)
+    m_asserter.AreEqual 0, result(2), "NativeConverterTest.TestToBytesDouble", "Byte 2 should be 0, actual=" & result(2)
+    m_asserter.AreEqual 0, result(3), "NativeConverterTest.TestToBytesDouble", "Byte 3 should be 0, actual=" & result(3)
+    m_asserter.AreEqual 0, result(4), "NativeConverterTest.TestToBytesDouble", "Byte 4 should be 0, actual=" & result(4)
+    m_asserter.AreEqual 0, result(5), "NativeConverterTest.TestToBytesDouble", "Byte 5 should be 0, actual=" & result(5)
+    m_asserter.AreEqual &HF0, result(6), "NativeConverterTest.TestToBytesDouble", "Byte 6 should be &HF0, actual=" & result(6)
+    m_asserter.AreEqual &HBF, result(7), "NativeConverterTest.TestToBytesDouble", "Byte 7 should be &HBF, actual=" & result(7)
 End Sub

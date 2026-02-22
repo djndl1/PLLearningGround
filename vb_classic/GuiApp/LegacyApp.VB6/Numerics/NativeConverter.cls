@@ -21,6 +21,16 @@ Private Type ByteBuffer8
     bytes(0 To 7) As Byte
 End Type
 
+' Fixed-size buffer structure for 4-byte types
+Private Type ByteBuffer4
+    bytes(0 To 3) As Byte
+End Type
+
+' Fixed-size buffer structure for 2-byte types
+Private Type ByteBuffer2
+    bytes(0 To 1) As Byte
+End Type
+
 ' NativeConverter provides bitwise operations and byte order manipulation utilities.
 ' This class implements functions for shifting bits and reversing byte order of integral types.
 ' Since VB6 lacks native bit shift operators, these functions use multiplication and division
@@ -128,13 +138,13 @@ Attribute ReverseByteOrderSingle.VB_Description = "ReverseByteOrderSingle revers
     ' Use CopyMemory API to manipulate the bytes of the Single value
     Dim longValue As Long
     Dim reversedLong As Long
-    
+
     ' Copy the Single value's memory representation to a Long
     CopyMemory longValue, value, 4
-    
+
     ' Reverse the byte order using the existing Long function
     reversedLong = ReverseByteOrderLong(longValue)
-    
+
     ' Copy the reversed bytes back to a Single
     CopyMemory ReverseByteOrderSingle, reversedLong, 4
 End Function
@@ -151,17 +161,77 @@ Attribute ReverseByteOrderDouble.VB_Description = "ReverseByteOrderDouble revers
     Dim buffer As ByteBuffer8
     Dim temp As Byte
     Dim i As Integer
-    
+
     ' Copy the Double value's memory representation to the fixed buffer
     CopyMemory buffer.bytes(0), value, 8
-    
+
     ' Reverse the byte order in-place by swapping bytes from both ends
     For i = 0 To 3
         temp = buffer.bytes(i)
         buffer.bytes(i) = buffer.bytes(7 - i)
         buffer.bytes(7 - i) = temp
     Next i
-    
+
     ' Copy the reversed bytes back to a Double
     CopyMemory ReverseByteOrderDouble, buffer.bytes(0), 8
+End Function
+
+' ToBytesInteger converts a 16-bit Integer value to a byte array representing its memory layout.
+' Args:
+'   value (Integer): The 16-bit Integer value to convert to bytes.
+' Returns:
+'   Byte(): A 2-element byte array containing the bytes of the Integer value.
+Public Function ToBytesInteger(ByVal value As Integer) As Byte()
+Attribute ToBytesInteger.VB_Description = "ToBytesInteger converts a 16-bit Integer value to a byte array representing its memory layout.\r\nArgs:\r\n  value (Integer): The 16-bit Integer value to convert to bytes.\r\nReturns:\r\n  Byte(): A 2-element byte array containing the bytes of the Integer value."
+    Dim result(0 To 1) As Byte
+
+    ' Copy the Integer value's memory representation directly to the result array
+    CopyMemory result(0), value, 2
+
+    ToBytesInteger = result
+End Function
+
+' ToBytesLong converts a 32-bit Long value to a byte array representing its memory layout.
+' Args:
+'   value (Long): The 32-bit Long value to convert to bytes.
+' Returns:
+'   Byte(): A 4-element byte array containing the bytes of the Long value.
+Public Function ToBytesLong(ByVal value As Long) As Byte()
+Attribute ToBytesLong.VB_Description = "ToBytesLong converts a 32-bit Long value to a byte array representing its memory layout.\r\nArgs:\r\n  value (Long): The 32-bit Long value to convert to bytes.\r\nReturns:\r\n  Byte(): A 4-element byte array containing the bytes of the Long value."
+    Dim result(0 To 3) As Byte
+
+    ' Copy the Long value's memory representation directly to the result array
+    CopyMemory result(0), value, 4
+
+    ToBytesLong = result
+End Function
+
+' ToBytesSingle converts a 32-bit Single value to a byte array representing its memory layout.
+' Args:
+'   value (Single): The 32-bit Single value to convert to bytes.
+' Returns:
+'   Byte(): A 4-element byte array containing the bytes of the Single value.
+Public Function ToBytesSingle(ByVal value As Single) As Byte()
+Attribute ToBytesSingle.VB_Description = "ToBytesSingle converts a 32-bit Single value to a byte array representing its memory layout.\r\nArgs:\r\n  value (Single): The 32-bit Single value to convert to bytes.\r\nReturns:\r\n  Byte(): A 4-element byte array containing the bytes of the Single value."
+    Dim result(0 To 3) As Byte
+
+    ' Copy the Single value's memory representation directly to the result array
+    CopyMemory result(0), value, 4
+
+    ToBytesSingle = result
+End Function
+
+' ToBytesDouble converts a 64-bit Double value to a byte array representing its memory layout.
+' Args:
+'   value (Double): The 64-bit Double value to convert to bytes.
+' Returns:
+'   Byte(): An 8-element byte array containing the bytes of the Double value.
+Public Function ToBytesDouble(ByVal value As Double) As Byte()
+Attribute ToBytesDouble.VB_Description = "ToBytesDouble converts a 64-bit Double value to a byte array representing its memory layout.\r\nArgs:\r\n  value (Double): The 64-bit Double value to convert to bytes.\r\nReturns:\r\n  Byte(): An 8-element byte array containing the bytes of the Double value."
+    Dim result(0 To 7) As Byte
+
+    ' Copy the Double value's memory representation directly to the result array
+    CopyMemory result(0), value, 8
+
+    ToBytesDouble = result
 End Function
