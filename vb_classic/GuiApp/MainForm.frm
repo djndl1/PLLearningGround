@@ -68,10 +68,12 @@ Private Sub Main()
         Call CSliceTest.Run(m_asserter)
         Call FileTimeDateTimeTest.Run(m_asserter)
         Call NumericsTest.Run(m_asserter)
+        Call NativeConverterTest.Run(m_asserter)
+        Call BitReinterpretTest.Run(m_asserter)
 
         Call TestFileTimeDateTime
 
-        If AutoExitCheckBox.Value Then
+        If AutoExitCheckBox.value Then
                 Unload Me
         End If
 End Sub

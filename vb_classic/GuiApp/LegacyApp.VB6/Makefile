@@ -23,6 +23,7 @@ build_LegacyAppVB6: build/LegacyAppVB6.dll
 .PHONY: install
 install: build_LegacyAppVB6
 	-cp build/LegacyAppVB6.dll "C:/Program Files/Common Files/"
+	-regsvr32.exe -u -s "C:/Program Files/Common Files/LegacyAppVB6.dll"
 	-regsvr32.exe -s "C:/Program Files/Common Files/LegacyAppVB6.dll"
 
 
