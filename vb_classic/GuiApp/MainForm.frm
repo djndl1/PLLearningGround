@@ -70,10 +70,12 @@ Private Sub Main()
         Call NumericsTest.Run(m_asserter)
         Call NativeConverterTest.Run(m_asserter)
         Call BitReinterpretTest.Run(m_asserter)
+        Call BigEndianConverterTest.Run(m_asserter)
+        Call LittleEndianConverterTest.Run(m_asserter)
 
         Call TestFileTimeDateTime
 
-        If AutoExitCheckBox.value Then
+        If AutoExitCheckBox.Value Then
                 Unload Me
         End If
 End Sub
