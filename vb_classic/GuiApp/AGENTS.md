@@ -70,12 +70,16 @@ make -C LegacyApp.VB6 install
 - **VB6 DLL**: ActiveX DLL project with utility classes for arrays, date/time, file operations
 - **.NET Solution**: Multi-project solution with infrastructure, GUI, testing components
 - **Cross-Platform**: Supports .NET Framework and .NET 8 targets
+- **Numerics Subdirectory**: Contains specialized numeric conversion classes (`BigEndianConverter.cls`, `LittleEndianConverter.cls`, `NativeConverter.cls`, `BitReinterpret.cls`)
 
 ### Key Components
 - **Main Application**: GUI application with test runner functionality (MainForm.frm)
 - **Test Framework**: Custom test classes following Asserter pattern (ArraysTest.cls, CSliceTest.cls, etc.)
 - **Utility Library**: LegacyAppVB6.dll containing core functionality
 - **Error Handling**: Custom IErrorHandler interface and implementations
+- **Numerics Module**: Comprehensive numeric operations including Euclidean division, ceiling/floor division, modulo operations, and clamping functions
+- **Date/Time System**: Specialized date/time handling with `FileTimeDateTime`, `CDateTimeKind`, and factory classes
+- **Array Utilities**: `Arrays` singleton class for array manipulation and `CSlice` for array slicing operations
 
 ### Formatting
 - **Indentation**: 4 spaces (consistent with existing code)
@@ -115,10 +119,12 @@ End Sub
 - Document public methods with purpose, arguments, and return values using the format seen in Arrays.cls
 - Use `ReDim Preserve` for dynamic array resizing (see Arrays.cls:25-30)
 - **Array Operations**: Use the `Arrays` singleton class for array manipulation
-- **Error Checking**: Use `Ensure.bas` for validation and precondition checking
+- **Error Checking**: Use `Ensure.cls` for validation and precondition checking
 - **Type Safety**: Use `VariantType` function for type validation
 - **File Operations**: Use `TextFileOutput` class for file I/O with Scripting.FileSystemObject
 - **Date/Time**: Use specialized date/time classes like `FileTimeDateTime` and `CDateTimeKind`
+- **Numeric Conversions**: Use `BigEndianConverter`, `LittleEndianConverter`, and `NativeConverter` classes for byte array conversions
+- **Error Messages**: Always provide descriptive message arguments to `Ensure.` method calls for better debugging
 
 ### Project-Specific Patterns
 
@@ -151,6 +157,27 @@ Public Sub ResizeArray(ByRef arr As Variant, ByVal newSize As Long)
 End Sub
 ```
 
+#### Ensure Validation Pattern
+```vb
+' Use Ensure class for parameter validation with descriptive error messages
+' Example from Numerics.cls:65
+Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.EuclideanDivisionInteger", "divisor cannot be zero"
+
+' Example from BigEndianConverter.cls:134
+Ensure.GreaterThanOrEqual Arrays.GetArrayLength(bytes), 2, "bytes", "bytes array must have at least 2 elements"
+
+' Example from Ensure.cls:34-37 (VariantType with optional message)
+Public Sub VariantType(ByRef value As Variant, ByVal expectedType As VbVarType, ByVal source As String, Optional ByVal message As String = "")
+    Dim condition As Boolean
+    condition = (VarType(value) = expectedType)
+    If Len(message) > 0 Then
+        IsTrue condition, ErrorCodes.TypeMismatch, source, message
+    Else
+        IsTrue condition, ErrorCodes.TypeMismatch, source
+    End If
+End Sub
+```
+
 #### Error Handler Pattern
 ```vb
 ' Custom error handlers implement IErrorHandler interface
@@ -177,10 +204,16 @@ No automatic debugging; leave it to human.
 - Visual Basic 6.0 Runtime
 - COM components referenced in GuiApp.vbp
 - Windows-specific APIs for date/time functionality
+- Microsoft Scripting Runtime (for FileSystemObject in TextFileOutput.cls)
+- Microsoft ActiveX Data Objects 6.1 Library (ADO)
+- Microsoft WinHTTP Services 5.1
+- OPC DA Automation Wrapper 2.02
+- Microsoft Message Queue 3.0 Object Library
 
 ### Development Dependencies
 - Visual Basic 6.0 IDE (optional, for GUI development)
 - Make utility for command-line builds
+- Windows environment for VB6 compilation (cannot build on Android/Linux)
 
 ## Version Control
 
@@ -203,6 +236,8 @@ No automatic debugging; leave it to human.
 - **Runtime errors**: Verify COM component availability
 - **Missing references**: Update GuiApp.vbp with correct paths
 - **32-bit compatibility**: VB6 applications are 32-bit only
+- **Cross-platform limitations**: Cannot build VB6 projects on non-Windows platforms
+- **DLL registration**: LegacyAppVB6.dll requires registration with regsvr32 for COM interop
 
 ### Legacy Considerations
 - VB6 is a legacy technology with limited modern tooling
@@ -215,12 +250,15 @@ When working in this codebase, agents should:
 
 1. **Always verify VB6 compatibility** before implementing features
 2. **Follow the existing code style** and naming conventions
-3. **Use the custom error handling framework** (Ensure.bas) for new functionality
+3. **Use the custom error handling framework** (Ensure.cls) for new functionality
 4. **Implement proper error handling** using the Ensure module patterns
 5. **Reference existing patterns** from core modules like Arrays.cls and TextFileOutput.cls
 6. **Document breaking changes** when updating APIs
 7. **Use exact line references** when referring to code (e.g., `ArraysTest.cls:18-21`)
 8. **Never attempt automated builds or tests** without explicit user instruction
+9. **Always provide descriptive message arguments** to `Ensure.` method calls for better error reporting
+10. **Check for existing patterns** in Numerics subdirectory for numeric conversion operations
+11. **Respect the project structure** with separate directories for VB6 DLL, .NET infrastructure, and test classes
 
 ## Code References
 
