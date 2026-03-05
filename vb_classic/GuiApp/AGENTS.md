@@ -7,29 +7,65 @@ This file provides guidelines for agentic coding assistants working in this Visu
 This repository contains a legacy Visual Basic 6 application with a multi-component architecture:
 
 ### Main VB6 Application
-- **Primary project**: GUI application demonstrating various programming concepts including array manipulation, date/time handling, and custom error handling
-- **Components**: GUI forms, utility modules, and custom error handling classes
+- **Primary project**: GUI application (`GuiApp.vbp`) demonstrating various programming concepts including array manipulation, date/time handling, custom error handling, and numeric conversions
+- **Components**: GUI forms, utility modules, test classes, and custom error handling classes
 
 ### LegacyApp.VB6 Subproject
-- **VB6 ActiveX DLL**: Utility library (`LegacyAppVB6.vbp`) containing classes for arrays, date/time handling, file operations, and error validation
-- **.NET Infrastructure**: Cross-platform utility library (`LegacyApp/`) with data access, GUI utilities, and testing frameworks
+- **VB6 ActiveX DLL**: Utility library (`LegacyAppVB6.vbp`) containing utility classes for arrays, date/time handling, file operations, numerics, and error validation
+- **Numerics Subdirectory**: Contains specialized numeric conversion classes (`BigEndianConverter.cls`, `LittleEndianConverter.cls`, `NativeConverter.cls`, `BitReinterpret.cls`)
+- **.NET Reference Submodule**: LegacyApp/ contains .NET implementations for reference only (not for VB6 development)
 
 ## Project Structure
 
 ```
 GuiApp/
-├── LegacyApp.VB6/           # Subproject directory
-│   ├── LegacyAppVB6.vbp     # VB6 ActiveX DLL project
-│   ├── Arrays.cls           # Array manipulation utilities
-│   ├── Ensure.cls           # Error validation and assertions
-│   ├── TextFileOutput.cls   # File I/O operations
-│   ├── build/               # Compiled VB6 DLL outputs
-│   └── LegacyApp/           # .NET infrastructure solution
-│       ├── Infrastructure/  # Core utilities and data access
-│       ├── Gui/             # WinForms utilities
-│       ├── Test/            # NUnit test projects
-│       └── LegacyApp.sln    # .NET solution file
-└── [Main VB6 project files]
+├── GuiApp.vbp                 # Main VB6 project file
+├── GuiApp.vbw                 # VB6 workspace file
+├── MainForm.frm               # Main GUI form with test runner
+├── Asserter.cls               # Test assertion framework
+├── IErrorHandler.cls          # Error handler interface
+├── TextOutputErrorHandler.cls # Error handler implementation
+├── ArraysTest.cls             # Array utility tests
+├── CSliceTest.cls             # Array slice tests
+├── BigEndianConverterTest.cls # Big endian conversion tests
+├── LittleEndianConverterTest.cls # Little endian conversion tests
+├── NativeConverterTest.cls   # Native conversion tests
+├── BitReinterpretTest.cls    # Bit reinterpret tests
+├── NumericsTest.cls           # Numerics utility tests
+├── DecimalsTest.cls           # Decimal utility tests
+├── FileTimeDateTimeTest.cls   # Date/time tests
+├── build/                     # Compiled GUI application
+│   ├── GuiApp.exe
+│   ├── GuiApp.exe.config
+│   └── Activator.dll
+└── LegacyApp.VB6/             # ActiveX DLL subproject
+    ├── LegacyAppVB6.vbp       # VB6 DLL project
+    ├── Arrays.cls             # Array manipulation utilities
+    ├── Ensure.cls             # Error validation and assertions
+    ├── TextFileOutput.cls     # File I/O operations
+    ├── CSlice.cls             # Array slicing utilities
+    ├── Numerics.cls           # Numeric operations
+    ├── Decimals.cls           # Decimal utilities
+    ├── MinMax.cls             # Min/max utilities
+    ├── FileTimeDateTime.cls   # File time date/time
+    ├── FileTimeDateTimeFactory.cls # Date/time factory
+    ├── CDateTimeKind.cls      # Date/time kind
+    ├── IConsumer.cls          # Consumer interface
+    ├── OleDates.bas           # OLE date utilities
+    ├── FileTimeDateTimes.bas  # File time utilities
+    ├── SystemTime.bas         # System time utilities
+    ├── Numerics/              # Numeric conversion classes
+    │   ├── BigEndianConverter.cls
+    │   ├── LittleEndianConverter.cls
+    │   ├── NativeConverter.cls
+    │   └── BitReinterpret.cls
+    ├── build/                 # Compiled DLL outputs
+    │   └── LegacyAppVB6.dll
+    └── LegacyApp/             # .NET reference submodule (not for VB6 development)
+        ├── Infrastructure/   # Core .NET utilities
+        ├── Gui/               # .NET GUI utilities
+        ├── Test/              # .NET test projects
+        └── LegacyApp.sln      # .NET solution file
 ```
 
 ## Build Commands
@@ -68,8 +104,7 @@ make -C LegacyApp.VB6 install
 
 ### LegacyApp.VB6 Subproject Structure
 - **VB6 DLL**: ActiveX DLL project with utility classes for arrays, date/time, file operations
-- **.NET Solution**: Multi-project solution with infrastructure, GUI, testing components
-- **Cross-Platform**: Supports .NET Framework and .NET 8 targets
+- **.NET Reference Submodule**: LegacyApp/ directory contains .NET implementations for reference only (not for VB6 development)
 - **Numerics Subdirectory**: Contains specialized numeric conversion classes (`BigEndianConverter.cls`, `LittleEndianConverter.cls`, `NativeConverter.cls`, `BitReinterpret.cls`)
 
 ### Key Components
@@ -258,7 +293,7 @@ When working in this codebase, agents should:
 8. **Never attempt automated builds or tests** without explicit user instruction
 9. **Always provide descriptive message arguments** to `Ensure.` method calls for better error reporting
 10. **Check for existing patterns** in Numerics subdirectory for numeric conversion operations
-11. **Respect the project structure** with separate directories for VB6 DLL, .NET infrastructure, and test classes
+11. **Respect the project structure** with separate directories for VB6 DLL, .NET reference submodule, and test classes
 
 ## Code References
 
