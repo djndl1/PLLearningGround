@@ -22,6 +22,7 @@ Class=FileTimeDateTimeTest; FileTimeDateTimeTest.cls
 Class=BigEndianConverterTest; BigEndianConverterTest.cls
 Class=LittleEndianConverterTest; LittleEndianConverterTest.cls
 Class=BitAccessorTest; BitAccessorTest.cls
+Class=BitPaddingTest; BitPaddingTest.cls
 IconForm="MainForm"
 Startup="MainForm"
 HelpFile=""

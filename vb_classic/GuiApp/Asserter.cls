@@ -42,8 +42,32 @@ Public Sub IsTrue(ByVal booleanExpression As Boolean, _
         End If
 End Sub
 
-Public Sub AreEqual(ByVal l As Variant, ByVal r As Variant, _
+Public Sub AreEqual(ByVal expected As Variant, ByVal actual As Variant, _
                         Optional site As String = "", _
                         Optional message As String = "")
-    IsTrue l = r, site, message
+    If expected = actual Then
+        Call m_handler.Handle(0, site, message)
+    Else
+        Dim fullMessage As String
+        fullMessage = message & " (expected: " & FormatValue(expected) & ", actual: " & FormatValue(actual) & ")"
+        Call m_handler.Handle(AssertionError, site, fullMessage)
+    End If
 End Sub
+
+' Formats a value for display in error messages
+Private Function FormatValue(ByVal v As Variant) As String
+    On Error Resume Next
+    Select Case VarType(v)
+        Case vbInteger, vbLong
+            FormatValue = CStr(v)
+        Case vbSingle, vbDouble
+            FormatValue = CStr(v)
+        Case vbString
+            FormatValue = """" & v & """"
+        Case vbBoolean
+            FormatValue = IIf(v, "True", "False")
+        Case Else
+            FormatValue = CStr(v)
+    End Select
+    On Error GoTo 0
+End Function

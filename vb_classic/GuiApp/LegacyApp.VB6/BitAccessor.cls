@@ -16,6 +16,19 @@ Option Explicit
 ' Windows API declaration for memory copying
 Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (Destination As Any, Source As Any, ByVal Length As Long)
 
+' Fixed-size buffer structures for byte manipulation (avoids heap allocation)
+Private Type ByteBuffer2
+    bytes(0 To 1) As Byte
+End Type
+
+Private Type ByteBuffer4
+    bytes(0 To 3) As Byte
+End Type
+
+Private Type ByteBuffer8
+    bytes(0 To 7) As Byte
+End Type
+
 ' Bit length constants
 Private Const ByteBitLength As Long = 8
 Private Const IntegerBitLength As Long = 16
@@ -438,7 +451,20 @@ End Function
 '   Boolean: True if the bit is 1, False if 0
 Public Function GetBitSingle(ByVal value As Single, ByVal index As Long) As Boolean
     AssertBitRange index, LongBitLength
-    GetBitSingle = GetBitLong(CSngToLong(value), index)
+    GetBitSingle = GetBitLong(BitReinterpret.AsLong(value), index)
+End Function
+
+' Gets the low 32 bits of a Double (mantissa portion)
+Private Function GetDoubleLow(ByVal value As Double) As Long
+    CopyMemory GetDoubleLow, value, 4
+End Function
+
+' Gets the high 32 bits of a Double (exponent and sign portion)
+Private Function GetDoubleHigh(ByVal value As Double) As Long
+    Dim buf As ByteBuffer8
+    CopyMemory buf.bytes(0), value, 8
+    ' Copy the high 4 bytes directly to result using CopyMemory
+    CopyMemory GetDoubleHigh, buf.bytes(4), 4
 End Function
 
 ' Gets a bit at the specified index from a Double value (floating point)
@@ -449,10 +475,10 @@ End Function
 '   Boolean: True if the bit is 1, False if 0
 Public Function GetBitDouble(ByVal value As Double, ByVal index As Long) As Boolean
     AssertBitRange index, DoubleBitLength
-    If index < 32 Then
+    If index < LongBitLength Then
         GetBitDouble = GetBitLong(GetDoubleLow(value), index)
     Else
-        GetBitDouble = GetBitLong(GetDoubleHigh(value), index - 32)
+        GetBitDouble = GetBitLong(GetDoubleHigh(value), index - LongBitLength)
     End If
 End Function
 
@@ -500,9 +526,9 @@ End Function
 Public Function SetBitSingle(ByVal value As Single, ByVal index As Long) As Single
     AssertBitRange index, LongBitLength
     Dim bits As Long
-    bits = CSngToLong(value)
+    bits = BitReinterpret.AsLong(value)
     bits = SetBitLong(bits, index)
-    SetBitSingle = LongToCSng(bits)
+    SetBitSingle = BitReinterpret.AsSingle(bits)
 End Function
 
 ' Sets a bit at the specified index in a Double value
@@ -513,10 +539,10 @@ End Function
 '   Double: The double value with the specified bit set to 1
 Public Function SetBitDouble(ByVal value As Double, ByVal index As Long) As Double
     AssertBitRange index, DoubleBitLength
-    If index < 32 Then
+    If index < LongBitLength Then
         SetBitDouble = MakeDouble(GetDoubleHigh(value), SetBitLong(GetDoubleLow(value), index))
     Else
-        SetBitDouble = MakeDouble(SetBitLong(GetDoubleHigh(value), index - 32), GetDoubleLow(value))
+        SetBitDouble = MakeDouble(SetBitLong(GetDoubleHigh(value), index - LongBitLength), GetDoubleLow(value))
     End If
 End Function
 
@@ -564,9 +590,9 @@ End Function
 Public Function ClearBitSingle(ByVal value As Single, ByVal index As Long) As Single
     AssertBitRange index, LongBitLength
     Dim bits As Long
-    bits = CSngToLong(value)
+    bits = BitReinterpret.AsLong(value)
     bits = ClearBitLong(bits, index)
-    ClearBitSingle = LongToCSng(bits)
+    ClearBitSingle = BitReinterpret.AsSingle(bits)
 End Function
 
 ' Clears a bit at the specified index in a Double value
@@ -577,10 +603,10 @@ End Function
 '   Double: The double value with the specified bit set to 0
 Public Function ClearBitDouble(ByVal value As Double, ByVal index As Long) As Double
     AssertBitRange index, DoubleBitLength
-    If index < 32 Then
+    If index < LongBitLength Then
         ClearBitDouble = MakeDouble(GetDoubleHigh(value), ClearBitLong(GetDoubleLow(value), index))
     Else
-        ClearBitDouble = MakeDouble(ClearBitLong(GetDoubleHigh(value), index - 32), GetDoubleLow(value))
+        ClearBitDouble = MakeDouble(ClearBitLong(GetDoubleHigh(value), index - LongBitLength), GetDoubleLow(value))
     End If
 End Function
 
@@ -628,9 +654,9 @@ End Function
 Public Function FlipBitSingle(ByVal value As Single, ByVal index As Long) As Single
     AssertBitRange index, LongBitLength
     Dim bits As Long
-    bits = CSngToLong(value)
+    bits = BitReinterpret.AsLong(value)
     bits = FlipBitLong(bits, index)
-    FlipBitSingle = LongToCSng(bits)
+    FlipBitSingle = BitReinterpret.AsSingle(bits)
 End Function
 
 ' Flips a bit at the specified index in a Double value
@@ -641,10 +667,10 @@ End Function
 '   Double: The double value with the specified bit flipped
 Public Function FlipBitDouble(ByVal value As Double, ByVal index As Long) As Double
     AssertBitRange index, DoubleBitLength
-    If index < 32 Then
+    If index < LongBitLength Then
         FlipBitDouble = MakeDouble(GetDoubleHigh(value), FlipBitLong(GetDoubleLow(value), index))
     Else
-        FlipBitDouble = MakeDouble(FlipBitLong(GetDoubleHigh(value), index - 32), GetDoubleLow(value))
+        FlipBitDouble = MakeDouble(FlipBitLong(GetDoubleHigh(value), index - LongBitLength), GetDoubleLow(value))
     End If
 End Function
 
@@ -742,19 +768,17 @@ End Function
 ' Returns:
 '   Integer: The integer value with bit order reversed
 Public Function ReverseBitsInteger(ByVal value As Integer) As Integer
-    Dim buf(0 To 1) As Byte
-    Dim highByte As Byte
-    Dim lowByte As Byte
-    Dim resultBytes(0 To 1) As Byte
+    Dim buf As ByteBuffer2
+    Dim resultBytes As ByteBuffer2
 
     ' Extract bytes safely using CopyMemory
-    CopyMemory buf(0), value, 2
+    CopyMemory buf.bytes(0), value, 2
 
     ' Reverse each byte, then swap positions (low becomes high, high becomes low)
-    resultBytes(0) = ReverseBitsByte(buf(1))
-    resultBytes(1) = ReverseBitsByte(buf(0))
+    resultBytes.bytes(0) = ReverseBitsByte(buf.bytes(1))
+    resultBytes.bytes(1) = ReverseBitsByte(buf.bytes(0))
 
-    CopyMemory ReverseBitsInteger, resultBytes(0), 2
+    CopyMemory ReverseBitsInteger, resultBytes.bytes(0), 2
 End Function
 
 ' Reverses all bits in a Long value (bit order reversal)
@@ -763,19 +787,19 @@ End Function
 ' Returns:
 '   Long: The long value with bit order reversed
 Public Function ReverseBitsLong(ByVal value As Long) As Long
-    Dim buf(0 To 3) As Byte
-    Dim reversedBytes(0 To 3) As Byte
+    Dim buf As ByteBuffer4
+    Dim reversedBytes As ByteBuffer4
 
     ' Extract bytes safely using CopyMemory
-    CopyMemory buf(0), value, 4
+    CopyMemory buf.bytes(0), value, 4
 
     ' Reverse each byte, then reverse the byte order
-    reversedBytes(0) = ReverseBitsByte(buf(3))
-    reversedBytes(1) = ReverseBitsByte(buf(2))
-    reversedBytes(2) = ReverseBitsByte(buf(1))
-    reversedBytes(3) = ReverseBitsByte(buf(0))
+    reversedBytes.bytes(0) = ReverseBitsByte(buf.bytes(3))
+    reversedBytes.bytes(1) = ReverseBitsByte(buf.bytes(2))
+    reversedBytes.bytes(2) = ReverseBitsByte(buf.bytes(1))
+    reversedBytes.bytes(3) = ReverseBitsByte(buf.bytes(0))
 
-    CopyMemory ReverseBitsLong, reversedBytes(0), 4
+    CopyMemory ReverseBitsLong, reversedBytes.bytes(0), 4
 End Function
 
 ' Reverses all bits in a Single value (bit order reversal)
@@ -784,10 +808,19 @@ End Function
 ' Returns:
 '   Single: The single value with bit order reversed
 Public Function ReverseBitsSingle(ByVal value As Single) As Single
-    Dim bits As Long
-    bits = CSngToLong(value)
-    bits = ReverseBitsLong(bits)
-    ReverseBitsSingle = LongToCSng(bits)
+    Dim buf As ByteBuffer4
+    Dim reversedBytes As ByteBuffer4
+
+    ' Extract bytes using CopyMemory
+    CopyMemory buf.bytes(0), value, 4
+
+    ' Reverse each byte, then reverse the byte order
+    reversedBytes.bytes(0) = ReverseBitsByte(buf.bytes(3))
+    reversedBytes.bytes(1) = ReverseBitsByte(buf.bytes(2))
+    reversedBytes.bytes(2) = ReverseBitsByte(buf.bytes(1))
+    reversedBytes.bytes(3) = ReverseBitsByte(buf.bytes(0))
+
+    CopyMemory ReverseBitsSingle, reversedBytes.bytes(0), 4
 End Function
 
 ' Reverses all bits in a Double value (bit order reversal)
@@ -796,79 +829,183 @@ End Function
 ' Returns:
 '   Double: The double value with bit order reversed
 Public Function ReverseBitsDouble(ByVal value As Double) As Double
-    Dim highBits As Long
-    Dim lowBits As Long
-    Dim reversedHigh As Long
-    Dim reversedLow As Long
+    Dim buf As ByteBuffer8
+    Dim reversedBytes As ByteBuffer8
     Dim i As Long
 
-    highBits = GetDoubleHigh(value)
-    lowBits = GetDoubleLow(value)
+    ' Extract bytes using CopyMemory
+    CopyMemory buf.bytes(0), value, 8
 
-    reversedLow = 0
-    For i = 0 To 31
-        If GetBitLong(highBits, i) Then
-            reversedLow = SetBitLong(reversedLow, 31 - i)
-        End If
+    ' Reverse each byte, then reverse the byte order
+    For i = 0 To 7
+        reversedBytes.bytes(i) = ReverseBitsByte(buf.bytes(7 - i))
     Next i
 
-    reversedHigh = 0
-    For i = 0 To 31
-        If GetBitLong(lowBits, i) Then
-            reversedHigh = SetBitLong(reversedHigh, 31 - i)
-        End If
-    Next i
-
-    ReverseBitsDouble = MakeDouble(reversedHigh, reversedLow)
-End Function
-
-' ==================== HELPER FUNCTIONS ====================
-
-' Converts Single to Long using CopyMemory (bit reinterpretation)
-Private Function CSngToLong(ByVal value As Single) As Long
-    CopyMemory CSngToLong, value, 4
-End Function
-
-' Converts Long to Single using CopyMemory (bit reinterpretation)
-Private Function LongToCSng(ByVal value As Long) As Single
-    CopyMemory LongToCSng, value, 4
-End Function
-
-' Gets the low 32 bits of a Double (mantissa portion)
-Private Function GetDoubleLow(ByVal value As Double) As Long
-    CopyMemory GetDoubleLow, value, 4
-End Function
-
-' Gets the high 32 bits of a Double (exponent and sign portion)
-Private Function GetDoubleHigh(ByVal value As Double) As Long
-    Dim buf(0 To 7) As Byte
-    CopyMemory buf(0), value, 8
-    ' Copy the high 4 bytes directly to result using CopyMemory
-    CopyMemory GetDoubleHigh, buf(4), 4
+    CopyMemory ReverseBitsDouble, reversedBytes.bytes(0), 8
 End Function
 
 ' Makes a Double from two Long values
 Private Function MakeDouble(ByVal high As Long, ByVal low As Long) As Double
-    Dim buf(0 To 7) As Byte
-    Dim tmp As Long
+    Dim buf As ByteBuffer8
 
-    tmp = low
-    buf(0) = tmp And &HFF
-    tmp = tmp \ 256
-    buf(1) = tmp And &HFF
-    tmp = tmp \ 256
-    buf(2) = tmp And &HFF
-    tmp = tmp \ 256
-    buf(3) = tmp And &HFF
+    buf.bytes(0) = low And &HFF
+    buf.bytes(1) = NativeConverter.RightShiftLong(low, 8) And &HFF
+    buf.bytes(2) = NativeConverter.RightShiftLong(low, 16) And &HFF
+    buf.bytes(3) = NativeConverter.RightShiftLong(low, 24) And &HFF
 
-    tmp = high
-    buf(4) = tmp And &HFF
-    tmp = tmp \ 256
-    buf(5) = tmp And &HFF
-    tmp = tmp \ 256
-    buf(6) = tmp And &HFF
-    tmp = tmp \ 256
-    buf(7) = tmp And &HFF
+    buf.bytes(4) = high And &HFF
+    buf.bytes(5) = NativeConverter.RightShiftLong(high, 8) And &HFF
+    buf.bytes(6) = NativeConverter.RightShiftLong(high, 16) And &HFF
+    buf.bytes(7) = NativeConverter.RightShiftLong(high, 24) And &HFF
 
-    CopyMemory MakeDouble, buf(0), 8
+    CopyMemory MakeDouble, buf.bytes(0), 8
+End Function
+
+' ==================== PADDING ====================
+
+' Pads a Byte value with zeros on the left to 16-bit Integer
+' Args:
+'   value (Byte): The byte value to pad
+' Returns:
+'   Integer: The byte value in the lower 8 bits with upper 8 bits zero
+Public Function PadZeroLeftTo16Bits(ByVal value As Byte) As Integer
+    Dim buf As ByteBuffer2
+    buf.bytes(0) = value
+    CopyMemory PadZeroLeftTo16Bits, buf.bytes(0), 2
+End Function
+
+' Pads a Byte value with zeros on the left to 32-bit Long
+' Args:
+'   value (Byte): The byte value to pad
+' Returns:
+'   Long: The byte value in the lower 8 bits with upper 24 bits zero
+Public Function PadZeroLeftTo32Bits(ByVal value As Byte) As Long
+    Dim buf As ByteBuffer4
+    buf.bytes(0) = value
+    CopyMemory PadZeroLeftTo32Bits, buf.bytes(0), 4
+End Function
+
+' Pads a Byte value with zeros on the left to 64-bit Double
+' Args:
+'   value (Byte): The byte value to pad
+' Returns:
+'   Double: The byte value in the lower 8 bits with upper 56 bits zero
+Public Function PadZeroLeftTo64Bits(ByVal value As Byte) As Double
+    ' Simply return the byte as Double (already zero-padded on left)
+    PadZeroLeftTo64Bits = CDbl(value)
+End Function
+
+' Pads a Byte value with zeros on the right to 16-bit Integer
+' Args:
+'   value (Byte): The byte value to pad
+' Returns:
+'   Integer: The byte value in the upper 8 bits with lower 8 bits zero
+Public Function PadZeroRightTo16Bits(ByVal value As Byte) As Integer
+    Dim buf As ByteBuffer2
+    buf.bytes(1) = value
+    CopyMemory PadZeroRightTo16Bits, buf.bytes(0), 2
+End Function
+
+' Pads a Byte value with zeros on the right to 32-bit Long
+' Args:
+'   value (Byte): The byte value to pad
+' Returns:
+'   Double: The byte value in the upper 8 bits with lower 24 bits zero (as Double to handle unsigned 32-bit range)
+Public Function PadZeroRightTo32Bits(ByVal value As Byte) As Long
+    Dim buf As ByteBuffer4
+    buf.bytes(3) = value
+    CopyMemory PadZeroRightTo32Bits, buf.bytes(0), 4
+End Function
+
+' Pads a Byte value with zeros on the right to 64-bit Double
+' Args:
+'   value (Byte): The byte value to pad
+' Returns:
+'   Double: The byte value in the upper 8 bits with lower 56 bits zero
+Public Function PadZeroRightTo64Bits(ByVal value As Byte) As Double
+    ' Shift left by 56 bits (value * 2^56)
+    PadZeroRightTo64Bits = CDbl(value) * 72057594037927936#
+End Function
+
+' Pads an Integer value with zeros on the left to 32-bit Long
+' Args:
+'   value (Integer): The integer value to pad
+' Returns:
+'   Long: The integer value zero-extended to 32 bits (as unsigned pattern)
+Public Function PadZeroLeftTo32BitsInteger(ByVal value As Integer) As Long
+    ' Zero-extend: treat as unsigned 16-bit, convert to 32-bit
+    PadZeroLeftTo32BitsInteger = CLng(value And &HFFFF&)
+End Function
+
+' Pads an Integer value with zeros on the left to 64-bit Double
+' Args:
+'   value (Integer): The integer value to pad
+' Returns:
+'   Double: The integer value in the lower 16 bits with upper 48 bits zero
+Public Function PadZeroLeftTo64BitsInteger(ByVal value As Integer) As Double
+    ' Return the integer as Double (already zero-padded on left)
+    PadZeroLeftTo64BitsInteger = CDbl(value)
+End Function
+
+' Pads an Integer value with zeros on the right to 32-bit Long
+' Args:
+'   value (Integer): The integer value to pad
+' Returns:
+'   Long: The integer value zero-extended then shifted to upper 16 bits
+Public Function PadZeroRightTo32BitsInteger(ByVal value As Integer) As Long
+    PadZeroRightTo32BitsInteger = CLng(value) * 65536
+End Function
+
+' Pads an Integer value with zeros on the right to 64-bit Double
+' Args:
+'   value (Integer): The integer value to pad
+' Returns:
+'   Double: The integer value in the upper 16 bits with lower 48 bits zero
+Public Function PadZeroRightTo64BitsInteger(ByVal value As Integer) As Double
+    ' Shift left by 48 bits (value * 2^48)
+    PadZeroRightTo64BitsInteger = CDbl(value) * 281474976710656#
+End Function
+
+' Pads a Long value with zeros on the left to 64-bit Double
+' Args:
+'   value (Long): The long value to pad
+' Returns:
+'   Double: The long value in the lower 32 bits with upper 32 bits zero
+Public Function PadZeroLeftTo64BitsLong(ByVal value As Long) As Double
+    ' Return the long as Double (already zero-padded on left)
+    PadZeroLeftTo64BitsLong = CDbl(value)
+End Function
+
+' Pads a Long value with zeros on the right to 64-bit Double
+' Args:
+'   value (Long): The long value to pad
+' Returns:
+'   Double: The long value in the upper 32 bits with lower 32 bits zero
+Public Function PadZeroRightTo64BitsLong(ByVal value As Long) As Double
+    ' Shift left by 32 bits (value * 2^32)
+    PadZeroRightTo64BitsLong = CDbl(value) * 4294967296#
+End Function
+
+' Converts a Long value to Double by preserving bit pattern (for testing)
+' Args:
+'   value (Long): The long value to reinterpret
+' Returns:
+'   Double: The bits of the long interpreted as a Double
+Public Function LongBitsAsDouble(ByVal value As Long) As Double
+    Dim buf As ByteBuffer8
+    CopyMemory buf.bytes(0), value, 4
+    CopyMemory LongBitsAsDouble, buf.bytes(0), 8
+End Function
+
+' Converts two Long values (low and high 32 bits) to Double preserving bit pattern
+' Args:
+'   lowBits (Long): Lower 32 bits
+'   highBits (Long): Upper 32 bits
+' Returns:
+'   Double: The 64-bit pattern interpreted as a Double
+Public Function ULongBitsAsDouble(ByVal lowBits As Long, ByVal highBits As Long) As Double
+    Dim buf As ByteBuffer8
+    CopyMemory buf.bytes(0), lowBits, 4
+    CopyMemory buf.bytes(4), highBits, 4
+    CopyMemory ULongBitsAsDouble, buf.bytes(0), 8
 End Function

@@ -161,6 +161,11 @@ End Sub
 - **Numeric Conversions**: Use `BigEndianConverter`, `LittleEndianConverter`, and `NativeConverter` classes for byte array conversions
 - **Error Messages**: Always provide descriptive message arguments to `Ensure.` method calls for better debugging
 
+#### Test Assertion Messages
+- Always include actual output values in assertion failure messages for easier debugging
+- The `Asserter.AreEqual` method automatically includes expected and actual values in the error message
+- For byte comparison tests, use helper methods that display hex byte arrays (see BitPaddingTest.cls)
+
 ### Project-Specific Patterns
 
 #### Test Framework Pattern
