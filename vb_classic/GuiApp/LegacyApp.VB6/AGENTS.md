@@ -65,6 +65,7 @@ End Sub
 - Document public methods with purpose, arguments, and return values using the format seen in Arrays.cls
 - Use `ReDim Preserve` for dynamic array resizing (see Arrays.cls:25-30)
 - **Array Operations**: Use the `Arrays` singleton class for array manipulation
+- **Bit Operations**: Use the `BitAccessor` singleton class for bit manipulation (get, set, clear, flip bits, reverse bits)
 - **Error Checking**: Use `Ensure.bas` for validation and precondition checking
 - **Type Safety**: Use `VariantType` function for type validation
 - **File Operations**: Use `TextFileOutput` class for file I/O with Scripting.FileSystemObject

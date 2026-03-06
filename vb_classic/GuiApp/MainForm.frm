@@ -72,6 +72,7 @@ Private Sub Main()
         Call BitReinterpretTest.Run(m_asserter)
         Call BigEndianConverterTest.Run(m_asserter)
         Call LittleEndianConverterTest.Run(m_asserter)
+        Call BitAccessorTest.Run(m_asserter)
 
         Call TestFileTimeDateTime
 
