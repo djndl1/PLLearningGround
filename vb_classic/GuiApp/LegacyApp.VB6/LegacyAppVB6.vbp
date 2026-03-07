@@ -22,6 +22,7 @@ Module=SystemTimeDateTime; SystemTime.bas
 Class=TextFileOutput; TextFileOutput.cls
 Startup="(None)"
 HelpFile=""
+Title="LegacyAppVB6"
 ExeName32="LegacyAppVB6.dll"
 Path32="C:\Program Files\Common Files"
 Command32=""
@@ -36,6 +37,7 @@ RevisionVer=0
 AutoIncrementVer=0
 ServerSupportFiles=0
 VersionCompanyName="Unknown Organization"
+CondComp="LEGACY_OS = 1"
 CompilationType=0
 OptimizationType=0
 FavorPentiumPro(tm)=0

@@ -14,7 +14,7 @@ Attribute VB_Exposed = True
 Option Explicit
 
 ' Windows API declaration for memory copying
-Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (Destination As Any, Source As Any, ByVal Length As Long)
+Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (Destination As Any, source As Any, ByVal Length As Long)
 
 ' Fixed-size buffer structure for byte manipulation
 Private Type ByteBuffer8
@@ -24,12 +24,90 @@ End Type
 ' Fixed-size buffer structure for 4-byte types
 Private Type ByteBuffer4
     bytes(0 To 3) As Byte
+    ints(0 To 1) As Integer
 End Type
 
 ' Fixed-size buffer structure for 2-byte types
 Private Type ByteBuffer2
     bytes(0 To 1) As Byte
 End Type
+
+' Lookup table for powers of two (2^0 to 2^31)
+Private Const POWER_OF_TWO_MAX As Integer = 31
+Private m_PowerOfTwo(0 To POWER_OF_TWO_MAX) As Long
+Private m_Mask(0 To POWER_OF_TWO_MAX) As Long
+
+' Initialize the power of two table
+Private Sub Class_Initialize()
+    Dim i As Integer
+    m_PowerOfTwo(0) = &H1
+    m_PowerOfTwo(1) = &H2
+    m_PowerOfTwo(2) = &H4
+    m_PowerOfTwo(3) = &H8
+    m_PowerOfTwo(4) = &H10
+    m_PowerOfTwo(5) = &H20
+    m_PowerOfTwo(6) = &H40
+    m_PowerOfTwo(7) = &H80
+    m_PowerOfTwo(8) = &H100
+    m_PowerOfTwo(9) = &H200
+    m_PowerOfTwo(10) = &H400
+    m_PowerOfTwo(11) = &H800
+    m_PowerOfTwo(12) = &H1000
+    m_PowerOfTwo(13) = &H2000
+    m_PowerOfTwo(14) = &H4000
+    m_PowerOfTwo(15) = &H8000
+    m_PowerOfTwo(16) = &H10000
+    m_PowerOfTwo(17) = &H20000
+    m_PowerOfTwo(18) = &H40000
+    m_PowerOfTwo(19) = &H80000
+    m_PowerOfTwo(20) = &H100000
+    m_PowerOfTwo(21) = &H200000
+    m_PowerOfTwo(22) = &H400000
+    m_PowerOfTwo(23) = &H800000
+    m_PowerOfTwo(24) = &H1000000
+    m_PowerOfTwo(25) = &H2000000
+    m_PowerOfTwo(26) = &H4000000
+    m_PowerOfTwo(27) = &H8000000
+    m_PowerOfTwo(28) = &H10000000
+    m_PowerOfTwo(29) = &H20000000
+    m_PowerOfTwo(30) = &H40000000
+    m_PowerOfTwo(31) = &H80000000
+
+    ' Mask table: m_Mask(n) = 2^n - 1 (lower n bits set)
+    m_Mask(0) = &H0
+    m_Mask(1) = &H1
+    m_Mask(2) = &H3
+    m_Mask(3) = &H7
+    m_Mask(4) = &HF
+    m_Mask(5) = &H1F
+    m_Mask(6) = &H3F
+    m_Mask(7) = &H7F
+    m_Mask(8) = &HFF
+    m_Mask(9) = &H1FF
+    m_Mask(10) = &H3FF
+    m_Mask(11) = &H7FF
+    m_Mask(12) = &HFFF
+    m_Mask(13) = &H1FFF
+    m_Mask(14) = &H3FFF
+    m_Mask(15) = &H7FFF
+    m_Mask(16) = &HFFFF
+    m_Mask(17) = &H1FFFF
+    m_Mask(18) = &H3FFFF
+    m_Mask(19) = &H7FFFF
+    m_Mask(20) = &HFFFFF
+    m_Mask(21) = &H1FFFFF
+    m_Mask(22) = &H3FFFFF
+    m_Mask(23) = &H7FFFFF
+    m_Mask(24) = &HFFFFFF
+    m_Mask(25) = &H1FFFFFF
+    m_Mask(26) = &H3FFFFFF
+    m_Mask(27) = &H7FFFFFF
+    m_Mask(28) = &HFFFFFFF
+    m_Mask(29) = &H1FFFFFFF
+    m_Mask(30) = &H3FFFFFFF
+    m_Mask(31) = &H7FFFFFFF
+End Sub
+
 
 ' NativeConverter provides bitwise operations and byte order manipulation utilities.
 ' This class implements functions for shifting bits and reversing byte order of integral types.
@@ -47,7 +125,18 @@ End Type
 '   Integer: The value shifted left by the specified number of bits.
 Public Function LeftShiftInteger(ByVal value As Integer, ByVal shift As Integer) As Integer
 Attribute LeftShiftInteger.VB_Description = "LeftShiftInteger performs a left bit shift operation on a 16-bit Integer value.\r\nArgs:\r\n  value (Integer): The value to be shifted left.\r\n  shift (Integer): The number of bits to shift (0-15).\r\nReturns:\r\n  Integer: The value shifted left by the specified number of bits."
-    LeftShiftInteger = value * (2 ^ shift)
+    Ensure.Between shift, 0, 16, True, "NativeConverter.LeftShiftInteger shift"
+    If shift = 0 Then
+        LeftShiftInteger = value
+        Exit Function
+    End If
+    If shift = 16 Then
+        LeftShiftInteger = 0
+    End If
+    Dim u As Long
+    u = BitReinterpret.AsUnsignedLong(value)
+    u = CLng(u * m_PowerOfTwo(shift))
+    CopyMemory LeftShiftInteger, u, 2
 End Function
 
 ' RightShiftInteger performs a right bit shift operation on a 16-bit Integer value.
@@ -58,7 +147,8 @@ End Function
 '   Integer: The value shifted right by the specified number of bits.
 Public Function RightShiftInteger(ByVal value As Integer, ByVal shift As Integer) As Integer
 Attribute RightShiftInteger.VB_Description = "RightShiftInteger performs a right bit shift operation on a 16-bit Integer value.\r\nArgs:\r\n  value (Integer): The value to be shifted right.\r\n  shift (Integer): The number of bits to shift (0-15).\r\nReturns:\r\n  Integer: The value shifted right by the specified number of bits."
-    RightShiftInteger = value \ (2 ^ shift)
+    Ensure.Between shift, 0, 15, True, "NativeConverter.RightShiftInteger shift"
+    RightShiftInteger = value \ m_PowerOfTwo(shift)
 End Function
 
 ' LeftShiftLong performs a left bit shift operation on a 32-bit Long value.
@@ -69,7 +159,76 @@ End Function
 '   Long: The value shifted left by the specified number of bits.
 Public Function LeftShiftLong(ByVal value As Long, ByVal shift As Integer) As Long
 Attribute LeftShiftLong.VB_Description = "LeftShiftLong performs a left bit shift operation on a 32-bit Long value.\r\nArgs:\r\n  value (Long): The value to be shifted left.\r\n  shift (Integer): The number of bits to shift (0-31).\r\nReturns:\r\n  Long: The value shifted left by the specified number of bits."
-    LeftShiftLong = value * (2 ^ shift)
+    Ensure.Between shift, 0, 31, True, "NativeConverter.LeftShiftLong shift"
+    If shift = 0 Then
+        LeftShiftLong = value
+        Exit Function
+    End If
+
+    ' Keep only the lower (32 - shift) bits to prevent overflow
+    Dim lowBits As Long
+    lowBits = value And m_Mask(32 - shift)
+
+    ' Split into two 16-bit integers (use Long for arithmetic to avoid overflow)
+    Dim low16 As Long
+    Dim high16 As Long
+    Dim buf As ByteBuffer4
+    CopyMemory buf.ints(0), lowBits, 4
+    low16 = BitReinterpret.AsUnsignedLong(buf.ints(0))
+    high16 = BitReinterpret.AsUnsignedLong(buf.ints(1))
+
+    ' Save originals for cross-unit shift
+    Dim origLow As Long
+    Dim origHigh As Long
+    origLow = low16
+    origHigh = high16
+
+    If shift < 16 Then
+        ' shift each 16-bit unit (promote to Long to avoid overflow)
+        low16 = low16 * m_PowerOfTwo(shift)
+        high16 = (high16 * m_PowerOfTwo(shift)) And &HFFFF
+    Else
+        ' shift >= 16: all bits from origLow go to high16
+        low16 = 0
+        high16 = (origLow * m_PowerOfTwo(shift - 16)) And &HFFFF
+    End If
+        buf.ints(0) = 0
+        buf.ints(1) = BitReinterpret.AsSignedInteger(high16)
+        CopyMemory high16, buf.ints(0), 4
+    LeftShiftLong = low16 Or high16
+End Function
+
+' Gets the position of the highest set bit (0-31, -1 if value is 0)
+Private Function GetHighestBitPosition(ByVal value As Long) As Long
+    ' Handle zero and negative cases
+    If value = 0 Then
+        GetHighestBitPosition = -1
+        Exit Function
+    End If
+
+    ' For negative values, the sign bit (31) is always set
+    If value < 0 Then
+        GetHighestBitPosition = 31
+        Exit Function
+    End If
+
+    ' Binary search using loop
+    Dim hi As Long
+    Dim lo As Long
+    Dim mid As Long
+    lo = 0
+    hi = 31
+
+    Do While lo < hi
+        mid = (lo + hi + 1) \ 2
+        If value >= m_PowerOfTwo(mid) Then
+            lo = mid
+        Else
+            hi = mid - 1
+        End If
+    Loop
+
+    GetHighestBitPosition = lo
 End Function
 
 ' RightShiftLong performs a right bit shift operation on a 32-bit Long value.
@@ -80,7 +239,7 @@ End Function
 '   Long: The value shifted right by the specified number of bits.
 Public Function RightShiftLong(ByVal value As Long, ByVal shift As Integer) As Long
 Attribute RightShiftLong.VB_Description = "RightShiftLong performs a right bit shift operation on a 32-bit Long value.\r\nArgs:\r\n  value (Long): The value to be shifted right.\r\n  shift (Integer): The number of bits to shift (0-31).\r\nReturns:\r\n  Long: The value shifted right by the specified number of bits."
-    RightShiftLong = value \ (2 ^ shift)
+    RightShiftLong = value \ m_PowerOfTwo(shift)
 End Function
 
 ' ReverseByteOrderInteger reverses the byte order of a 16-bit Integer value.

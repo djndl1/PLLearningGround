@@ -14,7 +14,7 @@ Attribute VB_Exposed = True
 Option Explicit
 
 ' Windows API declaration for memory copying
-Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (Destination As Any, Source As Any, ByVal Length As Long)
+Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (Destination As Any, source As Any, ByVal Length As Long)
 
 ' BitReinterpret provides functions for reinterpreting the bit patterns of floating-point
 ' values as integral types and vice versa. This is useful for low-level bit manipulation
@@ -27,6 +27,14 @@ Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (Destination
 Private Type ByteBuffer4
     bytes(0 To 3) As Byte
 End Type
+
+Public Function AsSignedInteger(ByVal l As Long) As Integer
+    CopyMemory AsSignedInteger, l, 2
+End Function
+
+Public Function AsUnsignedLong(ByVal i As Integer) As Long
+    CopyMemory AsUnsignedLong, i, 2
+End Function
 
 ' AsLong reinterprets the bit pattern of a Single floating-point value as a 32-bit Long.
 ' This function performs a bitwise reinterpretation without changing the underlying data.
