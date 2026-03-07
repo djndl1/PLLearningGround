@@ -125,18 +125,19 @@ End Sub
 '   Integer: The value shifted left by the specified number of bits.
 Public Function LeftShiftInteger(ByVal value As Integer, ByVal shift As Integer) As Integer
 Attribute LeftShiftInteger.VB_Description = "LeftShiftInteger performs a left bit shift operation on a 16-bit Integer value.\r\nArgs:\r\n  value (Integer): The value to be shifted left.\r\n  shift (Integer): The number of bits to shift (0-15).\r\nReturns:\r\n  Integer: The value shifted left by the specified number of bits."
-    Ensure.Between shift, 0, 16, True, "NativeConverter.LeftShiftInteger shift"
+    Ensure.GreaterThanOrEqual shift, 0, "NativeConverter.LeftShiftInteger shift"
     If shift = 0 Then
         LeftShiftInteger = value
         Exit Function
     End If
-    If shift = 16 Then
+    If shift >= 16 Then
         LeftShiftInteger = 0
+        Exit Function
     End If
     Dim u As Long
     u = BitReinterpret.AsUnsignedLong(value)
     u = CLng(u * m_PowerOfTwo(shift))
-    CopyMemory LeftShiftInteger, u, 2
+    LeftShiftInteger = BitReinterpret.AsSignedInteger(u)
 End Function
 
 ' RightShiftInteger performs a right bit shift operation on a 16-bit Integer value.
@@ -147,8 +148,19 @@ End Function
 '   Integer: The value shifted right by the specified number of bits.
 Public Function RightShiftInteger(ByVal value As Integer, ByVal shift As Integer) As Integer
 Attribute RightShiftInteger.VB_Description = "RightShiftInteger performs a right bit shift operation on a 16-bit Integer value.\r\nArgs:\r\n  value (Integer): The value to be shifted right.\r\n  shift (Integer): The number of bits to shift (0-15).\r\nReturns:\r\n  Integer: The value shifted right by the specified number of bits."
-    Ensure.Between shift, 0, 15, True, "NativeConverter.RightShiftInteger shift"
-    RightShiftInteger = value \ m_PowerOfTwo(shift)
+    Ensure.GreaterThanOrEqual shift, 0, "NativeConverter.RightShiftInteger shift"
+    If shift = 0 Then
+        RightShiftInteger = value
+        Exit Function
+    End If
+    If shift >= 16 Then
+        RightShiftInteger = 0
+        Exit Function
+    End If
+    Dim u As Long
+    u = BitReinterpret.AsUnsignedLong(value)
+    u = CLng(u \ m_PowerOfTwo(shift))
+    RightShiftInteger = BitReinterpret.AsSignedInteger(u)
 End Function
 
 ' LeftShiftLong performs a left bit shift operation on a 32-bit Long value.
@@ -159,9 +171,13 @@ End Function
 '   Long: The value shifted left by the specified number of bits.
 Public Function LeftShiftLong(ByVal value As Long, ByVal shift As Integer) As Long
 Attribute LeftShiftLong.VB_Description = "LeftShiftLong performs a left bit shift operation on a 32-bit Long value.\r\nArgs:\r\n  value (Long): The value to be shifted left.\r\n  shift (Integer): The number of bits to shift (0-31).\r\nReturns:\r\n  Long: The value shifted left by the specified number of bits."
-    Ensure.Between shift, 0, 31, True, "NativeConverter.LeftShiftLong shift"
+    Ensure.GreaterThanOrEqual shift, 0, "NativeConverter.LeftShiftLong shift"
     If shift = 0 Then
         LeftShiftLong = value
+        Exit Function
+    End If
+    If shift >= 32 Then
+        LeftShiftLong = 0
         Exit Function
     End If
 
@@ -198,39 +214,6 @@ Attribute LeftShiftLong.VB_Description = "LeftShiftLong performs a left bit shif
     LeftShiftLong = low16 Or high16
 End Function
 
-' Gets the position of the highest set bit (0-31, -1 if value is 0)
-Private Function GetHighestBitPosition(ByVal value As Long) As Long
-    ' Handle zero and negative cases
-    If value = 0 Then
-        GetHighestBitPosition = -1
-        Exit Function
-    End If
-
-    ' For negative values, the sign bit (31) is always set
-    If value < 0 Then
-        GetHighestBitPosition = 31
-        Exit Function
-    End If
-
-    ' Binary search using loop
-    Dim hi As Long
-    Dim lo As Long
-    Dim mid As Long
-    lo = 0
-    hi = 31
-
-    Do While lo < hi
-        mid = (lo + hi + 1) \ 2
-        If value >= m_PowerOfTwo(mid) Then
-            lo = mid
-        Else
-            hi = mid - 1
-        End If
-    Loop
-
-    GetHighestBitPosition = lo
-End Function
-
 ' RightShiftLong performs a right bit shift operation on a 32-bit Long value.
 ' Args:
 '   value (Long): The value to be shifted right.
@@ -239,7 +222,46 @@ End Function
 '   Long: The value shifted right by the specified number of bits.
 Public Function RightShiftLong(ByVal value As Long, ByVal shift As Integer) As Long
 Attribute RightShiftLong.VB_Description = "RightShiftLong performs a right bit shift operation on a 32-bit Long value.\r\nArgs:\r\n  value (Long): The value to be shifted right.\r\n  shift (Integer): The number of bits to shift (0-31).\r\nReturns:\r\n  Long: The value shifted right by the specified number of bits."
-    RightShiftLong = value \ m_PowerOfTwo(shift)
+    Ensure.GreaterThanOrEqual shift, 0, "NativeConverter.RightShiftLong shift"
+    If shift = 0 Then
+        RightShiftLong = value
+        Exit Function
+    End If
+    If shift >= 32 Then
+        RightShiftLong = 0
+        Exit Function
+    End If
+
+    ' Split into two 16-bit integers (use Long for arithmetic to avoid overflow)
+    Dim low16 As Long
+    Dim high16 As Long
+    Dim buf As ByteBuffer4
+    CopyMemory buf.ints(0), value, 4
+    low16 = BitReinterpret.AsUnsignedLong(buf.ints(0))
+    high16 = BitReinterpret.AsUnsignedLong(buf.ints(1))
+
+    ' Save originals for cross-unit shift
+    Dim origLow As Long
+    Dim origHigh As Long
+    origLow = low16
+    origHigh = high16
+
+    If shift < 16 Then
+        ' Shift each 16-bit unit right
+        high16 = high16 \ m_PowerOfTwo(shift)
+        ' Cross-boundary: lower shift bits of origHigh go to upper bits of low16
+        Dim crossBits As Long
+        crossBits = (origHigh And m_Mask(shift)) * m_PowerOfTwo(16 - shift)
+        low16 = (low16 \ m_PowerOfTwo(shift)) Or crossBits
+    Else
+        ' shift >= 16: all bits from origHigh go to low16
+        high16 = 0
+        low16 = origHigh \ m_PowerOfTwo(shift - 16)
+    End If
+
+    buf.ints(0) = BitReinterpret.AsSignedInteger(low16)
+    buf.ints(1) = BitReinterpret.AsSignedInteger(high16)
+    CopyMemory RightShiftLong, buf.ints(0), 4
 End Function
 
 ' ReverseByteOrderInteger reverses the byte order of a 16-bit Integer value.

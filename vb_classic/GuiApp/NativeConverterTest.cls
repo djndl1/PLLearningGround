@@ -80,9 +80,9 @@ Private Sub TestRightShiftInteger()
     result = RightShiftInteger(20, 2)
     m_asserter.AreEqual 5, result, "NativeConverterTest.TestRightShiftInteger", "20 >> 2 = 5"
 
-    ' Test case: -16 >> 4 = -1
+    ' Test case: -16 >> 4 = 4095
     result = RightShiftInteger(-16, 4)
-    m_asserter.AreEqual -1, result, "NativeConverterTest.TestRightShiftInteger", "-16 >> 4 = -1"
+    m_asserter.AreEqual 4095, result, "NativeConverterTest.TestRightShiftInteger", "-16 >> 4 = -1"
 
     ' Test case: 0 >> 10 = 0
     result = RightShiftInteger(0, 10)
@@ -139,9 +139,9 @@ Private Sub TestRightShiftLong()
     result = NativeConverter.RightShiftLong(1600, 4)
     m_asserter.AreEqual 100&, result, "NativeConverterTest.TestRightShiftLong", "1600 >> 4 = 100"
 
-    ' Test case: -32 >> 5 = -1
+    ' Test case: -32 >> 5 = 134217727
     result = NativeConverter.RightShiftLong(-32, 5)
-    m_asserter.AreEqual -1&, result, "NativeConverterTest.TestRightShiftLong", "-32 >> 5 = -1"
+    m_asserter.AreEqual 134217727, result, "NativeConverterTest.TestRightShiftLong", "-32 >> 5 = -1"
 
     ' Test case: 0 >> 20 = 0
     result = NativeConverter.RightShiftLong(0, 20)

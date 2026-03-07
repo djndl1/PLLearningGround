@@ -315,10 +315,10 @@ Public Function ReverseBitsLong2(ByVal value As Long) As Long
     Dim highWord As Integer
     Dim lowWord As Integer
     Dim result As Long
-    
+
     ' Extract words safely using CopyMemory
     CopyMemory buf(0), value, 4
-    
+
     lowWord = ReverseBitsInteger(CLng(buf(1)) * 256& + CLng(buf(0)))
     highWord = ReverseBitsInteger(CLng(buf(3)) * 256& + CLng(buf(2)))
 
