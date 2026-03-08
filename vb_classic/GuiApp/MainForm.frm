@@ -74,6 +74,7 @@ Private Sub Main()
         Call LittleEndianConverterTest.Run(m_asserter)
         Call BitAccessorTest.Run(m_asserter)
         Call BitPaddingTest.Run(m_asserter)
+        Call NaiveCounterTest.Run(m_asserter)
 
         Call TestFileTimeDateTime
 

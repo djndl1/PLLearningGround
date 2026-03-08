@@ -42,6 +42,16 @@ Public Sub IsTrue(ByVal booleanExpression As Boolean, _
         End If
 End Sub
 
+Public Sub IsFalse(ByVal booleanExpression As Boolean, _
+                        Optional site As String = "", _
+                        Optional message As String = "")
+        If Not booleanExpression Then
+                Call m_handler.Handle(0, site, message)
+        Else
+                Call m_handler.Handle(AssertionError, site, message)
+        End If
+End Sub
+
 Public Sub AreEqual(ByVal expected As Variant, ByVal actual As Variant, _
                         Optional site As String = "", _
                         Optional message As String = "")

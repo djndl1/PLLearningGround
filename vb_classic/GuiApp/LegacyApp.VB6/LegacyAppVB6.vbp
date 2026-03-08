@@ -20,6 +20,7 @@ Class=MinMax; MinMax.cls
 Module=OleDates; OleDates.bas
 Module=SystemTimeDateTime; SystemTime.bas
 Class=TextFileOutput; TextFileOutput.cls
+Class=NaiveCounter; NaiveCounter.cls
 Startup="(None)"
 HelpFile=""
 Title="LegacyAppVB6"
