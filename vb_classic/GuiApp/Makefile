@@ -1,4 +1,6 @@
 # this script is meant to run in powershell
+SHELL := powershell.exe
+.SHELLFLAGS := -NoProfile -Command
 LINK_EXE="C:/Program Files/Microsoft Visual Studio/VB98/LINK.EXE"
 VB_EXE="C:/Program Files/Microsoft Visual Studio/VB98/VB6.EXE"
 
@@ -30,6 +32,4 @@ tags:
 
 .PHONY: clean
 clean:
-	-powershell.exe -NoProfile -Command \
-                            "Remove-Item -ErrorAction SilentlyContinue -Force -Recurse $(BUILD_DIR); \
-                            exit 0
+	Remove-Item -ErrorAction SilentlyContinue -Force -Recurse $(BUILD_DIR); exit 0;
