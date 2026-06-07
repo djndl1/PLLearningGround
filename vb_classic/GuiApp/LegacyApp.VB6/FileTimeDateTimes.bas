@@ -17,6 +17,10 @@ Private Declare Function SystemTimeToFileTime Lib "kernel32" (ByRef lpSystemTime
 
 Private Declare Function FileTimeToLocalFileTime Lib "kernel32" (lpFileTime As FILETIME, lpLocalFileTime As FILETIME) As Long
 
+Private Declare Function SystemTimeToVariantTime Lib "OleAut32.dll" (lpSystemTime As SYSTEMTIME, ByRef pvtime As Date) As Long
+
+Private Declare Function VariantTimeToSystemTime Lib "OleAut32.dll" (ByVal vtime As Date, lpSystemTime As SYSTEMTIME) As Long
+
 Private s_unixEpoch As FileTimeDateTime
 
 Private s_fileTimeEpoch As FileTimeDateTime
@@ -257,4 +261,24 @@ Public Function FormatFileTimeDateTimeToISO(ftd As FileTimeDateTime) As String
                 s = s & "Z"
         End If
         FormatFileTimeDateTimeToISO = s
+End Function
+
+Public Function ToOleDate(ftd As FileTimeDateTime) As Date
+Attribute ToOleDate.VB_Description = "Converts a FileTimeDateTime to an OLE Automation Date.\r\n\r\nArgs:\r\n  ftd (FileTimeDateTime): The FileTimeDateTime to convert.\r\nReturns:\r\n  Date: The corresponding OLE Date."
+    Dim sysTime As SYSTEMTIME
+    sysTime = ToSystemTime(ftd)
+    Dim hr As Long
+    hr = SystemTimeToVariantTime(sysTime, ToOleDate)
+    Ensure.IsTrue hr = 0, ErrorCodes.Overflow, "FileTimeDateTimes.ToOleDate", "value out of valid OLE Date range"
+End Function
+
+Public Function FromOleDate(ByVal oleDate As Date, ByVal dtKind As DateTimeKind) As FileTimeDateTime
+Attribute FromOleDate.VB_Description = "Converts an OLE Automation Date to a FileTimeDateTime.\r\n\r\nArgs:\r\n  oleDate (Date): The OLE Date to convert.\r\n  dtKind (DateTimeKind): The kind to assign to the resulting FileTimeDateTime.\r\nReturns:\r\n  FileTimeDateTime: The new instance."
+    Dim sysTime As SYSTEMTIME
+    Dim hr As Long
+    hr = VariantTimeToSystemTime(oleDate, sysTime)
+    Ensure.IsTrue hr = 0, ErrorCodes.Overflow, "FileTimeDateTimes.FromOleDate", "OLE Date out of valid range"
+    Dim ft As FILETIME
+    SystemTimeToFileTime sysTime, ft
+    Set FromOleDate = FromFileTime(ft, dtKind)
 End Function

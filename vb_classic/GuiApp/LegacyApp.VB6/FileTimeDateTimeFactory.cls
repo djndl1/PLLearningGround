@@ -50,6 +50,11 @@ Public Function FromSystemTime(ByRef sysTime As SYSTEMTIME, Optional ByVal dtKin
     Set FromSystemTime = FileTimeDateTimes.FromSystemTime(sysTime, dtKind)
 End Function
 
+Public Function FromOleDate(ByVal oleDate As Date, ByVal dtKind As DateTimeKind) As FileTimeDateTime
+Attribute FromOleDate.VB_Description = "Creates a FileTimeDateTime from an OLE Automation Date.\r\n\r\nArgs:\r\n  oleDate (Date): The OLE Date to convert.\r\n  dtKind (DateTimeKind): The kind to assign to the resulting FileTimeDateTime.\r\nReturns:\r\n  FileTimeDateTime: The new instance."
+    Set FromOleDate = FileTimeDateTimes.FromOleDate(oleDate, dtKind)
+End Function
+
 Public Function FromTicks(ByVal ticks As Variant, Optional ByVal dtKind As DateTimeKind = UnspecifiedKind) As FileTimeDateTime
     Dim ft As New FileTimeDateTime
     ft.InitFromTicks ticks, dtKind

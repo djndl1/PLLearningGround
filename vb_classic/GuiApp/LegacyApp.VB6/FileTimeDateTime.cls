@@ -273,8 +273,14 @@ Private Function IsLeapYear(ByVal y As Integer) As Boolean
 End Function
 
 Public Function ToSystemTime() As SYSTEMTIME
-        ToSystemTime = FileTimeDateTimes.ToSystemTime(Me)
+    ToSystemTime = FileTimeDateTimes.ToSystemTime(Me)
 End Function
+
+Public Function ToOleDate() As Date
+Attribute ToOleDate.VB_Description = "Returns the OLE Automation Date representation of this FileTimeDateTime.\r\n\r\nReturns:\r\n  Date: The OLE Date value."
+    ToOleDate = FileTimeDateTimes.ToOleDate(Me)
+End Function
+
 
 Public Function ToISOFormat() As String
         Dim yearString As String
