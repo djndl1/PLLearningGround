@@ -8,15 +8,21 @@ BEGIN
 END
 Attribute VB_Name = "CSlice"
 Attribute VB_GlobalNameSpace = False
-Attribute VB_Creatable = True
+Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
+' CSlice is the OOP wrapper around the ArraySlice UDT. Construction goes
+' through CSliceFactory (a separate instance class) - the 4 init Subs
+' below are Friend-only. Callers should use:
+'   Dim factory As New CSliceFactory
+'   Set slice = factory.Of(arr)
+
 Private m_slice As ArraySlice
 Private m_enumCollection As Collection
 
-Public Sub FromEmpty()
+Friend Sub FromEmpty()
 Attribute FromEmpty.VB_Description = "Initializes the slice as an empty array.\r\nCreates an underlying array with capacity for one element but sets the slice length to zero."
     ReDim arr(0) As Variant
     m_slice.m_ArrayData = arr
@@ -24,17 +30,17 @@ Attribute FromEmpty.VB_Description = "Initializes the slice as an empty array.\r
     m_slice.m_Start = LBound(arr)
 End Sub
 
-Public Sub Of(ByRef arr As Variant)
+Friend Sub Of(ByRef arr As Variant)
 Attribute Of.VB_Description = "Initializes the slice to represent the entire array.\r\nThe slice will have the same bounds and length as the original array.\r\nArgs:\r\n  arr (Variant): The array to create a slice from."
     m_slice = Arrays.SliceOf(arr)
 End Sub
 
-Public Sub From(ByRef arr As Variant, ByVal startIndex As Long, ByVal Length As Long)
+Friend Sub From(ByRef arr As Variant, ByVal startIndex As Long, ByVal Length As Long)
 Attribute From.VB_Description = "Initializes the slice to represent a portion of the array.\r\nThe slice will start at the given index and span the specified length.\r\nArgs:\r\n  arr (Variant): The source array to create a slice from.\r\n  startIndex (Long): The starting index of the slice in the array.\r\n  length (Long): The number of elements to include in the slice."
     m_slice = Arrays.SliceFrom(arr, startIndex, Length)
 End Sub
 
-Public Sub Between(ByRef arr As Variant, ByVal startIndex As Long, ByVal endIndex As Long)
+Friend Sub Between(ByRef arr As Variant, ByVal startIndex As Long, ByVal endIndex As Long)
 Attribute Between.VB_Description = "Initializes the slice to represent a portion of the array.\r\nThe slice will start at the given start index and end at the given end index (exclusive).\r\nArgs:\r\n  arr (Variant): The source array to create a slice from.\r\n  startIndex (Long): The starting index of the slice in the array (inclusive).\r\n  endIndex (Long): The ending index of the slice in the array (exclusive)."
     m_slice = Arrays.SliceBetween(arr, startIndex, endIndex)
 End Sub

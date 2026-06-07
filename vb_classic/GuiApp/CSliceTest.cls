@@ -30,11 +30,11 @@ Private Sub TestOf()
     For i = 0 To 5
         arr(i) = i * 10
     Next i
-    
+
+    Dim factory As New CSliceFactory
     Dim slice As CSlice
-    Set slice = New CSlice
-    slice.Of arr
-    
+    Set slice = factory.Of(arr)
+
     m_asserter.IsTrue slice.Length = 6, "CSliceTest.TestOf", "Length should be 6"
     m_asserter.IsTrue slice.Item(0) = 0, "CSliceTest.TestOf", "First element should be 0"
     m_asserter.IsTrue slice.Item(5) = 50, "CSliceTest.TestOf", "Last element should be 50"
@@ -46,11 +46,11 @@ Private Sub TestFrom()
     For i = 0 To 10
         arr(i) = i * 10
     Next i
-    
+
+    Dim factory As New CSliceFactory
     Dim slice As CSlice
-    Set slice = New CSlice
-    slice.From arr, 2, 5
-    
+    Set slice = factory.From(arr, 2, 5)
+
     m_asserter.IsTrue slice.Length = 5, "CSliceTest.TestFrom", "Length should be 5"
     m_asserter.IsTrue slice.Item(0) = 20, "CSliceTest.TestFrom", "First element should be 20"
     m_asserter.IsTrue slice.Item(4) = 60, "CSliceTest.TestFrom", "Last element should be 60"
@@ -62,21 +62,21 @@ Private Sub TestBetween()
     For i = 0 To 10
         arr(i) = i * 10
     Next i
-    
+
+    Dim factory As New CSliceFactory
     Dim slice As CSlice
-    Set slice = New CSlice
-    slice.Between arr, 3, 8
-    
+    Set slice = factory.Between(arr, 3, 8)
+
     m_asserter.IsTrue slice.Length = 5, "CSliceTest.TestBetween", "Length should be 5"
     m_asserter.IsTrue slice.Item(0) = 30, "CSliceTest.TestBetween", "First element should be 30"
     m_asserter.IsTrue slice.Item(4) = 70, "CSliceTest.TestBetween", "Last element should be 70"
 End Sub
 
 Private Sub TestFromEmpty()
+    Dim factory As New CSliceFactory
     Dim slice As CSlice
-    Set slice = New CSlice
-    slice.FromEmpty
-    
+    Set slice = factory.FromEmpty()
+
     m_asserter.IsTrue slice.Length = 0, "CSliceTest.TestFromEmpty", "Length should be 0"
     slice.Append 42
     m_asserter.IsTrue slice.Length = 1, "CSliceTest.TestFromEmpty", "Length should be 1 after append"
@@ -85,16 +85,17 @@ End Sub
 
 Private Sub TestForEachLoop()
     ' Test For Each loop functionality with CSlice
-    Dim slice As New CSlice
+    Dim factory As New CSliceFactory
+    Dim slice As CSlice
     Dim testArray(2) As Variant
-    
+
     ' Create test data
     testArray(0) = "First"
     testArray(1) = "Second"
     testArray(2) = "Third"
-    
+
     ' Initialize slice with array
-    slice.Of testArray
+    Set slice = factory.Of(testArray)
     
     ' Test For Each loop
     Dim element As Variant

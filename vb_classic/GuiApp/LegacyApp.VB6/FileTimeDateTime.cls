@@ -8,7 +8,7 @@ BEGIN
 END
 Attribute VB_Name = "FileTimeDateTime"
 Attribute VB_GlobalNameSpace = False
-Attribute VB_Creatable = True
+Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
@@ -119,13 +119,13 @@ Sub Class_Initialize()
         m_dtKind = UtcKind
 End Sub
 
-Public Sub InitFromFileTime(ByVal lowPart As Long, ByVal highPart As Long, Optional ByVal dtKind As DateTimeKind = UnspecifiedKind)
-        m_ftimestamp.dwLowDateTime = lowPart
-        m_ftimestamp.dwHighDateTime = highPart
+Friend Sub InitFromFileTime(ByVal LowPart As Long, ByVal HighPart As Long, Optional ByVal dtKind As DateTimeKind = DateTimeKind.UnspecifiedKind)
+        m_ftimestamp.dwLowDateTime = LowPart
+        m_ftimestamp.dwHighDateTime = HighPart
         m_dtKind = dtKind
 End Sub
 
-Public Sub InitFromTicks(ByVal ticks As Variant, Optional ByVal dtKind As DateTimeKind = UnspecifiedKind)
+Friend Sub InitFromTicks(ByVal ticks As Variant, Optional ByVal dtKind As DateTimeKind = UnspecifiedKind)
         m_ftimestamp = FileTimeDateTimes.ConvertDecimalToFileTime(ticks)
         m_dtKind = dtKind
 End Sub

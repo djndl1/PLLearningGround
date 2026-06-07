@@ -9,7 +9,7 @@ END
 Attribute VB_Name = "FileTimeDateTimeFactory"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
-Attribute VB_PredeclaredId = False
+Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 Option Explicit
 
@@ -40,9 +40,9 @@ Public Function FromDateTime(ByVal year As Long, _
     Set FromDateTime = FileTimeDateTimes.FromDateTime(year, month, day, hour, minute, second, millisecond, microsecond, dtKind)
 End Function
 
-Public Function FromFileTime(ByVal lowPart As Long, ByVal highPart As Long, Optional ByVal dtKind As DateTimeKind = DateTimeKind.UnspecifiedKind) As FileTimeDateTime
+Public Function FromFileTime(ByVal LowPart As Long, ByVal HighPart As Long, Optional ByVal dtKind As DateTimeKind = DateTimeKind.UnspecifiedKind) As FileTimeDateTime
     Dim ft As New FileTimeDateTime
-    ft.InitFromFileTime lowPart, highPart, dtKind
+    ft.InitFromFileTime LowPart, HighPart, dtKind
     Set FromFileTime = ft
 End Function
 

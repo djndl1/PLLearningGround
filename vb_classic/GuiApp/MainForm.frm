@@ -1,5 +1,5 @@
 VERSION 5.00
-Begin VB.Form MainForm
+Begin VB.Form MainForm 
    Caption         =   "MainForm"
    ClientHeight    =   660
    ClientLeft      =   120
@@ -9,7 +9,7 @@ Begin VB.Form MainForm
    ScaleHeight     =   660
    ScaleWidth      =   2805
    StartUpPosition =   3  'Windows Default
-   Begin VB.CheckBox AutoExitCheckBox
+   Begin VB.CheckBox AutoExitCheckBox 
       Caption         =   "AutoExit"
       Height          =   375
       Left            =   1680
@@ -18,7 +18,7 @@ Begin VB.Form MainForm
       Value           =   1  'Checked
       Width           =   975
    End
-   Begin VB.CommandButton RunMain
+   Begin VB.CommandButton RunMain 
       Caption         =   "Run"
       Height          =   375
       Left            =   120
@@ -36,31 +36,34 @@ Option Explicit
 
 Private GuiFileOutput As TextFileOutput
 Private m_asserter As Asserter
+Private m_factory As FileTimeDateTimeFactory
+
 
 Private Sub Main()
     Set m_asserter = New Asserter
     Dim handler As IErrorHandler
     Set handler = New TextOutputErrorHandler
+    Set m_factory = LegacyAppVB6.FileTimeDateTimeFactory
     m_asserter.Init handler
 
     Dim curDirText As String
     curDirText = ChrW(24403) & ChrW(21069) & ChrW(30446) & ChrW(24405)
         Dim utc As FileTimeDateTime, localT As FileTimeDateTime, manual As FileTimeDateTime
-        Dim factory As New FileTimeDateTimeFactory
-        Set utc = factory.GetUtcNow()
-        Set localT = factory.GetLocalNow()
-        Set manual = factory.FromDateTime(2023, 2, 1, 2, 2, 4, 123, 452, dtKind:=UtcKind)
+        
+        Set utc = m_factory.GetUtcNow()
+        Set utf = FileTimeDateTimeFactory.GetUtcNow
+        Set localT = m_factory.GetLocalNow()
+        Set manual = m_factory.FromDateTime(2023, 2, 1, 2, 2, 4, 123, 452, dtKind:=UtcKind)
 
         Call GuiFileOutput.WriteLine(utc.ToISOFormat())
         Call GuiFileOutput.WriteLine(localT.ToISOFormat())
         Call GuiFileOutput.WriteLine(manual.ToISOFormat() & ": (H: " & manual.highDateTime & ", L: " & manual.lowDateTime & ")" & " Ticks: " & manual.TicksAsDecimal)
 
         Dim manualFromTicks As FileTimeDateTime
-        Set manualFromTicks = New FileTimeDateTime
-        Call manualFromTicks.InitFromTicks(manual.TicksAsDecimal)
+        Set manualFromTicks = m_factory.FromTicks(manual.TicksAsDecimal)
         Call GuiFileOutput.WriteLine(manualFromTicks.ToISOFormat())
 
-        Call GuiFileOutput.WriteLine(factory.GetToday().AddDays(10).ToISOFormat())
+        Call GuiFileOutput.WriteLine(m_factory.GetToday().AddDays(10).ToISOFormat())
         Call GuiFileOutput.WriteLine("")
 
         Call DecimalsTest.RunTest(m_asserter)
@@ -78,7 +81,7 @@ Private Sub Main()
 
         Call TestFileTimeDateTime
 
-        If AutoExitCheckBox.Value Then
+        If AutoExitCheckBox.value Then
                 Unload Me
         End If
 End Sub
