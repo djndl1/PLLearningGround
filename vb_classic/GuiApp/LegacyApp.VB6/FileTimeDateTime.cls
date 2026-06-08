@@ -37,12 +37,12 @@ Public Property Get datePart() As FileTimeDateTime
         Dim y As Integer, m As Integer, d As Integer
         Call GetDatePart(y, m, d)
 
-        Set datePart = FileTimeDateTimes.FromDateTime(y, m, d, dtKind:=Me.Kind)
+        Set datePart = FileTimeDateTimeFactory.FromDateTime(y, m, d, dtKind:=Me.Kind)
 End Property
 
 Private Sub GetDatePart(ByRef y As Integer, ByRef m As Integer, ByRef d As Integer)
         Dim sysTime As SYSTEMTIME
-        sysTime = FileTimeDateTimes.ToSystemTime(Me)
+        sysTime = Me.ToSystemTime()
         y = sysTime.wYear
         m = sysTime.wMonth
         d = sysTime.wDay
@@ -71,38 +71,38 @@ End Property
 
 Public Property Get HourPart() As Integer
         Dim sysTime As SYSTEMTIME
-        sysTime = FileTimeDateTimes.ToSystemTime(Me)
+        sysTime = Me.ToSystemTime()
 
         HourPart = sysTime.wHour
 End Property
 
 Public Property Get MinutePart() As Integer
         Dim sysTime As SYSTEMTIME
-        sysTime = FileTimeDateTimes.ToSystemTime(Me)
+        sysTime = Me.ToSystemTime()
 
         MinutePart = sysTime.wMinute
 End Property
 
 Public Property Get SecondPart() As Integer
         Dim sysTime As SYSTEMTIME
-        sysTime = FileTimeDateTimes.ToSystemTime(Me)
+        sysTime = Me.ToSystemTime()
 
         SecondPart = sysTime.wSecond
 End Property
 
 Public Property Get MillisecondPart() As Integer
         Dim sysTime As SYSTEMTIME
-        sysTime = FileTimeDateTimes.ToSystemTime(Me)
+        sysTime = Me.ToSystemTime()
 
         MillisecondPart = sysTime.wMilliseconds
 End Property
 
 Private Function GetSubmillisecondTicks() As Integer
         Dim sysTime As SYSTEMTIME
-        sysTime = FileTimeDateTimes.ToSystemTime(Me)
+        sysTime = Me.ToSystemTime()
 
         Dim convertedBack As FileTimeDateTime
-        Set convertedBack = FileTimeDateTimes.FromSystemTime(sysTime)
+        Set convertedBack = FileTimeDateTimeFactory.FromSystemTime(sysTime)
 
         GetSubmillisecondTicks = CInt(m_ftimestamp.dwLowDateTime - convertedBack.lowDateTime)
 End Function
@@ -184,7 +184,7 @@ End Function
 
 Public Function Clone() As FileTimeDateTime
         ' Create a new FileTimeDateTime with the same time components and DateTimeKind
-        Set Clone = FileTimeDateTimes.FromDateTime(Me.YearPart, Me.MonthPart, Me.DayPart, _
+        Set Clone = FileTimeDateTimeFactory.FromDateTime(Me.YearPart, Me.MonthPart, Me.DayPart, _
                                                    Me.HourPart, Me.MinutePart, Me.SecondPart, _
                                                    Me.MillisecondPart, Me.MicrosecondPart, Me.Kind)
 End Function
@@ -247,8 +247,8 @@ Public Function AddMonths(ByVal months As Long) As FileTimeDateTime
             d = maxDaysInMonth
         End If
 
-        ' Create new FileTimeDateTime using FileTimeDateTimes.FromDateTime
-        Set AddMonths = FileTimeDateTimes.FromDateTime(y, m, d, _
+        ' Create new FileTimeDateTime using FileTimeDateTimeFactory.FromDateTime
+        Set AddMonths = FileTimeDateTimeFactory.FromDateTime(y, m, d, _
                                                        Me.HourPart, Me.MinutePart, Me.SecondPart, _
                                                        Me.MillisecondPart, Me.MicrosecondPart, Me.Kind)
 End Function
@@ -273,12 +273,12 @@ Private Function IsLeapYear(ByVal y As Integer) As Boolean
 End Function
 
 Public Function ToSystemTime() As SYSTEMTIME
-    ToSystemTime = FileTimeDateTimes.ToSystemTime(Me)
+    ToSystemTime = FileTimeDateTimes.ConvertFileTimeToSystemTime(m_ftimestamp)
 End Function
 
 Public Function ToOleDate() As Date
 Attribute ToOleDate.VB_Description = "Returns the OLE Automation Date representation of this FileTimeDateTime.\r\n\r\nReturns:\r\n  Date: The OLE Date value."
-    ToOleDate = FileTimeDateTimes.ToOleDate(Me)
+    ToOleDate = FileTimeDateTimes.ConvertFileTimeToOleDate(m_ftimestamp)
 End Function
 
 
@@ -308,6 +308,50 @@ Public Function ToISOFormat() As String
         If Me.Kind = UtcKind Then
                 s = s & "Z"
         End If
-
         ToISOFormat = s
 End Function
+
+Public Function ToLocalTime() As FileTimeDateTime
+Attribute ToLocalTime.VB_Description = "Converts this FileTimeDateTime to local time, returning a new instance with Kind=LocalKind.\r\n\r\nBehavior by DateTimeKind:\r\n  UtcKind: shifts the UTC FILETIME to a local FILETIME via FileTimeToLocalFileTime.\r\n  LocalKind: returns an instance with the same value (already local).\r\n  UnspecifiedKind: treats as UTC and shifts to local (matches .NET DateTime.ToLocalTime behavior).\r\n\r\nRaises:\r\n  Overflow (Long): when FileTimeToLocalFileTime fails\r\nReturns:\r\n  FileTimeDateTime: A new instance representing the same moment in local time."
+    Dim result As New FileTimeDateTime
+    Select Case m_dtKind
+        Case UtcKind
+            Dim ft_local As FILETIME
+            Dim ok As Long
+            ok = FileTimeDateTimes.ConvertFileTimeToLocalFileTime(m_ftimestamp, ft_local)
+            Ensure.IsTrue ok <> 0, ErrorCodes.Overflow, "FileTimeDateTime.ToLocalTime", "FileTimeToLocalFileTime failed"
+            result.InitFromFileTime ft_local.dwLowDateTime, ft_local.dwHighDateTime, LocalKind
+        Case LocalKind
+            result.InitFromFileTime m_ftimestamp.dwLowDateTime, m_ftimestamp.dwHighDateTime, LocalKind
+        Case UnspecifiedKind
+            Dim ft_local2 As FILETIME
+            Dim ok2 As Long
+            ok2 = FileTimeDateTimes.ConvertFileTimeToLocalFileTime(m_ftimestamp, ft_local2)
+            Ensure.IsTrue ok2 <> 0, ErrorCodes.Overflow, "FileTimeDateTime.ToLocalTime", "FileTimeToLocalFileTime failed"
+            result.InitFromFileTime ft_local2.dwLowDateTime, ft_local2.dwHighDateTime, LocalKind
+    End Select
+    Set ToLocalTime = result
+End Function
+
+Public Function ToUniversalTime() As FileTimeDateTime
+Attribute ToUniversalTime.VB_Description = "Converts this FileTimeDateTime to UTC, returning a new instance with Kind=UtcKind.\r\n\r\nBehavior by DateTimeKind:\r\n  LocalKind: shifts the local FILETIME to a UTC FILETIME via LocalFileTimeToFileTime.\r\n  UtcKind: returns an instance with the same value (already UTC).\r\n  UnspecifiedKind: treats as local and shifts to UTC (matches .NET DateTime.ToUniversalTime behavior).\r\n\r\nRaises:\r\n  Overflow (Long): when LocalFileTimeToFileTime fails\r\nReturns:\r\n  FileTimeDateTime: A new instance representing the same moment in UTC."
+    Dim result As New FileTimeDateTime
+    Select Case m_dtKind
+        Case LocalKind
+            Dim ft_utc As FILETIME
+            Dim ok As Long
+            ok = FileTimeDateTimes.ConvertLocalFileTimeToFileTime(m_ftimestamp, ft_utc)
+            Ensure.IsTrue ok <> 0, ErrorCodes.Overflow, "FileTimeDateTime.ToUniversalTime", "LocalFileTimeToFileTime failed"
+            result.InitFromFileTime ft_utc.dwLowDateTime, ft_utc.dwHighDateTime, UtcKind
+        Case UtcKind
+            result.InitFromFileTime m_ftimestamp.dwLowDateTime, m_ftimestamp.dwHighDateTime, UtcKind
+        Case UnspecifiedKind
+            Dim ft_utc2 As FILETIME
+            Dim ok2 As Long
+            ok2 = FileTimeDateTimes.ConvertLocalFileTimeToFileTime(m_ftimestamp, ft_utc2)
+            Ensure.IsTrue ok2 <> 0, ErrorCodes.Overflow, "FileTimeDateTime.ToUniversalTime", "LocalFileTimeToFileTime failed"
+            result.InitFromFileTime ft_utc2.dwLowDateTime, ft_utc2.dwHighDateTime, UtcKind
+    End Select
+    Set ToUniversalTime = result
+End Function
+

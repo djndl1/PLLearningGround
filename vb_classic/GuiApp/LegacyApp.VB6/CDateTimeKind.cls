@@ -31,6 +31,11 @@ Public Type SYSTEMTIME
         wMilliseconds As Integer
 End Type
 
+Public Type FILETIME
+        dwLowDateTime As Long
+        dwHighDateTime As Long
+End Type
+
 Public Enum ErrorCodes
     ' Standard VB6 error codes
     ReturnWithoutGoSub = 3
