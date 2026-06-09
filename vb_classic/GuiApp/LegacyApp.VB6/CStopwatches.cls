@@ -8,7 +8,7 @@ BEGIN
 END
 Attribute VB_Name = "CStopwatches"
 Attribute VB_GlobalNameSpace = True
-Attribute VB_Creatable = False
+Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 Option Explicit
@@ -29,9 +29,9 @@ Option Explicit
 ' after CDec() conversion. The conversion happens at this
 ' single boundary; all internal arithmetic uses Decimal.
 Private Declare Function QueryPerformanceCounter Lib "kernel32" _
-    Alias "QueryPerformanceCounter" (ByRef lpPerformanceCount As Currency) As Long
+    (ByRef lpPerformanceCount As Currency) As Long
 Private Declare Function QueryPerformanceFrequency Lib "kernel32" _
-    Alias "QueryPerformanceFrequency" (ByRef lpFrequency As Currency) As Long
+    (ByRef lpFrequency As Currency) As Long
 
 ' m_frequency is the QPC counts per second, stored as Decimal
 ' so the Int64 range survives. Populated once at
@@ -119,5 +119,5 @@ End Function
 ' CStopwatch instance can reach across the class boundary
 ' without duplicating the conversion.
 Public Function QpcToTimeSpanTicks(ByVal qpcCounts As Variant) As Variant
-    QpcToTimeSpanTicks = CDec(qpcCounts) * CDec(m_tickFrequency)
+    QpcToTimeSpanTicks = Fix(CDec(qpcCounts) * CDec(m_tickFrequency))
 End Function

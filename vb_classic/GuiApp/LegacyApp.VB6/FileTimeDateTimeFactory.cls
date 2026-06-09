@@ -19,14 +19,32 @@ Option Explicit
 '   FileTimeDateTimeFactory.FromDateTime(...)
 ' External COM users must `New FileTimeDateTimeFactory` first.
 '
-' Epoch singletons (NtEpoch, UnixEpoch) are cached as Private fields with
-' lazy-init; first call constructs the FTD, subsequent calls return the
-' cached instance.
+' Epoch singletons (NtEpoch, UnixEpoch, OleEpoch) are immutable
+' FileTimeDateTime instances pre-built once in Class_Initialize. Subsequent
+' accesses are O(1) field reads. The Immutability invariant of
+' FileTimeDateTime (InitFromFileTime/InitFromTicks are Friend-only) makes
+' eager initialization safe: no external code can mutate these instances.
 
-' --- Cached epoch singletons ---
+' --- Epoch tick counts (Decimals) ---
+' Populated once in Class_Initialize. The expressions are evaluated only
+' at class-load time; subsequent reads are O(1) field accesses.
+Private m_ntEpochTicks As Variant
+Private m_unixEpochTicks As Variant
+Private m_oleEpochTicks As Variant
 
+' --- Pre-built epoch singletons (immutable) ---
 Private m_ntEpoch As FileTimeDateTime
 Private m_unixEpoch As FileTimeDateTime
+Private m_oleEpoch As FileTimeDateTime
+
+Private Sub Class_Initialize()
+    m_ntEpochTicks = CDec(0)
+    m_unixEpochTicks = FileTimeDateTimes.TicksPerDay * CDec("134774")
+    m_oleEpochTicks = CDec("94353120000000000")
+    Set m_ntEpoch = FromTicks(m_ntEpochTicks, UtcKind)
+    Set m_unixEpoch = FromTicks(m_unixEpochTicks, UtcKind)
+    Set m_oleEpoch = FromTicks(m_oleEpochTicks, UnspecifiedKind)
+End Sub
 
 ' --- Factory methods ---
 
@@ -90,7 +108,7 @@ Attribute FromDateTime.VB_Description = "Creates a FileTimeDateTime from a calen
     Dim ftd As New FileTimeDateTime
     ftd.InitFromFileTime ft.dwLowDateTime, ft.dwHighDateTime, dtKind
     If microsecond <> 0 Then
-        ftd = ftd.AddMicroseconds(CDbl(microsecond))
+        Set ftd = ftd.AddMicroseconds(CDbl(microsecond))
     End If
     Set FromDateTime = ftd
 End Function
@@ -132,17 +150,16 @@ End Function
 ' --- Epoch singletons ---
 
 Public Function NtEpoch() As FileTimeDateTime
-Attribute NtEpoch.VB_Description = "Returns the Windows NT epoch (1601-01-01 00:00:00 UTC) as a FileTimeDateTime singleton.\r\n\r\nReturns:\r\n  FileTimeDateTime: A cached instance representing the NT epoch."
-    If m_ntEpoch Is Nothing Then
-        Set m_ntEpoch = FromTicks(CDec(0), UtcKind)
-    End If
+Attribute NtEpoch.VB_Description = "Returns the Windows NT epoch (1601-01-01 00:00:00 UTC) as a FileTimeDateTime singleton. Pre-built once in Class_Initialize; subsequent calls are O(1) field reads.\r\n\r\nReturns:\r\n  FileTimeDateTime: The cached immutable instance representing the NT epoch."
     Set NtEpoch = m_ntEpoch
 End Function
 
 Public Function UnixEpoch() As FileTimeDateTime
-Attribute UnixEpoch.VB_Description = "Returns the Unix epoch (1970-01-01 00:00:00 UTC) as a FileTimeDateTime singleton.\r\n\r\nReturns:\r\n  FileTimeDateTime: A cached instance representing the Unix epoch."
-    If m_unixEpoch Is Nothing Then
-        Set m_unixEpoch = FromTicks(FileTimeDateTimes.TicksPerDay * CDec("134774"), UtcKind)
-    End If
+Attribute UnixEpoch.VB_Description = "Returns the Unix epoch (1970-01-01 00:00:00 UTC) as a FileTimeDateTime singleton. Pre-built once in Class_Initialize; subsequent calls are O(1) field reads.\r\n\r\nReturns:\r\n  FileTimeDateTime: The cached immutable instance representing the Unix epoch."
     Set UnixEpoch = m_unixEpoch
+End Function
+
+Public Function OleEpoch() As FileTimeDateTime
+Attribute OleEpoch.VB_Description = "Returns the OLE Automation epoch (1899-12-30 00:00:00, the Date = 0# point) as a FileTimeDateTime singleton. Built from the pre-computed FILETIME tick count 94353120000000000 (verified via Python: 1899-12-30 - 1601-01-01 in 100-ns intervals). Tagged as UnspecifiedKind (the OLE Date has no inherent timezone interpretation). Pre-built once in Class_Initialize; subsequent calls are O(1) field reads.\r\n\r\nReturns:\r\n  FileTimeDateTime: The cached immutable instance representing the OLE epoch, tagged as UnspecifiedKind."
+    Set OleEpoch = m_oleEpoch
 End Function

@@ -655,9 +655,19 @@ End Function
 ' component. ticks is taken as a parameter (no instance state) so the
 ' helper is reusable from both the OOP and the UDT accessors.
 Private Function TruncatedComponentTicks(ByVal ticks As Variant, ByVal ticksPerUnit As Variant, ByVal unitsPerLarger As Variant) As Long
+    Dim ticksAsDecimal As Variant
+    Dim ticksPerUnitAsDecimal As Variant
     Dim ticksPerLarger As Variant
-    ticksPerLarger = CDec(ticksPerUnit) * CDec(unitsPerLarger)
-    TruncatedComponentTicks = CLng(Fix((CDec(ticks) Mod ticksPerLarger) / CDec(ticksPerUnit)))
+    Dim remainder As Variant
+    ticksAsDecimal = CDec(ticks)
+    ticksPerUnitAsDecimal = CDec(ticksPerUnit)
+    ticksPerLarger = ticksPerUnitAsDecimal * CDec(unitsPerLarger)
+    ' VB6's Mod operator coerces Decimal operands to Long (overflow when
+    ' ticksPerLarger exceeds Long.MaxValue). Decimals.TruncationDivision keeps
+    ' all arithmetic in Decimal and returns quotient + remainder in a
+    ' VariantPair; we use only the remainder.
+    remainder = Decimals.TruncationDivision(ticksAsDecimal, ticksPerLarger).second
+    TruncatedComponentTicks = CLng(Fix(CDec(remainder) / ticksPerUnitAsDecimal))
 End Function
 
 ' InTickRange reports whether value is inside [MinValue, MaxValue].
@@ -741,16 +751,33 @@ Private Function ToStringInternal(ByVal ticks As Variant) As String
     ToStringInternal = sign & result
 End Function
 
-' HashInternal computes a stable 32-bit hash of the tick count using
-' the same polynomial string hash as System.String.GetHashCode. Body
-' extracted verbatim from the previous CTimeSpan.cls Hash; the only
-' change is that the source of the tick value is now a parameter.
+' HashInternal computes a 32-bit hash of the tick count using the same
+' algorithm as .NET's TimeSpan.GetHashCode:
+'
+'   unchecked((int)(long)m_value) ^ (int)(m_value >> 32)
+'
+' i.e. XOR the lower 32 bits of the 64-bit tick count with the upper 32
+' bits. This delegates to Int64.GetHashCode and is a stable,
+' well-distributed hash for tick values in the 64-bit range enforced
+' by InTickRange.
+'
+' Implementation in VB6: m_value is a Decimal constrained to 64-bit
+' range by the time it reaches this function. "Right shift by 32" is
+' truncation-division by 2^32; the low 32 bits are the Decimal remainder
+' modulo 2^32; both halves are cast to Long (which is 32-bit signed in
+' VB6, exactly matching C#'s int) and XORed.
 Private Function HashInternal(ByVal ticks As Variant) As Long
-    Dim s As String
-    Dim i As Long
-    s = CStr(ticks)
-    HashInternal = 0
-    For i = 1 To Len(s)
-        HashInternal = (HashInternal * 31 + AscW(Mid$(s, i, 1))) And &H7FFFFFFF
-    Next i
+    Dim twoTo32 As Variant
+    Dim upper32 As Long
+    Dim lower32 As Long
+    twoTo32 = CDec("4294967296")
+    ' Upper 32 bits: ticks / 2^32 (truncation division toward zero).
+    ' The quotient may be negative for negative ticks; cast to Long
+    ' gives the bit pattern of the high half, matching (int)(m_value >> 32).
+    upper32 = CLng(Decimals.TruncationDivision(CDec(ticks), twoTo32).first)
+    ' Lower 32 bits: ticks - upper32 * 2^32. The result is in
+    ' [-2^31, 2^31), which fits in Long. Cast to Long gives the bit
+    ' pattern of the low half, matching (int)(long)m_value.
+    lower32 = CLng(CDec(ticks) - CDec(upper32) * twoTo32)
+    HashInternal = lower32 Xor upper32
 End Function

@@ -21,6 +21,7 @@ Public Sub Run(ByRef myasserter As Asserter)
     Set m_factory = New FileTimeDateTimeFactory
 
     TestFactoryMethods
+    TestEpochs
     TestInstanceProperties
     TestTimeArithmetic
     ''TestAddMonths
@@ -62,6 +63,48 @@ Private Sub TestFactoryMethods()
     Set ft = m_factory.FromTicks(originalTicks)
     m_asserter.IsTrue Not ft Is Nothing, "FileTimeDateTimeTest.TestFactoryMethods", "FromTicks should return valid object"
     m_asserter.AreEqual ft.TicksAsDecimal, originalTicks, "FileTimeDateTimeTest.TestFactoryMethods", "FromTicks ticks should match"
+End Sub
+
+Private Sub TestEpochs()
+    Dim ft As FileTimeDateTime
+
+    ' Test NtEpoch: 1601-01-01 00:00:00 UTC = 0 ticks
+    Set ft = m_factory.NtEpoch()
+    m_asserter.IsTrue Not ft Is Nothing, "FileTimeDateTimeTest.TestEpochs", "NtEpoch should return valid object"
+    m_asserter.AreEqual ft.TicksAsDecimal, CDec(0), "FileTimeDateTimeTest.TestEpochs", "NtEpoch ticks should be 0"
+    m_asserter.AreEqual ft.Kind, UtcKind, "FileTimeDateTimeTest.TestEpochs", "NtEpoch kind should be UTC"
+    m_asserter.AreEqual ft.YearPart, 1601, "FileTimeDateTimeTest.TestEpochs", "NtEpoch year should be 1601"
+    m_asserter.AreEqual ft.MonthPart, 1, "FileTimeDateTimeTest.TestEpochs", "NtEpoch month should be 1"
+    m_asserter.AreEqual ft.DayPart, 1, "FileTimeDateTimeTest.TestEpochs", "NtEpoch day should be 1"
+    m_asserter.AreEqual ft.HourPart, 0, "FileTimeDateTimeTest.TestEpochs", "NtEpoch hour should be 0"
+
+    ' Test UnixEpoch: 1970-01-01 00:00:00 UTC = TicksPerDay * 134774
+    Set ft = m_factory.UnixEpoch()
+    m_asserter.IsTrue Not ft Is Nothing, "FileTimeDateTimeTest.TestEpochs", "UnixEpoch should return valid object"
+    m_asserter.AreEqual ft.Kind, UtcKind, "FileTimeDateTimeTest.TestEpochs", "UnixEpoch kind should be UTC"
+    m_asserter.AreEqual ft.YearPart, 1970, "FileTimeDateTimeTest.TestEpochs", "UnixEpoch year should be 1970"
+    m_asserter.AreEqual ft.MonthPart, 1, "FileTimeDateTimeTest.TestEpochs", "UnixEpoch month should be 1"
+    m_asserter.AreEqual ft.DayPart, 1, "FileTimeDateTimeTest.TestEpochs", "UnixEpoch day should be 1"
+    m_asserter.AreEqual ft.HourPart, 0, "FileTimeDateTimeTest.TestEpochs", "UnixEpoch hour should be 0"
+    ' Sanity: Unix epoch tick count = TicksPerDay * 134774
+    m_asserter.AreEqual ft.TicksAsDecimal, FileTimeDateTimes.TicksPerDay * CDec("134774"), "FileTimeDateTimeTest.TestEpochs", "UnixEpoch ticks = TicksPerDay * 134774"
+
+    ' Test OleEpoch: 1899-12-30 00:00:00 = 94353120000000000 ticks
+    Set ft = m_factory.OleEpoch()
+    m_asserter.IsTrue Not ft Is Nothing, "FileTimeDateTimeTest.TestEpochs", "OleEpoch should return valid object"
+    m_asserter.AreEqual ft.Kind, UnspecifiedKind, "FileTimeDateTimeTest.TestEpochs", "OleEpoch kind should be Unspecified"
+    m_asserter.AreEqual ft.TicksAsDecimal, CDec("94353120000000000"), "FileTimeDateTimeTest.TestEpochs", "OleEpoch ticks = 94353120000000000"
+    ' Ole epoch's OLE Date representation
+    m_asserter.AreEqual ft.ToOleDate(), 0#, "FileTimeDateTimeTest.TestEpochs", "OleEpoch.ToOleDate = 0#"
+
+    ' Test immutability: the same singleton is returned on repeated calls
+    Dim ft2 As FileTimeDateTime
+    Set ft2 = m_factory.NtEpoch()
+    m_asserter.IsTrue ft Is ft2, "FileTimeDateTimeTest.TestEpochs", "NtEpoch returns the same singleton"
+    Set ft2 = m_factory.UnixEpoch()
+    m_asserter.IsTrue ft2 Is m_factory.UnixEpoch(), "FileTimeDateTimeTest.TestEpochs", "UnixEpoch returns the same singleton"
+    Set ft2 = m_factory.OleEpoch()
+    m_asserter.IsTrue ft2 Is m_factory.OleEpoch(), "FileTimeDateTimeTest.TestEpochs", "OleEpoch returns the same singleton"
 End Sub
 
 Private Sub TestInstanceProperties()

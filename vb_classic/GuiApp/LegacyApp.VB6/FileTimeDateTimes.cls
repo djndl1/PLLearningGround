@@ -115,11 +115,11 @@ End Function
 Public Function ConvertDecimalToFileTime(ticks As Variant) As FILETIME
 Attribute ConvertDecimalToFileTime.VB_Description = "Converts a Decimal FILETIME tick count to a FILETIME UDT.\r\n\r\nArgs:\r\n  ticks (Variant): The Decimal tick count (100-ns intervals since 1601-01-01).\r\nReturns:\r\n  FILETIME: The corresponding FILETIME."
     Dim highPartInt As Variant
-    Dim highPart As Variant
-    highPart = ticks / m_Bit33UInteger
-    highPartInt = CLng(highPart)
+    Dim HighPart As Variant
+    HighPart = ticks / m_Bit33UInteger
+    highPartInt = CLng(HighPart)
 
-    If highPart < highPartInt Then
+    If HighPart < highPartInt Then
         highPartInt = highPartInt - 1
     End If
 
@@ -170,7 +170,7 @@ Attribute ConvertOleDateToSystemTime.VB_Description = "Converts an OLE Date to a
     Dim sysTime As SYSTEMTIME
     Dim hr As Long
     hr = VariantTimeToSystemTime(oleDate, sysTime)
-    Ensure.IsTrue hr = 0, ErrorCodes.Overflow, "FileTimeDateTimes.ConvertOleDateToSystemTime", "VariantTimeToSystemTime failed"
+    Ensure.IsTrue hr <> 0, ErrorCodes.Overflow, "FileTimeDateTimes.ConvertOleDateToSystemTime", "VariantTimeToSystemTime failed"
     ConvertOleDateToSystemTime = sysTime
 End Function
 
@@ -178,7 +178,7 @@ Public Function ConvertSystemTimeToOleDate(sysTime As SYSTEMTIME) As Date
 Attribute ConvertSystemTimeToOleDate.VB_Description = "Converts a SYSTEMTIME to an OLE Automation Date via the Win32 SystemTimeToVariantTime API.\r\n\r\nRaises:\r\n  Overflow (Long): when SystemTimeToVariantTime fails\r\nArgs:\r\n  sysTime (SYSTEMTIME): The SYSTEMTIME to convert.\r\nReturns:\r\n  Date: The corresponding OLE Date."
     Dim hr As Long
     hr = SystemTimeToVariantTime(sysTime, ConvertSystemTimeToOleDate)
-    Ensure.IsTrue hr = 0, ErrorCodes.Overflow, "FileTimeDateTimes.ConvertSystemTimeToOleDate", "SystemTimeToVariantTime failed"
+    Ensure.IsTrue hr <> 0, ErrorCodes.Overflow, "FileTimeDateTimes.ConvertSystemTimeToOleDate", "SystemTimeToVariantTime failed"
 End Function
 
 Public Function ConvertFileTimeToOleDate(ft As FILETIME) As Date

@@ -15,7 +15,7 @@ Option Explicit
 
 ' OleDates is the home for OLE Automation Date (the VB6 Date type)
 ' conversions. It is a Global + Predeclared class, so calls look like
-' OleDates.Epoch / OleDates.FormatAsISO8601(d) / OleDates.ToFileTimeDecimal(d)
+' OleDates.OleEpoch / OleDates.FormatAsISO8601(d) / OleDates.ToFileTimeDecimal(d)
 ' without needing to instantiate the class.
 '
 ' The two FileTimeDecimal conversion methods (ToFileTimeDecimal /
@@ -35,9 +35,19 @@ Option Explicit
 ' passed / returned is a FILETIME tick count (100-ns intervals since
 ' 1601-01-01), not any other kind of Decimal.
 
-Public Property Get Epoch() As Date
-Attribute Epoch.VB_Description = "The OLE Automation epoch, midnight of 30 December 1899 (Date = 0#).\r\n\r\nReturns:\r\n  Date: The OLE epoch."
-    Epoch = 0#
+Public Property Get OleEpoch() As Date
+Attribute OleEpoch.VB_Description = "The OLE Automation epoch, midnight of 30 December 1899 (Date = 0#). This is the literal zero point of the OLE Date type by definition.\r\n\r\nReturns:\r\n  Date: The OLE epoch."
+    OleEpoch = 0#
+End Property
+
+Public Property Get NtEpoch() As Date
+Attribute NtEpoch.VB_Description = "The Windows NT / FILETIME epoch as an OLE Automation Date: 1601-01-01 00:00:00 UTC.\r\n\r\nOLE Date constant -109205.0 (1899-12-30 minus 109,205 days = 1601-01-01). Verified via Python: date(1601,1,1) - date(1899,12,30) = -109205 days.\r\n\r\nReturns:\r\n  Date: The NT epoch as an OLE Date."
+    NtEpoch = -109205#
+End Property
+
+Public Property Get UnixEpoch() As Date
+Attribute UnixEpoch.VB_Description = "The Unix epoch as an OLE Automation Date: 1970-01-01 00:00:00 UTC.\r\n\r\nOLE Date constant 25569.0 (1899-12-30 plus 25,569 days = 1970-01-01). Verified via Python: date(1970,1,1) - date(1899,12,30) = 25569 days.\r\n\r\nReturns:\r\n  Date: The Unix epoch as an OLE Date."
+    UnixEpoch = 25569#
 End Property
 
 Public Function FormatAsISO8601(ByRef d As Date) As String

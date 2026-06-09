@@ -35,4 +35,4 @@ tags:
 clean:
 	-powershell.exe -NoProfile -Command \
                             "Remove-Item -ErrorAction SilentlyContinue -Force -Recurse $(BUILD_DIR); \
-                            exit 0
+                            exit 0"

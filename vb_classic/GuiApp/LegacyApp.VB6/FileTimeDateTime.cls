@@ -317,17 +317,13 @@ Attribute ToLocalTime.VB_Description = "Converts this FileTimeDateTime to local 
     Select Case m_dtKind
         Case UtcKind
             Dim ft_local As FILETIME
-            Dim ok As Long
-            ok = FileTimeDateTimes.ConvertFileTimeToLocalFileTime(m_ftimestamp, ft_local)
-            Ensure.IsTrue ok <> 0, ErrorCodes.Overflow, "FileTimeDateTime.ToLocalTime", "FileTimeToLocalFileTime failed"
+            ft_local = FileTimeDateTimes.ConvertFileTimeToLocalFileTime(m_ftimestamp)
             result.InitFromFileTime ft_local.dwLowDateTime, ft_local.dwHighDateTime, LocalKind
         Case LocalKind
             result.InitFromFileTime m_ftimestamp.dwLowDateTime, m_ftimestamp.dwHighDateTime, LocalKind
         Case UnspecifiedKind
             Dim ft_local2 As FILETIME
-            Dim ok2 As Long
-            ok2 = FileTimeDateTimes.ConvertFileTimeToLocalFileTime(m_ftimestamp, ft_local2)
-            Ensure.IsTrue ok2 <> 0, ErrorCodes.Overflow, "FileTimeDateTime.ToLocalTime", "FileTimeToLocalFileTime failed"
+            ft_local2 = FileTimeDateTimes.ConvertFileTimeToLocalFileTime(m_ftimestamp)
             result.InitFromFileTime ft_local2.dwLowDateTime, ft_local2.dwHighDateTime, LocalKind
     End Select
     Set ToLocalTime = result
@@ -339,17 +335,13 @@ Attribute ToUniversalTime.VB_Description = "Converts this FileTimeDateTime to UT
     Select Case m_dtKind
         Case LocalKind
             Dim ft_utc As FILETIME
-            Dim ok As Long
-            ok = FileTimeDateTimes.ConvertLocalFileTimeToFileTime(m_ftimestamp, ft_utc)
-            Ensure.IsTrue ok <> 0, ErrorCodes.Overflow, "FileTimeDateTime.ToUniversalTime", "LocalFileTimeToFileTime failed"
+            ft_utc = FileTimeDateTimes.ConvertLocalFileTimeToFileTime(m_ftimestamp)
             result.InitFromFileTime ft_utc.dwLowDateTime, ft_utc.dwHighDateTime, UtcKind
         Case UtcKind
             result.InitFromFileTime m_ftimestamp.dwLowDateTime, m_ftimestamp.dwHighDateTime, UtcKind
         Case UnspecifiedKind
             Dim ft_utc2 As FILETIME
-            Dim ok2 As Long
-            ok2 = FileTimeDateTimes.ConvertLocalFileTimeToFileTime(m_ftimestamp, ft_utc2)
-            Ensure.IsTrue ok2 <> 0, ErrorCodes.Overflow, "FileTimeDateTime.ToUniversalTime", "LocalFileTimeToFileTime failed"
+            ft_utc2 = FileTimeDateTimes.ConvertLocalFileTimeToFileTime(m_ftimestamp)
             result.InitFromFileTime ft_utc2.dwLowDateTime, ft_utc2.dwHighDateTime, UtcKind
     End Select
     Set ToUniversalTime = result

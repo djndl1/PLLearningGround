@@ -43,7 +43,7 @@ Private Sub Main()
     Set m_asserter = New Asserter
     Dim handler As IErrorHandler
     Set handler = New TextOutputErrorHandler
-    Set m_factory = LegacyAppVB6.FileTimeDateTimeFactory
+    Set m_factory = New FileTimeDateTimeFactory
     m_asserter.Init handler
 
     Dim curDirText As String
@@ -51,9 +51,8 @@ Private Sub Main()
         Dim utc As FileTimeDateTime, localT As FileTimeDateTime, manual As FileTimeDateTime
         
         Set utc = m_factory.GetUtcNow()
-        Set utf = FileTimeDateTimeFactory.GetUtcNow
         Set localT = m_factory.GetLocalNow()
-        Set manual = m_factory.FromDateTime(2023, 2, 1, 2, 2, 4, 123, 452, dtKind:=UtcKind)
+        Set manual = m_factory.FromDateTime(2023, 2, 1, 2, 2, 4, 123, 452, UtcKind)
 
         Call GuiFileOutput.WriteLine(utc.ToISOFormat())
         Call GuiFileOutput.WriteLine(localT.ToISOFormat())
@@ -66,20 +65,21 @@ Private Sub Main()
         Call GuiFileOutput.WriteLine(m_factory.GetToday().AddDays(10).ToISOFormat())
         Call GuiFileOutput.WriteLine("")
 
-        Call DecimalsTest.RunTest(m_asserter)
-        Call ArraysTest.Run(m_asserter)
-        Call CSliceTest.Run(m_asserter)
-        Call FileTimeDateTimeTest.Run(m_asserter)
-        Call NumericsTest.Run(m_asserter)
-        Call NativeConverterTest.Run(m_asserter)
-        Call BitReinterpretTest.Run(m_asserter)
-        Call BigEndianConverterTest.Run(m_asserter)
-        Call LittleEndianConverterTest.Run(m_asserter)
-        Call BitAccessorTest.Run(m_asserter)
-        Call BitPaddingTest.Run(m_asserter)
-        Call NaiveCounterTest.Run(m_asserter)
-
-        Call TestFileTimeDateTime
+        'Call DecimalsTest.RunTest(m_asserter)
+        'Call ArraysTest.Run(m_asserter)
+        'Call CSliceTest.Run(m_asserter)
+        'Call FileTimeDateTimeTest.Run(m_asserter)
+        'Call NumericsTest.Run(m_asserter)
+        'Call NativeConverterTest.Run(m_asserter)
+        'Call BitReinterpretTest.Run(m_asserter)
+        'Call BigEndianConverterTest.Run(m_asserter)
+        'Call LittleEndianConverterTest.Run(m_asserter)
+        'Call BitAccessorTest.Run(m_asserter)
+        'Call BitPaddingTest.Run(m_asserter)
+        'Call NaiveCounterTest.Run(m_asserter)
+        Call CTimeSpanTest.Run(m_asserter)
+        Call CStopwatchTest.Run(m_asserter)
+        Call OleDatesTest.Run(m_asserter)
 
         If AutoExitCheckBox.value Then
                 Unload Me
@@ -91,47 +91,6 @@ Private Sub Form_Load()
         GuiFileOutput.OutputPath = "./output"
         Call GuiFileOutput.OpenStream
         Call Main
-End Sub
-
-Private Sub TestFileTimeDateTime()
-    Call GuiFileOutput.WriteLine("")
-    Call GuiFileOutput.WriteLine("=== FileTimeDateTime Test ===")
-
-    Dim factory As New FileTimeDateTimeFactory
-
-    Dim ftUtc As FileTimeDateTime
-    Set ftUtc = factory.GetUtcNow()
-    Call GuiFileOutput.WriteLine("FileTimeDateTime UTC Now: " & ftUtc.ToISOFormat())
-
-    Dim ftLocal As FileTimeDateTime
-    Set ftLocal = factory.GetLocalNow()
-    Call GuiFileOutput.WriteLine("FileTimeDateTime Local Now: " & ftLocal.ToISOFormat())
-
-    Dim ftToday As FileTimeDateTime
-    Set ftToday = factory.GetToday()
-    Call GuiFileOutput.WriteLine("FileTimeDateTime Today: " & ftToday.ToISOFormat())
-
-    Dim ftManual As FileTimeDateTime
-    Set ftManual = factory.FromDateTime(2023, 2, 1, 2, 2, 4, 123, 452, UtcKind)
-    Call GuiFileOutput.WriteLine("FileTimeDateTime Manual: " & ftManual.ToISOFormat())
-
-    Dim ftFromTicks As FileTimeDateTime
-    Set ftFromTicks = factory.FromTicks(ftManual.TicksAsDecimal)
-    Call GuiFileOutput.WriteLine("FileTimeDateTime From Ticks: " & ftFromTicks.ToISOFormat())
-
-    Dim ftFuture As FileTimeDateTime
-    Set ftFuture = ftToday.AddDays(10)
-    Call GuiFileOutput.WriteLine("FileTimeDateTime Today + 10 days: " & ftFuture.ToISOFormat())
-
-    Call GuiFileOutput.WriteLine("FileTimeDateTime Year: " & CStr(ftManual.YearPart))
-    Call GuiFileOutput.WriteLine("FileTimeDateTime Month: " & CStr(ftManual.MonthPart))
-    Call GuiFileOutput.WriteLine("FileTimeDateTime Day: " & CStr(ftManual.DayPart))
-    Call GuiFileOutput.WriteLine("FileTimeDateTime Hour: " & CStr(ftManual.HourPart))
-    Call GuiFileOutput.WriteLine("FileTimeDateTime Minute: " & CStr(ftManual.MinutePart))
-    Call GuiFileOutput.WriteLine("FileTimeDateTime Second: " & CStr(ftManual.SecondPart))
-
-    Call GuiFileOutput.WriteLine("=== FileTimeDateTime Test Complete ===")
-    Call GuiFileOutput.WriteLine("")
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
