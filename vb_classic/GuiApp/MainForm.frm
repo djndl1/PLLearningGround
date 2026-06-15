@@ -80,6 +80,7 @@ Private Sub Main()
         Call CTimeSpanTest.Run(m_asserter)
         Call CStopwatchTest.Run(m_asserter)
         Call OleDatesTest.Run(m_asserter)
+        Call BuiltinTest.Run(m_asserter)
 
         If AutoExitCheckBox.value Then
                 Unload Me

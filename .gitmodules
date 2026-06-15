@@ -10,3 +10,6 @@
 [submodule "vb_classic/GuiApp/LegacyApp.VB6/LegacyApp.DotNet"]
 	path = vb_classic/GuiApp/LegacyApp.VB6/LegacyApp.DotNet
 	url = http://43.128.11.210:3001/020959/LegacyApp.git
+[submodule "vb_classic/GuiApp/BASICpy"]
+	path = vb_classic/GuiApp/BASICpy
+	url = ../BASICpy.git
