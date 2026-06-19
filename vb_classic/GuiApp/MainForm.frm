@@ -38,7 +38,6 @@ Private GuiFileOutput As TextFileOutput
 Private m_asserter As Asserter
 Private m_factory As FileTimeDateTimeFactory
 
-
 Private Sub Main()
     Set m_asserter = New Asserter
     Dim handler As IErrorHandler
@@ -49,7 +48,7 @@ Private Sub Main()
     Dim curDirText As String
     curDirText = ChrW(24403) & ChrW(21069) & ChrW(30446) & ChrW(24405)
         Dim utc As FileTimeDateTime, localT As FileTimeDateTime, manual As FileTimeDateTime
-        
+
         Set utc = m_factory.GetUtcNow()
         Set localT = m_factory.GetLocalNow()
         Set manual = m_factory.FromDateTime(2023, 2, 1, 2, 2, 4, 123, 452, UtcKind)
@@ -77,10 +76,11 @@ Private Sub Main()
         'Call BitAccessorTest.Run(m_asserter)
         'Call BitPaddingTest.Run(m_asserter)
         'Call NaiveCounterTest.Run(m_asserter)
-        Call CTimeSpanTest.Run(m_asserter)
-        Call CStopwatchTest.Run(m_asserter)
-        Call OleDatesTest.Run(m_asserter)
         Call BuiltinTest.Run(m_asserter)
+        'Call CTimeSpanTest.Run(m_asserter)
+        'Call CStopwatchTest.Run(m_asserter)
+        'Call OleDatesTest.Run(m_asserter)
+        Call IterTest.Run(m_asserter)
 
         If AutoExitCheckBox.value Then
                 Unload Me

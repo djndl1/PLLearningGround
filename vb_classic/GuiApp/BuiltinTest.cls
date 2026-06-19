@@ -29,6 +29,9 @@ Public Sub Run(ByRef myasserter As Asserter)
     TestDynamicLength
     TestILengthLen
     TestNonIntegerError
+    TestPyBin
+    TestPyHex
+    TestPyOct
 End Sub
 
 Private Sub TestArrayLen()
@@ -179,4 +182,248 @@ ObjectError:
 ObjectDone:
     On Error GoTo 0
     m_asserter.IsTrue errorRaised, "BuiltinTest.TestNonIntegerError", "PyLen(non-ILength Object) should raise error"
+End Sub
+
+Private Sub TestPyBin()
+    ' Zero
+    m_asserter.AreEqual "0b0", Builtin.PyBin(0), "BuiltinTest.TestPyBin", "PyBin(0)"
+
+    ' Positive: small values
+    m_asserter.AreEqual "0b1", Builtin.PyBin(1), "BuiltinTest.TestPyBin", "PyBin(1)"
+    m_asserter.AreEqual "0b111", Builtin.PyBin(7), "BuiltinTest.TestPyBin", "PyBin(7)"
+    m_asserter.AreEqual "0b1000", Builtin.PyBin(8), "BuiltinTest.TestPyBin", "PyBin(8)"
+    m_asserter.AreEqual "0b1010", Builtin.PyBin(10), "BuiltinTest.TestPyBin", "PyBin(10)"
+
+    ' Positive: boundary values (powers of 2 minus 1, powers of 2)
+    m_asserter.AreEqual "0b1111", Builtin.PyBin(15), "BuiltinTest.TestPyBin", "PyBin(15)"
+    m_asserter.AreEqual "0b10000", Builtin.PyBin(16), "BuiltinTest.TestPyBin", "PyBin(16)"
+    m_asserter.AreEqual "0b111111", Builtin.PyBin(63), "BuiltinTest.TestPyBin", "PyBin(63)"
+    m_asserter.AreEqual "0b1000000", Builtin.PyBin(64), "BuiltinTest.TestPyBin", "PyBin(64)"
+
+    ' Positive: byte boundaries
+    m_asserter.AreEqual "0b11111111", Builtin.PyBin(255), "BuiltinTest.TestPyBin", "PyBin(255)"
+    m_asserter.AreEqual "0b100000000", Builtin.PyBin(256), "BuiltinTest.TestPyBin", "PyBin(256)"
+
+    ' Positive: larger values
+    m_asserter.AreEqual "0b1111101000", Builtin.PyBin(1000), "BuiltinTest.TestPyBin", "PyBin(1000)"
+    m_asserter.AreEqual "0b1111111111111111", Builtin.PyBin(65535), "BuiltinTest.TestPyBin", "PyBin(65535)"
+    m_asserter.AreEqual "0b11000011010100000", Builtin.PyBin(100000), "BuiltinTest.TestPyBin", "PyBin(100000)"
+
+    ' Positive: Long boundary values
+    m_asserter.AreEqual "0b1000000000000000000000000000000", Builtin.PyBin(1073741824), "BuiltinTest.TestPyBin", "PyBin(1073741824)"
+    m_asserter.AreEqual "0b1111111111111111111111111111111", Builtin.PyBin(2147483647), "BuiltinTest.TestPyBin", "PyBin(2147483647)"
+
+    ' Negative: small values
+    m_asserter.AreEqual "-0b1", Builtin.PyBin(-1), "BuiltinTest.TestPyBin", "PyBin(-1)"
+    m_asserter.AreEqual "-0b111", Builtin.PyBin(-7), "BuiltinTest.TestPyBin", "PyBin(-7)"
+    m_asserter.AreEqual "-0b1000", Builtin.PyBin(-8), "BuiltinTest.TestPyBin", "PyBin(-8)"
+    m_asserter.AreEqual "-0b1010", Builtin.PyBin(-10), "BuiltinTest.TestPyBin", "PyBin(-10)"
+
+    ' Negative: boundary values
+    m_asserter.AreEqual "-0b1111", Builtin.PyBin(-15), "BuiltinTest.TestPyBin", "PyBin(-15)"
+    m_asserter.AreEqual "-0b10000", Builtin.PyBin(-16), "BuiltinTest.TestPyBin", "PyBin(-16)"
+    m_asserter.AreEqual "-0b111111", Builtin.PyBin(-63), "BuiltinTest.TestPyBin", "PyBin(-63)"
+    m_asserter.AreEqual "-0b1000000", Builtin.PyBin(-64), "BuiltinTest.TestPyBin", "PyBin(-64)"
+
+    ' Negative: byte boundaries
+    m_asserter.AreEqual "-0b11111111", Builtin.PyBin(-255), "BuiltinTest.TestPyBin", "PyBin(-255)"
+    m_asserter.AreEqual "-0b100000000", Builtin.PyBin(-256), "BuiltinTest.TestPyBin", "PyBin(-256)"
+
+    ' Negative: larger values
+    m_asserter.AreEqual "-0b1111101000", Builtin.PyBin(-1000), "BuiltinTest.TestPyBin", "PyBin(-1000)"
+    m_asserter.AreEqual "-0b1111111111111111", Builtin.PyBin(-65535), "BuiltinTest.TestPyBin", "PyBin(-65535)"
+    m_asserter.AreEqual "-0b11000011010100000", Builtin.PyBin(-100000), "BuiltinTest.TestPyBin", "PyBin(-100000)"
+
+    ' Negative: Long boundary values
+    m_asserter.AreEqual "-0b1000000000000000000000000000000", Builtin.PyBin(-1073741824), "BuiltinTest.TestPyBin", "PyBin(-1073741824)"
+    m_asserter.AreEqual "-0b1111111111111111111111111111111", Builtin.PyBin(-2147483647), "BuiltinTest.TestPyBin", "PyBin(-2147483647)"
+
+    ' Long.MinValue special case (&H80000000 = -2147483648)
+    m_asserter.AreEqual "-0b10000000000000000000000000000000", Builtin.PyBin(&H80000000), _
+        "BuiltinTest.TestPyBin", "PyBin(&H80000000) — Long.MinValue"
+
+    ' Negative: non-integer argument raises error
+    Dim errorRaised As Boolean
+    Dim result As String
+    errorRaised = False
+    On Error GoTo PyBinDoubleErr
+    result = Builtin.PyBin(3.14)
+    GoTo PyBinDoubleDone
+PyBinDoubleErr:
+    errorRaised = True
+    Resume PyBinDoubleDone
+PyBinDoubleDone:
+    On Error GoTo 0
+    m_asserter.IsTrue errorRaised, "BuiltinTest.TestPyBin", "PyBin(Double) should raise error"
+
+    errorRaised = False
+    On Error GoTo PyBinStringErr
+    result = Builtin.PyBin("hello")
+    GoTo PyBinStringDone
+PyBinStringErr:
+    errorRaised = True
+    Resume PyBinStringDone
+PyBinStringDone:
+    On Error GoTo 0
+    m_asserter.IsTrue errorRaised, "BuiltinTest.TestPyBin", "PyBin(String) should raise error"
+End Sub
+
+Private Sub TestPyOct()
+    Dim errorRaised As Boolean
+    Dim result As String
+    
+    ' Zero
+    m_asserter.AreEqual "0o0", Builtin.PyOct(0), "BuiltinTest.TestPyOct", "PyOct(0)"
+
+    ' Positive: small values
+    m_asserter.AreEqual "0o1", Builtin.PyOct(1), "BuiltinTest.TestPyOct", "PyOct(1)"
+    m_asserter.AreEqual "0o7", Builtin.PyOct(7), "BuiltinTest.TestPyOct", "PyOct(7)"
+    m_asserter.AreEqual "0o10", Builtin.PyOct(8), "BuiltinTest.TestPyOct", "PyOct(8)"
+    m_asserter.AreEqual "0o12", Builtin.PyOct(10), "BuiltinTest.TestPyOct", "PyOct(10)"
+
+    ' Positive: boundary values (powers of 8 minus 1, powers of 8)
+    m_asserter.AreEqual "0o17", Builtin.PyOct(15), "BuiltinTest.TestPyOct", "PyOct(15)"
+    m_asserter.AreEqual "0o20", Builtin.PyOct(16), "BuiltinTest.TestPyOct", "PyOct(16)"
+    m_asserter.AreEqual "0o77", Builtin.PyOct(63), "BuiltinTest.TestPyOct", "PyOct(63)"
+    m_asserter.AreEqual "0o100", Builtin.PyOct(64), "BuiltinTest.TestPyOct", "PyOct(64)"
+
+    ' Positive: byte boundaries
+    m_asserter.AreEqual "0o377", Builtin.PyOct(255), "BuiltinTest.TestPyOct", "PyOct(255)"
+    m_asserter.AreEqual "0o400", Builtin.PyOct(256), "BuiltinTest.TestPyOct", "PyOct(256)"
+
+    ' Positive: larger values
+    m_asserter.AreEqual "0o1750", Builtin.PyOct(1000), "BuiltinTest.TestPyOct", "PyOct(1000)"
+    m_asserter.AreEqual "0o177777", Builtin.PyOct(65535), "BuiltinTest.TestPyOct", "PyOct(65535)"
+    m_asserter.AreEqual "0o303240", Builtin.PyOct(100000), "BuiltinTest.TestPyOct", "PyOct(100000)"
+
+    ' Positive: Long boundary values
+    m_asserter.AreEqual "0o10000000000", Builtin.PyOct(1073741824), "BuiltinTest.TestPyOct", "PyOct(1073741824)"
+    m_asserter.AreEqual "0o17777777777", Builtin.PyOct(2147483647), "BuiltinTest.TestPyOct", "PyOct(2147483647)"
+
+    ' Negative: small values
+    m_asserter.AreEqual "-0o1", Builtin.PyOct(-1), "BuiltinTest.TestPyOct", "PyOct(-1)"
+    m_asserter.AreEqual "-0o7", Builtin.PyOct(-7), "BuiltinTest.TestPyOct", "PyOct(-7)"
+    m_asserter.AreEqual "-0o10", Builtin.PyOct(-8), "BuiltinTest.TestPyOct", "PyOct(-8)"
+    m_asserter.AreEqual "-0o12", Builtin.PyOct(-10), "BuiltinTest.TestPyOct", "PyOct(-10)"
+
+    ' Negative: boundary values
+    m_asserter.AreEqual "-0o17", Builtin.PyOct(-15), "BuiltinTest.TestPyOct", "PyOct(-15)"
+    m_asserter.AreEqual "-0o20", Builtin.PyOct(-16), "BuiltinTest.TestPyOct", "PyOct(-16)"
+    m_asserter.AreEqual "-0o77", Builtin.PyOct(-63), "BuiltinTest.TestPyOct", "PyOct(-63)"
+    m_asserter.AreEqual "-0o100", Builtin.PyOct(-64), "BuiltinTest.TestPyOct", "PyOct(-64)"
+
+    ' Negative: byte boundaries
+    m_asserter.AreEqual "-0o377", Builtin.PyOct(-255), "BuiltinTest.TestPyOct", "PyOct(-255)"
+    m_asserter.AreEqual "-0o400", Builtin.PyOct(-256), "BuiltinTest.TestPyOct", "PyOct(-256)"
+
+    ' Negative: larger values
+    m_asserter.AreEqual "-0o1750", Builtin.PyOct(-1000), "BuiltinTest.TestPyOct", "PyOct(-1000)"
+    m_asserter.AreEqual "-0o177777", Builtin.PyOct(-65535), "BuiltinTest.TestPyOct", "PyOct(-65535)"
+    m_asserter.AreEqual "-0o303240", Builtin.PyOct(-100000), "BuiltinTest.TestPyOct", "PyOct(-100000)"
+
+    ' Negative: Long boundary values
+    m_asserter.AreEqual "-0o10000000000", Builtin.PyOct(-1073741824), "BuiltinTest.TestPyOct", "PyOct(-1073741824)"
+    m_asserter.AreEqual "-0o17777777777", Builtin.PyOct(-2147483647), "BuiltinTest.TestPyOct", "PyOct(-2147483647)"
+
+    ' Long.MinValue special case (&H80000000 = -2147483648)
+    m_asserter.AreEqual "-0o20000000000", Builtin.PyOct(&H80000000), _
+        "BuiltinTest.TestPyOct", "PyOct(&H80000000) — Long.MinValue"
+
+    ' Negative: non-integer argument raises error
+    errorRaised = False
+    On Error GoTo PyOctDoubleErr
+    result = Builtin.PyOct(3.14)
+    GoTo PyOctDoubleDone
+PyOctDoubleErr:
+    errorRaised = True
+    Resume PyOctDoubleDone
+PyOctDoubleDone:
+    On Error GoTo 0
+    m_asserter.IsTrue errorRaised, "BuiltinTest.TestPyOct", "PyOct(Double) should raise error"
+
+    errorRaised = False
+    On Error GoTo PyOctStringErr
+    result = Builtin.PyOct("hello")
+    GoTo PyOctStringDone
+PyOctStringErr:
+    errorRaised = True
+    Resume PyOctStringDone
+PyOctStringDone:
+    On Error GoTo 0
+    m_asserter.IsTrue errorRaised, "BuiltinTest.TestPyOct", "PyOct(String) should raise error"
+End Sub
+
+Private Sub TestPyHex()
+    ' Zero
+    m_asserter.AreEqual "0x0", Builtin.PyHex(0), "BuiltinTest.TestPyHex", "PyHex(0)"
+
+    ' Positive: small values
+    m_asserter.AreEqual "0x1", Builtin.PyHex(1), "BuiltinTest.TestPyHex", "PyHex(1)"
+    m_asserter.AreEqual "0xa", Builtin.PyHex(10), "BuiltinTest.TestPyHex", "PyHex(10)"
+    m_asserter.AreEqual "0xf", Builtin.PyHex(15), "BuiltinTest.TestPyHex", "PyHex(15)"
+    m_asserter.AreEqual "0x10", Builtin.PyHex(16), "BuiltinTest.TestPyHex", "PyHex(16)"
+    m_asserter.AreEqual "0x2a", Builtin.PyHex(42), "BuiltinTest.TestPyHex", "PyHex(42)"
+
+    ' Positive: byte boundaries
+    m_asserter.AreEqual "0xff", Builtin.PyHex(255), "BuiltinTest.TestPyHex", "PyHex(255)"
+    m_asserter.AreEqual "0x100", Builtin.PyHex(256), "BuiltinTest.TestPyHex", "PyHex(256)"
+
+    ' Positive: larger values
+    m_asserter.AreEqual "0x3e8", Builtin.PyHex(1000), "BuiltinTest.TestPyHex", "PyHex(1000)"
+    m_asserter.AreEqual "0xffff", Builtin.PyHex(65535), "BuiltinTest.TestPyHex", "PyHex(65535)"
+    m_asserter.AreEqual "0x186a0", Builtin.PyHex(100000), "BuiltinTest.TestPyHex", "PyHex(100000)"
+
+    ' Positive: Long boundary values
+    m_asserter.AreEqual "0x40000000", Builtin.PyHex(1073741824), "BuiltinTest.TestPyHex", "PyHex(1073741824)"
+    m_asserter.AreEqual "0x7fffffff", Builtin.PyHex(2147483647), "BuiltinTest.TestPyHex", "PyHex(2147483647)"
+
+    ' Negative: small values
+    m_asserter.AreEqual "-0x1", Builtin.PyHex(-1), "BuiltinTest.TestPyHex", "PyHex(-1)"
+    m_asserter.AreEqual "-0xa", Builtin.PyHex(-10), "BuiltinTest.TestPyHex", "PyHex(-10)"
+    m_asserter.AreEqual "-0xf", Builtin.PyHex(-15), "BuiltinTest.TestPyHex", "PyHex(-15)"
+    m_asserter.AreEqual "-0x10", Builtin.PyHex(-16), "BuiltinTest.TestPyHex", "PyHex(-16)"
+    m_asserter.AreEqual "-0x2a", Builtin.PyHex(-42), "BuiltinTest.TestPyHex", "PyHex(-42)"
+
+    ' Negative: byte boundaries
+    m_asserter.AreEqual "-0xff", Builtin.PyHex(-255), "BuiltinTest.TestPyHex", "PyHex(-255)"
+    m_asserter.AreEqual "-0x100", Builtin.PyHex(-256), "BuiltinTest.TestPyHex", "PyHex(-256)"
+
+    ' Negative: larger values
+    m_asserter.AreEqual "-0x3e8", Builtin.PyHex(-1000), "BuiltinTest.TestPyHex", "PyHex(-1000)"
+    m_asserter.AreEqual "-0xffff", Builtin.PyHex(-65535), "BuiltinTest.TestPyHex", "PyHex(-65535)"
+    m_asserter.AreEqual "-0x186a0", Builtin.PyHex(-100000), "BuiltinTest.TestPyHex", "PyHex(-100000)"
+
+    ' Negative: Long boundary values
+    m_asserter.AreEqual "-0x40000000", Builtin.PyHex(-1073741824), "BuiltinTest.TestPyHex", "PyHex(-1073741824)"
+    m_asserter.AreEqual "-0x7fffffff", Builtin.PyHex(-2147483647), "BuiltinTest.TestPyHex", "PyHex(-2147483647)"
+
+    ' Long.MinValue special case (&H80000000 = -2147483648)
+    m_asserter.AreEqual "-0x80000000", Builtin.PyHex(&H80000000), _
+        "BuiltinTest.TestPyHex", "PyHex(&H80000000) — Long.MinValue"
+
+    ' Non-integer argument raises error
+    Dim errorRaised As Boolean
+    Dim result As String
+
+    errorRaised = False
+    On Error GoTo PyHexDoubleErr
+    result = Builtin.PyHex(3.14)
+    GoTo PyHexDoubleDone
+PyHexDoubleErr:
+    errorRaised = True
+    Resume PyHexDoubleDone
+PyHexDoubleDone:
+    On Error GoTo 0
+    m_asserter.IsTrue errorRaised, "BuiltinTest.TestPyHex", "PyHex(Double) should raise error"
+
+    errorRaised = False
+    On Error GoTo PyHexStringErr
+    result = Builtin.PyHex("hello")
+    GoTo PyHexStringDone
+PyHexStringErr:
+    errorRaised = True
+    Resume PyHexStringDone
+PyHexStringDone:
+    On Error GoTo 0
+    m_asserter.IsTrue errorRaised, "BuiltinTest.TestPyHex", "PyHex(String) should raise error"
 End Sub
