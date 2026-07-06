@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Renumber BASIC program lines to multiples of 10.
+"""Renumber BASIC program lines in multiples of a given step.
 
 Usage:
-    python renumber.py program.bas          # output to stdout
-    python renumber.py -i program.bas       # modify in place
+    python renumber.py program.bas            # output to stdout (step=10)
+    python renumber.py -i program.bas         # modify in place (step=10)
+    python renumber.py -s 100 program.bas     # step of 100
 """
 
 import sys
@@ -11,13 +12,13 @@ import re
 import argparse
 
 
-def build_mapping(lines):
+def build_mapping(lines, step=10):
     old_nums = []
     for line in lines:
         m = re.match(r'^\s*(\d+)', line)
         if m:
             old_nums.append(int(m.group(1)))
-    return {old: (i + 1) * 10 for i, old in enumerate(old_nums)}
+    return {old: (i + 1) * step for i, old in enumerate(old_nums)}
 
 
 def renumber_line(line, mapping, errors):
@@ -53,15 +54,16 @@ def renumber_line(line, mapping, errors):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Renumber BASIC program lines in multiples of 10')
+    parser = argparse.ArgumentParser(description='Renumber BASIC program lines')
     parser.add_argument('file', help='BASIC program file')
     parser.add_argument('-i', '--in-place', action='store_true', help='Modify file in place')
+    parser.add_argument('-s', '--step', type=int, default=10, help='Line number step (default: 10)')
     args = parser.parse_args()
 
     with open(args.file) as f:
         lines = f.readlines()
 
-    mapping = build_mapping(lines)
+    mapping = build_mapping(lines, step=args.step)
     errors = []
     new_lines = [renumber_line(line, mapping, errors) for line in lines]
     output = ''.join(new_lines)
