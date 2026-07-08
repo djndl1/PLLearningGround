@@ -31,6 +31,8 @@ This is a VB6 ActiveX DLL project (`LegacyAppVB6.vbp`) containing utility classe
 - **Indentation**: 4 spaces (consistent with existing code)
 - **Line Length**: Aim for 80-100 characters maximum
 - **Variable Declarations**: Use `Option Explicit` at the top of every file
+- **Inline Declaration + Assignment**: If a variable is used immediately after declaration, combine on one line with `:` (e.g., `Dim lenImpl As ILength: Set lenImpl = value`)
+- **Declare at Point of Use**: Place variable declarations near their first use, not at the procedure start. **VB6 has no block scope** — all `Dim` statements are hoisted to procedure scope regardless of where they appear. "Point of use" means placing the single declaration at procedure scope just before the first block that uses the variable. Never put `Dim` inside `If`/`Else`/`Select Case`/`For`/`While` blocks — this creates the misleading illusion of block scoping and causes duplicate declaration errors. For variables used across multiple branches, declare once at procedure scope and use `Set`/`=` assignment in each branch.
 
 ### Naming Conventions
 - **Classes**: PascalCase (e.g., `Asserter`, `TextFileOutput`)
@@ -70,6 +72,23 @@ End Sub
 - **Type Safety**: Use `VariantType` function for type validation
 - **File Operations**: Use `TextFileOutput` class for file I/O with Scripting.FileSystemObject
 - **Date/Time**: Use specialized date/time classes like `FileTimeDateTime` and `CDateTimeKind`
+
+#### Variant Object Reference Safety (IsObject/Set Dispatch)
+When assigning from any Variant expression that may hold an object reference (whether from an array element, function return, collection item, or ByRef parameter), you **must** dispatch between `Set` and `=` based on `IsObject()`:
+
+```vb
+' Use a single-line If to avoid End If:
+If IsObject(source) Then Set dest = source _
+                                               Else dest = source
+```
+
+**Why**: VB6's `Let` assignment (`=`) between Variants does not call `AddRef` on the underlying COM object when the source Variant contains an object reference. Without `Set`, the object can be destroyed prematurely when the source reference goes out of scope, leaving a dangling pointer.
+
+- `IsObject` on a value-type Variant (`vbLong`, `vbString`, etc.) returns `False` → uses `=` (Let), correct for values
+- `IsObject` on an object-type Variant (`vbObject`, `vbDispatch`) returns `True` → uses `Set`, which calls `AddRef`
+- `IsObject` on `Nothing` returns `True` → uses `Set`, which correctly propagates `Nothing`
+- This applies to **all** Variant-to-Variant assignments: array element reads, function return values (`FunctionName = expr`), ByRef output parameters (`param = expr`), Collection items, and intermediary local variables
+- **Prefer `LetSet` helper**: Instead of writing the inline `If IsObject...` pattern, call the `LetSet` procedure from `Builtin.cls` (or `Builtin.LetSet` from outside the class) for cleaner code. The `LetSet` procedure implements the same IsObject/Set dispatch logic.
 
 ## Development Workflow
 
