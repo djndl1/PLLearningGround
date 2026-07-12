@@ -1,32 +1,33 @@
-10 CLS
-20
+$Debug
+10 Cls
+20 Cls
 
 Beginning:
 Screen 12
-color 13
+Color 13
 
 Print "dsfsa", "dfa" ' with print zones
-print "A"; " without spaces"
+Print "A"; " without spaces"
 
 
-Dim a as integer
+Dim a As Integer
 a = 5
 
-print tab(a); "started at column "; a
+Print Tab(a); "started at column "; a
 
-let s$ = "I'm a string"
-print s$
+Let s$ = "I'm a string"
+Print s$
 
 Dim n As String
-input "What is your name"; n
+Input "What is your name"; n
 
-print "My Name is "; n
+Print "My Name is "; n
 
-for i = 1 to 10 step 2
-    print i
-next
+For i = 1 To 10 Step 2
+    Print i
+Next
 
-SOUND 1000, 36
+Sound 1000, 36
 
 Open "qb_hello.dat" For Output As #1
 
@@ -34,4 +35,4 @@ Close #1
 
 'GOTO Beginning
 
-END
+End
