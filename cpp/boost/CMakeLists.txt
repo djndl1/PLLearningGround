@@ -2,7 +2,12 @@ set(CMAKE_CXX_STANDARD ${CPPTutorial_BOOST_CXX_STANDARD})
 
 include(ExternalProject)
 
-set(B2_FLAGS --without-python)
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
+	set(B2_FLAGS -cxx=clang++)
+	set(B2_BOOTSTRAP_FLAGS --with-toolset=clang --cxx=clang++)
+endif()
+
+set(B2_FLAGS "${B2_FLAGS}")
 if(${CPPTutorial_BOOST_CXX_STANDARD} EQUAL 98)
 		set(BOOST_URL "https://archives.boost.io/release/1.83.0/source/boost_1_83_0.tar.bz2")
 		set(BOOST_CHECKSUM "6478edfe2f3305127cffe8caf73ea0176c53769f4bf1585be237eb30798c3b8e")
@@ -23,8 +28,8 @@ ExternalProject_Add(boost
 
   DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/.cache/
 	SOURCE_DIR ${CPPTutorial_BOOST_DIR}
-	CONFIGURE_COMMAND cd ${CMAKE_CURRENT_BINARY_DIR}/${CPPTutorial_BOOST_DIR}/tools/build/ && ./bootstrap.sh
-	BUILD_COMMAND cd ${CMAKE_CURRENT_BINARY_DIR}/${CPPTutorial_BOOST_DIR} && ./tools/build/b2 --prefix=${CMAKE_CURRENT_BINARY_DIR}/ --libdir=${CMAKE_CURRENT_BINARY_DIR} ${B2_FLAGS} install
+	CONFIGURE_COMMAND cd ${CMAKE_CURRENT_BINARY_DIR}/${CPPTutorial_BOOST_DIR}/tools/build/ && ./bootstrap.sh ${B2_BOOTSTRAP_FLAGS}
+	BUILD_COMMAND cd ${CMAKE_CURRENT_BINARY_DIR}/${CPPTutorial_BOOST_DIR} && ./tools/build/b2 --without-python --prefix=${CMAKE_CURRENT_BINARY_DIR}/ --libdir=${CMAKE_CURRENT_BINARY_DIR} ${B2_FLAGS} install
   INSTALL_COMMAND echo "Finished Building Boost"
 )
 

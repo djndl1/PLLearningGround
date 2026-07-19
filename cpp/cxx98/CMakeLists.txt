@@ -1,4 +1,10 @@
 set(CMAKE_CXX_STANDARD 98)
+if (ANDROID)
+  set(CMAKE_CXX_STANDARD 11)
+endif()
+if (FORCE_CXX98)
+  set(CMAKE_CXX_STANDARD 98)
+endif()
 
 include_directories(AFTER .)
 
