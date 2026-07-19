@@ -63,3 +63,11 @@ _deps
 *-prefix/
 
 # End of https://www.toptal.com/developers/gitignore/api/cmake
+build/
+build98/
+build03/
+build11/
+build17/
+build20/
+build23/
+build26/
