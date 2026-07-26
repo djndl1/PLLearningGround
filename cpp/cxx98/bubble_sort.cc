@@ -1,6 +1,7 @@
 /** @file bubble_sort.cc */
 
 #include <algorithm>
+#include <iterator>
 #include <numeric>
 #include <iostream>
 #include <string>
@@ -14,14 +15,10 @@ using std::string;
  * @param vec the vector to display
  * @param os the output stream
  */
-void display(const std::vector<int> &vec, std::ostream &os = std::cout)
+template <class T>
+void display(const std::vector<T> &vec, std::ostream &os = std::cout)
 {
-    for (std::vector<int>::const_iterator it = vec.begin(); it < vec.end(); it++) {
-        os << *it;
-        if (it + 1 != vec.end()) {
-            os << ' ';
-        }
-    }
+		std::partial_sum(vec.begin(), vec.end(), std::ostream_iterator<T>(os, " "));
     os << '\n';
 }
 
@@ -29,7 +26,8 @@ void display(const std::vector<int> &vec, std::ostream &os = std::cout)
  * @brief an in-place bubble sort of vector
  * @param vec the vector to sort
  */
-void bubble_sort(std::vector<int> &vec)
+template <class T>
+void bubble_sort(std::vector<T> &vec)
 {
     for (int ix = 0; ix < vec.size(); ix++) {
         for (int jx = ix + 1; jx < vec.size(); jx++) { // find the minimum of the right part
