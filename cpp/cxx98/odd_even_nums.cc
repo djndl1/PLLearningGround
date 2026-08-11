@@ -8,34 +8,62 @@
 
 using std::string;
 
-static void output_as(const std::string &filename, std::vector<int> nums, const std::string delimiter = " ")
+class odd_even_ostream_iterator
 {
+		public:
+				odd_even_ostream_iterator(std::ostream& odd_output, std::ostream& even_output)
+						: m_even_ostream(even_output, " "), m_odd_ostream(odd_output, " ")
+				{ }
 
-    std::ofstream fs(filename.c_str());
-    std::ostream_iterator<int> oi(fs, delimiter.c_str());
+				odd_even_ostream_iterator(const odd_even_ostream_iterator& other)
+						: m_even_ostream(other.m_even_ostream), m_odd_ostream(other.m_odd_ostream)
+				{ }
 
-    std::copy(nums.begin(), nums.end(), oi);
-    if (delimiter != "\n") {
-        fs << '\n';
-    }
-}
+		odd_even_ostream_iterator& operator=(odd_even_ostream_iterator& other)
+		{
+				this->m_even_ostream = other.m_even_ostream;
+				this->m_odd_ostream = other.m_odd_ostream;
+				return *this;
+		}
+
+		odd_even_ostream_iterator& operator=(int value)
+		{
+				if (value % 2 == 0) {
+						*m_even_ostream = value;
+				} else {
+						*m_odd_ostream = value;
+				}
+				return *this;
+		}
+
+		odd_even_ostream_iterator& operator*()
+		{
+				return *this;
+		}
+
+		odd_even_ostream_iterator& operator++()
+		{
+				return *this;
+		}
+		odd_even_ostream_iterator& operator++(int)
+		{
+				return *this;
+		}
+
+		~odd_even_ostream_iterator() { }
+
+		private:
+				std::ostream_iterator<int> m_even_ostream;
+				std::ostream_iterator<int> m_odd_ostream;
+};
 
 int main()
 {
-    std::vector<int> odds;
-    std::vector<int> evens;
-
-    int num;
-    while (std::cin >> num) {
-        if (num % 2 == 0) {
-            evens.push_back(num);
-        } else {
-            odds.push_back(num);
-        }
-    }
-
-    output_as("odds.out", odds);
-    output_as("evens.out", evens, "\n");
+		std::vector<int> numbers;
+		std::istream_iterator<int> fi(std::cin);
+		std::istream_iterator<int> eof;
+		odd_even_ostream_iterator os(std::cout, std::cerr);
+		std::copy(fi, eof, os);
 
     return 0;
 }
