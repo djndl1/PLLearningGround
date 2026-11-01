@@ -461,8 +461,7 @@ End Function
 
 ' Gets the high 32 bits of a Double (exponent and sign portion)
 Private Function GetDoubleHigh(ByVal value As Double) As Long
-    Dim buf As ByteBuffer8
-    CopyMemory buf.bytes(0), value, 8
+    Dim buf As ByteBuffer8: CopyMemory buf.bytes(0), value, 8
     ' Copy the high 4 bytes directly to result using CopyMemory
     CopyMemory GetDoubleHigh, buf.bytes(4), 4
 End Function
@@ -525,8 +524,7 @@ End Function
 '   Single: The single value with the specified bit set to 1
 Public Function SetBitSingle(ByVal value As Single, ByVal index As Long) As Single
     AssertBitRange index, LongBitLength
-    Dim bits As Long
-    bits = BitReinterpret.AsLong(value)
+    Dim bits As Long: bits = BitReinterpret.AsLong(value)
     bits = SetBitLong(bits, index)
     SetBitSingle = BitReinterpret.AsSingle(bits)
 End Function
@@ -589,8 +587,7 @@ End Function
 '   Single: The single value with the specified bit set to 0
 Public Function ClearBitSingle(ByVal value As Single, ByVal index As Long) As Single
     AssertBitRange index, LongBitLength
-    Dim bits As Long
-    bits = BitReinterpret.AsLong(value)
+    Dim bits As Long: bits = BitReinterpret.AsLong(value)
     bits = ClearBitLong(bits, index)
     ClearBitSingle = BitReinterpret.AsSingle(bits)
 End Function
@@ -653,8 +650,7 @@ End Function
 '   Single: The single value with the specified bit flipped
 Public Function FlipBitSingle(ByVal value As Single, ByVal index As Long) As Single
     AssertBitRange index, LongBitLength
-    Dim bits As Long
-    bits = BitReinterpret.AsLong(value)
+    Dim bits As Long: bits = BitReinterpret.AsLong(value)
     bits = FlipBitLong(bits, index)
     FlipBitSingle = BitReinterpret.AsSingle(bits)
 End Function
@@ -768,11 +764,8 @@ End Function
 ' Returns:
 '   Integer: The integer value with bit order reversed
 Public Function ReverseBitsInteger(ByVal value As Integer) As Integer
-    Dim buf As ByteBuffer2
+    Dim buf As ByteBuffer2: CopyMemory buf.bytes(0), value, 2
     Dim resultBytes As ByteBuffer2
-
-    ' Extract bytes safely using CopyMemory
-    CopyMemory buf.bytes(0), value, 2
 
     ' Reverse each byte, then swap positions (low becomes high, high becomes low)
     resultBytes.bytes(0) = ReverseBitsByte(buf.bytes(1))
@@ -787,11 +780,8 @@ End Function
 ' Returns:
 '   Long: The long value with bit order reversed
 Public Function ReverseBitsLong(ByVal value As Long) As Long
-    Dim buf As ByteBuffer4
+    Dim buf As ByteBuffer4: CopyMemory buf.bytes(0), value, 4
     Dim reversedBytes As ByteBuffer4
-
-    ' Extract bytes safely using CopyMemory
-    CopyMemory buf.bytes(0), value, 4
 
     ' Reverse each byte, then reverse the byte order
     reversedBytes.bytes(0) = ReverseBitsByte(buf.bytes(3))
@@ -808,11 +798,8 @@ End Function
 ' Returns:
 '   Single: The single value with bit order reversed
 Public Function ReverseBitsSingle(ByVal value As Single) As Single
-    Dim buf As ByteBuffer4
+    Dim buf As ByteBuffer4: CopyMemory buf.bytes(0), value, 4
     Dim reversedBytes As ByteBuffer4
-
-    ' Extract bytes using CopyMemory
-    CopyMemory buf.bytes(0), value, 4
 
     ' Reverse each byte, then reverse the byte order
     reversedBytes.bytes(0) = ReverseBitsByte(buf.bytes(3))
@@ -829,12 +816,9 @@ End Function
 ' Returns:
 '   Double: The double value with bit order reversed
 Public Function ReverseBitsDouble(ByVal value As Double) As Double
-    Dim buf As ByteBuffer8
+    Dim buf As ByteBuffer8: CopyMemory buf.bytes(0), value, 8
     Dim reversedBytes As ByteBuffer8
     Dim i As Long
-
-    ' Extract bytes using CopyMemory
-    CopyMemory buf.bytes(0), value, 8
 
     ' Reverse each byte, then reverse the byte order
     For i = 0 To 7
@@ -869,8 +853,7 @@ End Function
 ' Returns:
 '   Integer: The byte value in the lower 8 bits with upper 8 bits zero
 Public Function PadZeroLeftTo16Bits(ByVal value As Byte) As Integer
-    Dim buf As ByteBuffer2
-    buf.bytes(0) = value
+    Dim buf As ByteBuffer2: buf.bytes(0) = value
     CopyMemory PadZeroLeftTo16Bits, buf.bytes(0), 2
 End Function
 
@@ -880,8 +863,7 @@ End Function
 ' Returns:
 '   Long: The byte value in the lower 8 bits with upper 24 bits zero
 Public Function PadZeroLeftTo32Bits(ByVal value As Byte) As Long
-    Dim buf As ByteBuffer4
-    buf.bytes(0) = value
+    Dim buf As ByteBuffer4: buf.bytes(0) = value
     CopyMemory PadZeroLeftTo32Bits, buf.bytes(0), 4
 End Function
 
@@ -901,8 +883,7 @@ End Function
 ' Returns:
 '   Integer: The byte value in the upper 8 bits with lower 8 bits zero
 Public Function PadZeroRightTo16Bits(ByVal value As Byte) As Integer
-    Dim buf As ByteBuffer2
-    buf.bytes(1) = value
+    Dim buf As ByteBuffer2: buf.bytes(1) = value
     CopyMemory PadZeroRightTo16Bits, buf.bytes(0), 2
 End Function
 
@@ -912,8 +893,7 @@ End Function
 ' Returns:
 '   Double: The byte value in the upper 8 bits with lower 24 bits zero (as Double to handle unsigned 32-bit range)
 Public Function PadZeroRightTo32Bits(ByVal value As Byte) As Long
-    Dim buf As ByteBuffer4
-    buf.bytes(3) = value
+    Dim buf As ByteBuffer4: buf.bytes(3) = value
     CopyMemory PadZeroRightTo32Bits, buf.bytes(0), 4
 End Function
 
@@ -992,8 +972,7 @@ End Function
 ' Returns:
 '   Double: The bits of the long interpreted as a Double
 Public Function LongBitsAsDouble(ByVal value As Long) As Double
-    Dim buf As ByteBuffer8
-    CopyMemory buf.bytes(0), value, 4
+    Dim buf As ByteBuffer8: CopyMemory buf.bytes(0), value, 4
     CopyMemory LongBitsAsDouble, buf.bytes(0), 8
 End Function
 

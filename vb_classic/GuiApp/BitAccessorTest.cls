@@ -186,8 +186,7 @@ End Sub
 
 Private Sub TestSetBitSingle()
     ' Set bit 31 on 0.0# should give negative zero (sign bit set)
-    Dim result As Single
-    result = BitAccessor.SetBitSingle(0#, 31)
+    Dim result As Single: result = BitAccessor.SetBitSingle(0#, 31)
     ' Verify the sign bit is set using GetBitSingle
     m_asserter.IsTrue BitAccessor.GetBitSingle(result, 31), "BitAccessorTest.TestSetBitSingle", "SetBitSingle(0#, 31) should have sign bit set"
 End Sub
@@ -224,10 +223,8 @@ End Sub
 
 Private Sub TestClearBitSingle()
     ' Clear bit 31 on negative zero should give positive zero
-    Dim negZero As Single
-    negZero = BitAccessor.SetBitSingle(0#, 31)
-    Dim result As Single
-    result = BitAccessor.ClearBitSingle(negZero, 31)
+    Dim negZero As Single: negZero = BitAccessor.SetBitSingle(0#, 31)
+    Dim result As Single: result = BitAccessor.ClearBitSingle(negZero, 31)
     m_asserter.IsTrue result = 0#, "BitAccessorTest.TestClearBitSingle", "ClearBitSingle should clear sign bit"
 End Sub
 

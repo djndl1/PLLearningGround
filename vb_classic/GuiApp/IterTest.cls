@@ -185,8 +185,7 @@ IntDone:
     ' Object without IIterable is not iterable
     errorRaised = False
     On Error GoTo ObjErr
-    Dim nonIter As Object
-    Set nonIter = New WinHttpRequest
+    Dim nonIter As Object: Set nonIter = New WinHttpRequest
     Set iter = PyIter(nonIter)
     GoTo ObjDone
 ObjErr:
@@ -284,8 +283,7 @@ Private Sub TestPyNext()
     Dim errorRaised As Boolean
     errorRaised = False
     On Error GoTo PyNextErr
-    Dim unused As Variant
-    unused = PyNext(iter)
+    Dim unused As Variant: unused = PyNext(iter)
     GoTo AfterPyNextErr
 PyNextErr:
     errorRaised = True

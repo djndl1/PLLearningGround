@@ -58,8 +58,7 @@ Private Sub TestFactoryMethods()
     m_asserter.AreEqual ft.SecondPart, 4, "FileTimeDateTimeTest.TestFactoryMethods", "FromDateTime second should match"
 
     ' Test FromTicks
-    Dim originalTicks As Variant
-    originalTicks = ft.TicksAsDecimal
+    Dim originalTicks As Variant: originalTicks = ft.TicksAsDecimal
     Set ft = m_factory.FromTicks(originalTicks)
     m_asserter.IsTrue Not ft Is Nothing, "FileTimeDateTimeTest.TestFactoryMethods", "FromTicks should return valid object"
     m_asserter.AreEqual ft.TicksAsDecimal, originalTicks, "FileTimeDateTimeTest.TestFactoryMethods", "FromTicks ticks should match"

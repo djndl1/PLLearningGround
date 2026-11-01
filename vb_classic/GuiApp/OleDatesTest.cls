@@ -65,23 +65,17 @@ Private Sub TestFormatAsISO8601()
 End Sub
 
 Private Sub TestToFromFileTimeDecimal()
-    Dim knownDate As Date
-    knownDate = DateSerial(2023, 6, 15) + TimeSerial(12, 30, 45)
-    Dim ticks As Variant
-    ticks = OleDates.ToFileTimeDecimal(knownDate)
+    Dim knownDate As Date: knownDate = DateSerial(2023, 6, 15) + TimeSerial(12, 30, 45)
+    Dim ticks As Variant: ticks = OleDates.ToFileTimeDecimal(knownDate)
     m_asserter.IsTrue CDec(ticks) > CDec(0), "OleDatesTest.TestToFromFileTimeDecimal", "Ticks should be positive for 2023"
 End Sub
 
 Private Sub TestRoundTripFileTimeDecimal()
-    Dim knownDate As Date
-    knownDate = DateSerial(2023, 6, 15) + TimeSerial(12, 30, 45)
-    Dim ticks As Variant
-    ticks = OleDates.ToFileTimeDecimal(knownDate)
-    Dim back As Date
-    back = OleDates.FromFileTimeDecimal(ticks)
+    Dim knownDate As Date: knownDate = DateSerial(2023, 6, 15) + TimeSerial(12, 30, 45)
+    Dim ticks As Variant: ticks = OleDates.ToFileTimeDecimal(knownDate)
+    Dim back As Date: back = OleDates.FromFileTimeDecimal(ticks)
     ' OLE Date precision is ~1ms in 1900-2100. Allow 1s tolerance.
-    Dim diff As Double
-    diff = CDbl(back) - CDbl(knownDate)
+    Dim diff As Double: diff = CDbl(back) - CDbl(knownDate)
     If diff < 0 Then diff = -diff
     m_asserter.IsTrue diff < 1 / 86400, "OleDatesTest.TestRoundTripFileTimeDecimal", "Round-trip within 1 second"
 End Sub

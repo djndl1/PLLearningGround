@@ -50,10 +50,8 @@ End Sub
 
 Public Function GetUtcNow() As FileTimeDateTime
 Attribute GetUtcNow.VB_Description = "Returns a FileTimeDateTime representing the current UTC time.\r\n\r\nReturns:\r\n  FileTimeDateTime: A new instance with Kind=UtcKind."
-    Dim ft As FILETIME
-    GetSystemTimeAsFileTime ft
-    Dim result As New FileTimeDateTime
-    result.InitFromFileTime ft.dwLowDateTime, ft.dwHighDateTime, UtcKind
+    Dim ft As FILETIME: GetSystemTimeAsFileTime ft
+    Dim result As New FileTimeDateTime: result.InitFromFileTime ft.dwLowDateTime, ft.dwHighDateTime, UtcKind
     Set GetUtcNow = result
 End Function
 
@@ -62,21 +60,17 @@ Attribute GetLocalNow.VB_Description = "Returns a FileTimeDateTime representing 
     Dim utcFt As FILETIME
     Dim localFt As FILETIME
     GetSystemTimeAsFileTime utcFt
-    Dim ok As Long
-    ok = FileTimeToLocalFileTime(utcFt, localFt)
+    Dim ok As Long: ok = FileTimeToLocalFileTime(utcFt, localFt)
     Ensure.IsTrue ok <> 0, ErrorCodes.Overflow, "FileTimeDateTimeFactory.GetLocalNow", "FileTimeToLocalFileTime failed"
-    Dim result As New FileTimeDateTime
-    result.InitFromFileTime localFt.dwLowDateTime, localFt.dwHighDateTime, LocalKind
+    Dim result As New FileTimeDateTime: result.InitFromFileTime localFt.dwLowDateTime, localFt.dwHighDateTime, LocalKind
     Set GetLocalNow = result
 End Function
 
 Public Function GetToday() As FileTimeDateTime
 Attribute GetToday.VB_Description = "Returns a FileTimeDateTime representing today at 00:00:00 local time.\r\n\r\nReturns:\r\n  FileTimeDateTime: A new instance with Kind=LocalKind and time components zeroed."
-    Dim nowLocal As FileTimeDateTime
-    Set nowLocal = GetLocalNow()
+    Dim nowLocal As FileTimeDateTime: Set nowLocal = GetLocalNow()
     Dim y As Integer, m As Integer, d As Integer
-    Dim sysTime As SYSTEMTIME
-    sysTime = nowLocal.ToSystemTime()
+    Dim sysTime As SYSTEMTIME: sysTime = nowLocal.ToSystemTime()
     y = sysTime.wYear
     m = sysTime.wMonth
     d = sysTime.wDay
@@ -105,8 +99,7 @@ Attribute FromDateTime.VB_Description = "Creates a FileTimeDateTime from a calen
     Dim result As Long
     result = SystemTimeToFileTime(sysTime, ft)
     Ensure.IsTrue result <> 0, ErrorCodes.Overflow, "FileTimeDateTimeFactory.FromDateTime", "SystemTimeToFileTime failed"
-    Dim ftd As New FileTimeDateTime
-    ftd.InitFromFileTime ft.dwLowDateTime, ft.dwHighDateTime, dtKind
+    Dim ftd As New FileTimeDateTime: ftd.InitFromFileTime ft.dwLowDateTime, ft.dwHighDateTime, dtKind
     If microsecond <> 0 Then
         Set ftd = ftd.AddMicroseconds(CDbl(microsecond))
     End If
@@ -115,35 +108,29 @@ End Function
 
 Public Function FromFileTime(ByVal LowPart As Long, ByVal HighPart As Long, Optional ByVal dtKind As DateTimeKind = DateTimeKind.UnspecifiedKind) As FileTimeDateTime
 Attribute FromFileTime.VB_Description = "Creates a FileTimeDateTime from the two 32-bit halves of a FILETIME.\r\n\r\nArgs:\r\n  LowPart (Long): The low 32 bits of the FILETIME.\r\n  HighPart (Long): The high 32 bits of the FILETIME.\r\n  dtKind (DateTimeKind): The kind to assign to the resulting FileTimeDateTime.\r\nReturns:\r\n  FileTimeDateTime: The new instance."
-    Dim ft As New FileTimeDateTime
-    ft.InitFromFileTime LowPart, HighPart, dtKind
+    Dim ft As New FileTimeDateTime: ft.InitFromFileTime LowPart, HighPart, dtKind
     Set FromFileTime = ft
 End Function
 
 Public Function FromSystemTime(ByRef sysTime As SYSTEMTIME, Optional ByVal dtKind As DateTimeKind = DateTimeKind.UnspecifiedKind) As FileTimeDateTime
 Attribute FromSystemTime.VB_Description = "Creates a FileTimeDateTime from a SYSTEMTIME.\r\n\r\nArgs:\r\n  sysTime (SYSTEMTIME): The SYSTEMTIME to convert.\r\n  dtKind (DateTimeKind): The kind to assign to the resulting FileTimeDateTime.\r\nReturns:\r\n  FileTimeDateTime: The new instance."
     Dim ft As FILETIME
-    Dim result As Long
-    result = SystemTimeToFileTime(sysTime, ft)
+    Dim result As Long: result = SystemTimeToFileTime(sysTime, ft)
     Ensure.IsTrue result <> 0, ErrorCodes.Overflow, "FileTimeDateTimeFactory.FromSystemTime", "SystemTimeToFileTime failed"
-    Dim ftd As New FileTimeDateTime
-    ftd.InitFromFileTime ft.dwLowDateTime, ft.dwHighDateTime, dtKind
+    Dim ftd As New FileTimeDateTime: ftd.InitFromFileTime ft.dwLowDateTime, ft.dwHighDateTime, dtKind
     Set FromSystemTime = ftd
 End Function
 
 Public Function FromOleDate(ByVal oleDate As Date, ByVal dtKind As DateTimeKind) As FileTimeDateTime
 Attribute FromOleDate.VB_Description = "Creates a FileTimeDateTime from an OLE Automation Date.\r\n\r\nArgs:\r\n  oleDate (Date): The OLE Date to convert.\r\n  dtKind (DateTimeKind): The kind to assign to the resulting FileTimeDateTime.\r\nReturns:\r\n  FileTimeDateTime: The new instance."
-    Dim ft As FILETIME
-    ft = FileTimeDateTimes.ConvertOleDateToFileTime(oleDate)
-    Dim ftd As New FileTimeDateTime
-    ftd.InitFromFileTime ft.dwLowDateTime, ft.dwHighDateTime, dtKind
+    Dim ft As FILETIME: ft = FileTimeDateTimes.ConvertOleDateToFileTime(oleDate)
+    Dim ftd As New FileTimeDateTime: ftd.InitFromFileTime ft.dwLowDateTime, ft.dwHighDateTime, dtKind
     Set FromOleDate = ftd
 End Function
 
 Public Function FromTicks(ByVal ticks As Variant, Optional ByVal dtKind As DateTimeKind = UnspecifiedKind) As FileTimeDateTime
 Attribute FromTicks.VB_Description = "Creates a FileTimeDateTime from a Decimal FILETIME tick count.\r\n\r\nArgs:\r\n  ticks (Variant): The Decimal tick count (100-ns intervals since 1601-01-01).\r\n  dtKind (DateTimeKind): The kind to assign to the resulting FileTimeDateTime.\r\nReturns:\r\n  FileTimeDateTime: The new instance."
-    Dim ft As New FileTimeDateTime
-    ft.InitFromTicks ticks, dtKind
+    Dim ft As New FileTimeDateTime: ft.InitFromTicks ticks, dtKind
     Set FromTicks = ft
 End Function
 

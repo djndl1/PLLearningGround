@@ -41,14 +41,10 @@ End Sub
 
 ' TestLeftShiftInteger tests the LeftShiftInteger function with various values.
 Private Sub TestLeftShiftInteger()
-    Dim result As Integer
-
     ' Test case: 1 << 0 = 1
-    Dim num As Integer
-    Dim shift As Integer
-    num = 1
-    shift = 0
-    result = NativeConverter.LeftShiftInteger(num, shift)
+    Dim num As Integer: num = 1
+    Dim shift As Integer: shift = 0
+    Dim result As Integer: result = NativeConverter.LeftShiftInteger(num, shift)
     m_asserter.AreEqual 1, result, "NativeConverterTest.TestLeftShiftInteger", "1 << 0 = 1"
 
     ' Test case: 1 << 3 = 8

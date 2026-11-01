@@ -214,8 +214,7 @@ End Property
 Public Function TimeSpanFromTicks(ByVal ticks As Variant) As TimeSpan
 Attribute TimeSpanFromTicks.VB_Description = "Returns a UDT TimeSpan holding exactly the supplied tick count.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  ticks (Variant): The exact tick count.\r\nReturns:\r\n  TimeSpan: The new UDT."
     Ensure.IsTrue InTickRange(CDec(ticks)), ErrorCodes.Overflow, "CTimeSpans.TimeSpanFromTicks", "ticks out of range"
-    Dim result As TimeSpan
-    result.ticks = CDec(ticks)
+    Dim result As TimeSpan: result.ticks = CDec(ticks)
     TimeSpanFromTicks = result
 End Function
 
@@ -223,11 +222,9 @@ End Function
 ' of milliseconds. Raises Overflow on out-of-range.
 Public Function TimeSpanFromMillis(ByVal millis As Double) As TimeSpan
 Attribute TimeSpanFromMillis.VB_Description = "Returns a UDT TimeSpan representing the given number of milliseconds.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  millis (Double): The number of milliseconds.\r\nReturns:\r\n  TimeSpan: The new UDT."
-    Dim ticks As Variant
-    ticks = CDec(millis) * CDec(CTimeSpans.TicksPerMillisecond)
+    Dim ticks As Variant: ticks = CDec(millis) * CDec(CTimeSpans.TicksPerMillisecond)
     Ensure.IsTrue InTickRange(ticks), ErrorCodes.Overflow, "CTimeSpans.TimeSpanFromMillis", "millis out of range"
-    Dim result As TimeSpan
-    result.ticks = ticks
+    Dim result As TimeSpan: result.ticks = ticks
     TimeSpanFromMillis = result
 End Function
 
@@ -235,11 +232,9 @@ End Function
 ' of microseconds. Raises Overflow on out-of-range.
 Public Function TimeSpanFromMicros(ByVal micros As Double) As TimeSpan
 Attribute TimeSpanFromMicros.VB_Description = "Returns a UDT TimeSpan representing the given number of microseconds.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  micros (Double): The number of microseconds.\r\nReturns:\r\n  TimeSpan: The new UDT."
-    Dim ticks As Variant
-    ticks = CDec(micros) * CDec(CTimeSpans.TicksPerMicrosecond)
+    Dim ticks As Variant: ticks = CDec(micros) * CDec(CTimeSpans.TicksPerMicrosecond)
     Ensure.IsTrue InTickRange(ticks), ErrorCodes.Overflow, "CTimeSpans.TimeSpanFromMicros", "micros out of range"
-    Dim result As TimeSpan
-    result.ticks = ticks
+    Dim result As TimeSpan: result.ticks = ticks
     TimeSpanFromMicros = result
 End Function
 
@@ -247,11 +242,9 @@ End Function
 ' of seconds. Raises Overflow on out-of-range.
 Public Function TimeSpanFromSeconds(ByVal seconds As Double) As TimeSpan
 Attribute TimeSpanFromSeconds.VB_Description = "Returns a UDT TimeSpan representing the given number of seconds.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  seconds (Double): The number of seconds.\r\nReturns:\r\n  TimeSpan: The new UDT."
-    Dim ticks As Variant
-    ticks = CDec(seconds) * CDec(CTimeSpans.TicksPerSecond)
+    Dim ticks As Variant: ticks = CDec(seconds) * CDec(CTimeSpans.TicksPerSecond)
     Ensure.IsTrue InTickRange(ticks), ErrorCodes.Overflow, "CTimeSpans.TimeSpanFromSeconds", "seconds out of range"
-    Dim result As TimeSpan
-    result.ticks = ticks
+    Dim result As TimeSpan: result.ticks = ticks
     TimeSpanFromSeconds = result
 End Function
 
@@ -259,11 +252,9 @@ End Function
 ' of minutes. Raises Overflow on out-of-range.
 Public Function TimeSpanFromMinutes(ByVal minutes As Double) As TimeSpan
 Attribute TimeSpanFromMinutes.VB_Description = "Returns a UDT TimeSpan representing the given number of minutes.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  minutes (Double): The number of minutes.\r\nReturns:\r\n  TimeSpan: The new UDT."
-    Dim ticks As Variant
-    ticks = CDec(minutes) * CDec(CTimeSpans.TicksPerMinute)
+    Dim ticks As Variant: ticks = CDec(minutes) * CDec(CTimeSpans.TicksPerMinute)
     Ensure.IsTrue InTickRange(ticks), ErrorCodes.Overflow, "CTimeSpans.TimeSpanFromMinutes", "minutes out of range"
-    Dim result As TimeSpan
-    result.ticks = ticks
+    Dim result As TimeSpan: result.ticks = ticks
     TimeSpanFromMinutes = result
 End Function
 
@@ -271,11 +262,9 @@ End Function
 ' of hours. Raises Overflow on out-of-range.
 Public Function TimeSpanFromHours(ByVal hours As Double) As TimeSpan
 Attribute TimeSpanFromHours.VB_Description = "Returns a UDT TimeSpan representing the given number of hours.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  hours (Double): The number of hours.\r\nReturns:\r\n  TimeSpan: The new UDT."
-    Dim ticks As Variant
-    ticks = CDec(hours) * CDec(CTimeSpans.TicksPerHour)
+    Dim ticks As Variant: ticks = CDec(hours) * CDec(CTimeSpans.TicksPerHour)
     Ensure.IsTrue InTickRange(ticks), ErrorCodes.Overflow, "CTimeSpans.TimeSpanFromHours", "hours out of range"
-    Dim result As TimeSpan
-    result.ticks = ticks
+    Dim result As TimeSpan: result.ticks = ticks
     TimeSpanFromHours = result
 End Function
 
@@ -283,11 +272,9 @@ End Function
 ' of days. Raises Overflow on out-of-range.
 Public Function TimeSpanFromDays(ByVal days As Double) As TimeSpan
 Attribute TimeSpanFromDays.VB_Description = "Returns a UDT TimeSpan representing the given number of days.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  days (Double): The number of days.\r\nReturns:\r\n  TimeSpan: The new UDT."
-    Dim ticks As Variant
-    ticks = CDec(days) * CDec(CTimeSpans.TicksPerDay)
+    Dim ticks As Variant: ticks = CDec(days) * CDec(CTimeSpans.TicksPerDay)
     Ensure.IsTrue InTickRange(ticks), ErrorCodes.Overflow, "CTimeSpans.TimeSpanFromDays", "days out of range"
-    Dim result As TimeSpan
-    result.ticks = ticks
+    Dim result As TimeSpan: result.ticks = ticks
     TimeSpanFromDays = result
 End Function
 
@@ -296,10 +283,8 @@ End Function
 ' non-negative. Raises Overflow on out-of-range.
 Public Function TimeSpanFromHoursMinutesSeconds(ByVal h As Long, ByVal m As Long, ByVal s As Long) As TimeSpan
 Attribute TimeSpanFromHoursMinutesSeconds.VB_Description = "Returns a UDT TimeSpan constructed from h:m:s.\r\nAll inputs can be negative. h must fit in [0, 23] when all inputs are non-negative.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  h (Long): Hours.\r\n  m (Long): Minutes.\r\n  s (Long): Seconds.\r\nReturns:\r\n  TimeSpan: The new UDT."
-    Dim ticks As Variant
-    ticks = TimeToTicks(0, h, m, s)
-    Dim result As TimeSpan
-    result.ticks = ticks
+    Dim ticks As Variant: ticks = TimeToTicks(0, h, m, s)
+    Dim result As TimeSpan: result.ticks = ticks
     TimeSpanFromHoursMinutesSeconds = result
 End Function
 
@@ -320,11 +305,9 @@ End Function
 ' Raises Overflow on out-of-range.
 Public Function TimeSpanFromDaysHoursMinutesSecondsMillis(ByVal d As Long, ByVal h As Long, ByVal m As Long, ByVal s As Long, ByVal millis As Long) As TimeSpan
 Attribute TimeSpanFromDaysHoursMinutesSecondsMillis.VB_Description = "Returns a UDT TimeSpan constructed from d:h:m:s plus a milliseconds component.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  d (Long): Days.\r\n  h (Long): Hours.\r\n  m (Long): Minutes.\r\n  s (Long): Seconds.\r\n  millis (Long): Milliseconds.\r\nReturns:\r\n  TimeSpan: The new UDT."
-    Dim ticks As Variant
-    ticks = TimeToTicks(d, h, m, s) + CDec(millis) * CDec(CTimeSpans.TicksPerMillisecond)
+    Dim ticks As Variant: ticks = TimeToTicks(d, h, m, s) + CDec(millis) * CDec(CTimeSpans.TicksPerMillisecond)
     Ensure.IsTrue InTickRange(ticks), ErrorCodes.Overflow, "CTimeSpans.TimeSpanFromDaysHoursMinutesSecondsMillis", "resulting ticks out of range"
-    Dim result As TimeSpan
-    result.ticks = ticks
+    Dim result As TimeSpan: result.ticks = ticks
     TimeSpanFromDaysHoursMinutesSecondsMillis = result
 End Function
 
@@ -333,13 +316,11 @@ End Function
 ' Raises Overflow on out-of-range.
 Public Function TimeSpanFromDaysHoursMinutesSecondsMillisMicros(ByVal d As Long, ByVal h As Long, ByVal m As Long, ByVal s As Long, ByVal millis As Long, ByVal micros As Long) As TimeSpan
 Attribute TimeSpanFromDaysHoursMinutesSecondsMillisMicros.VB_Description = "Returns a UDT TimeSpan constructed from d:h:m:s plus milliseconds and microseconds.\r\nThe most precise factory offered.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  d (Long): Days.\r\n  h (Long): Hours.\r\n  m (Long): Minutes.\r\n  s (Long): Seconds.\r\n  millis (Long): Milliseconds.\r\n  micros (Long): Microseconds.\r\nReturns:\r\n  TimeSpan: The new UDT."
-    Dim ticks As Variant
-    ticks = TimeToTicks(d, h, m, s) _
+    Dim ticks As Variant: ticks = TimeToTicks(d, h, m, s) _
         + CDec(millis) * CDec(CTimeSpans.TicksPerMillisecond) _
         + CDec(micros) * CDec(CTimeSpans.TicksPerMicrosecond)
     Ensure.IsTrue InTickRange(ticks), ErrorCodes.Overflow, "CTimeSpans.TimeSpanFromDaysHoursMinutesSecondsMillisMicros", "resulting ticks out of range"
-    Dim result As TimeSpan
-    result.ticks = ticks
+    Dim result As TimeSpan: result.ticks = ticks
     TimeSpanFromDaysHoursMinutesSecondsMillisMicros = result
 End Function
 
@@ -347,8 +328,7 @@ End Function
 ' Overflow on out-of-range.
 Public Function TimeSpanAdd(ByRef a As TimeSpan, ByRef b As TimeSpan) As TimeSpan
 Attribute TimeSpanAdd.VB_Description = "Returns a new TimeSpan whose ticks are a + b.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  a (TimeSpan): Left operand.\r\n  b (TimeSpan): Right operand.\r\nReturns:\r\n  TimeSpan: a + b."
-    Dim result As TimeSpan
-    result.ticks = CheckedAdd(CDec(a.ticks), CDec(b.ticks))
+    Dim result As TimeSpan: result.ticks = CheckedAdd(CDec(a.ticks), CDec(b.ticks))
     TimeSpanAdd = result
 End Function
 
@@ -356,8 +336,7 @@ End Function
 ' Overflow on out-of-range.
 Public Function TimeSpanSubtract(ByRef a As TimeSpan, ByRef b As TimeSpan) As TimeSpan
 Attribute TimeSpanSubtract.VB_Description = "Returns a new TimeSpan whose ticks are a - b.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  a (TimeSpan): Left operand.\r\n  b (TimeSpan): Right operand.\r\nReturns:\r\n  TimeSpan: a - b."
-    Dim result As TimeSpan
-    result.ticks = CheckedSubtract(CDec(a.ticks), CDec(b.ticks))
+    Dim result As TimeSpan: result.ticks = CheckedSubtract(CDec(a.ticks), CDec(b.ticks))
     TimeSpanSubtract = result
 End Function
 
@@ -366,7 +345,9 @@ End Function
 ' Overflow.
 Public Function TimeSpanNegate(ByRef a As TimeSpan) As TimeSpan
 Attribute TimeSpanNegate.VB_Description = "Returns a new TimeSpan with the sign of a inverted.\r\nNegating MinValue raises Overflow (no positive equivalent).\r\nArgs:\r\n  a (TimeSpan): Operand.\r\nReturns:\r\n  TimeSpan: -a."
-    Dim result As TimeSpan
+    Dim result As TimeSpan: result.ticks = -CDec(a.ticks)
+    TimeSpanNegate = result
+End Function
     result.ticks = CheckedNegate(CDec(a.ticks))
     TimeSpanNegate = result
 End Function
@@ -376,7 +357,7 @@ End Function
 ' Overflow.
 Public Function TimeSpanDuration(ByRef a As TimeSpan) As TimeSpan
 Attribute TimeSpanDuration.VB_Description = "Returns the absolute value of a as a new TimeSpan.\r\nThe largest negative value raises Overflow.\r\nArgs:\r\n  a (TimeSpan): Operand.\r\nReturns:\r\n  TimeSpan: |a|."
-    Dim result As TimeSpan
+    Dim result As TimeSpan: result.ticks = 0
     If CDec(a.ticks) < CDec(0) Then
         result.ticks = CheckedNegate(CDec(a.ticks))
     Else
@@ -389,8 +370,7 @@ End Function
 ' be negative. Raises Overflow when the product leaves the tick range.
 Public Function TimeSpanMultiply(ByRef a As TimeSpan, ByVal factor As Double) As TimeSpan
 Attribute TimeSpanMultiply.VB_Description = "Returns a new TimeSpan scaled by factor.\r\nfactor can be negative. Raises Overflow on out-of-range.\r\nArgs:\r\n  a (TimeSpan): Operand.\r\n  factor (Double): Scale factor.\r\nReturns:\r\n  TimeSpan: a * factor."
-    Dim result As TimeSpan
-    result.ticks = CheckedMultiply(CDec(a.ticks), CDec(factor))
+    Dim result As TimeSpan: result.ticks = CheckedMultiply(CDec(a.ticks), CDec(factor))
     TimeSpanMultiply = result
 End Function
 
@@ -399,8 +379,7 @@ End Function
 ' Raises Overflow when the result leaves the tick range.
 Public Function TimeSpanDivide(ByRef a As TimeSpan, ByVal divisor As Double) As TimeSpan
 Attribute TimeSpanDivide.VB_Description = "Returns a new TimeSpan whose ticks are a / divisor.\r\ndivisor = 0 raises Overflow; result out of range also raises Overflow.\r\nArgs:\r\n  a (TimeSpan): Numerator.\r\n  divisor (Double): Divisor.\r\nReturns:\r\n  TimeSpan: a / divisor."
-    Dim result As TimeSpan
-    result.ticks = CheckedDivide(CDec(a.ticks), CDec(divisor))
+    Dim result As TimeSpan: result.ticks = CheckedDivide(CDec(a.ticks), CDec(divisor))
     TimeSpanDivide = result
 End Function
 

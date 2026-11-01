@@ -34,51 +34,44 @@ Public Property Get Kind() As DateTimeKind
 End Property
 
 Public Property Get datePart() As FileTimeDateTime
-        Dim y As Integer, m As Integer, d As Integer
-        Call GetDatePart(y, m, d)
+        Dim y As Integer, m As Integer, d As Integer: Call GetDatePart(y, m, d)
 
         Set datePart = FileTimeDateTimeFactory.FromDateTime(y, m, d, dtKind:=Me.Kind)
 End Property
 
 Private Sub GetDatePart(ByRef y As Integer, ByRef m As Integer, ByRef d As Integer)
-        Dim sysTime As SYSTEMTIME
-        sysTime = Me.ToSystemTime()
+        Dim sysTime As SYSTEMTIME: sysTime = Me.ToSystemTime()
         y = sysTime.wYear
         m = sysTime.wMonth
         d = sysTime.wDay
 End Sub
 
 Public Property Get YearPart() As Integer
-        Dim y As Integer, m As Integer, d As Integer
-        Call GetDatePart(y, m, d)
+        Dim y As Integer, m As Integer, d As Integer: Call GetDatePart(y, m, d)
 
         YearPart = y
 End Property
 
 Public Property Get MonthPart() As Integer
-        Dim y As Integer, m As Integer, d As Integer
-        Call GetDatePart(y, m, d)
+        Dim y As Integer, m As Integer, d As Integer: Call GetDatePart(y, m, d)
 
         MonthPart = m
 End Property
 
 Public Property Get DayPart() As Integer
-        Dim y As Integer, m As Integer, d As Integer
-        Call GetDatePart(y, m, d)
+        Dim y As Integer, m As Integer, d As Integer: Call GetDatePart(y, m, d)
 
         DayPart = d
 End Property
 
 Public Property Get HourPart() As Integer
-        Dim sysTime As SYSTEMTIME
-        sysTime = Me.ToSystemTime()
+        Dim sysTime As SYSTEMTIME: sysTime = Me.ToSystemTime()
 
         HourPart = sysTime.wHour
 End Property
 
 Public Property Get MinutePart() As Integer
-        Dim sysTime As SYSTEMTIME
-        sysTime = Me.ToSystemTime()
+        Dim sysTime As SYSTEMTIME: sysTime = Me.ToSystemTime()
 
         MinutePart = sysTime.wMinute
 End Property
@@ -98,11 +91,9 @@ Public Property Get MillisecondPart() As Integer
 End Property
 
 Private Function GetSubmillisecondTicks() As Integer
-        Dim sysTime As SYSTEMTIME
-        sysTime = Me.ToSystemTime()
+        Dim sysTime As SYSTEMTIME: sysTime = Me.ToSystemTime()
 
-        Dim convertedBack As FileTimeDateTime
-        Set convertedBack = FileTimeDateTimeFactory.FromSystemTime(sysTime)
+        Dim convertedBack As FileTimeDateTime: Set convertedBack = FileTimeDateTimeFactory.FromSystemTime(sysTime)
 
         GetSubmillisecondTicks = CInt(m_ftimestamp.dwLowDateTime - convertedBack.lowDateTime)
 End Function
@@ -131,11 +122,9 @@ Friend Sub InitFromTicks(ByVal ticks As Variant, Optional ByVal dtKind As DateTi
 End Sub
 
 Public Function AddTicks(ByVal diffTicks As Variant) As FileTimeDateTime
-        Dim sumTicks As Variant
-        sumTicks = diffTicks + Me.TicksAsDecimal
+        Dim sumTicks As Variant: sumTicks = diffTicks + Me.TicksAsDecimal
 
-        Dim result As New FileTimeDateTime
-        Call result.InitFromTicks(sumTicks, m_dtKind)
+        Dim result As New FileTimeDateTime: Call result.InitFromTicks(sumTicks, m_dtKind)
 
         Set AddTicks = result
 End Function

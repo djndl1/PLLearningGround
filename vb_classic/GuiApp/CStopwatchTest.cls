@@ -59,13 +59,11 @@ Private Sub TestElapsed()
     Set sw = CStopwatches.StartNew()
     Sleep 50
     sw.Pause
-    Dim elapsed As CTimeSpan
-    Set elapsed = sw.Elapsed
+    Dim elapsed As CTimeSpan: Set elapsed = sw.Elapsed
     m_asserter.IsTrue elapsed.TotalMilliseconds >= 40, "CStopwatchTest.TestElapsed", "Elapsed >= 40ms after 50ms sleep"
     m_asserter.IsTrue elapsed.TotalMilliseconds < 1000, "CStopwatchTest.TestElapsed", "Elapsed < 1s (sanity)"
 
-    Dim ems As Double
-    ems = sw.ElapsedMilliseconds
+    Dim ems As Double: ems = sw.ElapsedMilliseconds
     m_asserter.IsTrue ems >= 40, "CStopwatchTest.TestElapsed", "ElapsedMilliseconds >= 40"
 End Sub
 
@@ -75,11 +73,9 @@ Private Sub TestPause()
     Sleep 10
     sw.Pause
     m_asserter.IsFalse sw.IsRunning, "CStopwatchTest.TestPause", "Pause sets IsRunning=False"
-    Dim e1 As Double
-    e1 = sw.ElapsedMilliseconds
+    Dim e1 As Double: e1 = sw.ElapsedMilliseconds
     Sleep 20
-    Dim e2 As Double
-    e2 = sw.ElapsedMilliseconds
+    Dim e2 As Double: e2 = sw.ElapsedMilliseconds
     m_asserter.IsTrue e2 = e1, "CStopwatchTest.TestStop", "Elapsed freezes after Stop"
 End Sub
 

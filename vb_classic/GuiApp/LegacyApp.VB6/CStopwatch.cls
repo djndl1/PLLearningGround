@@ -100,8 +100,7 @@ End Property
 ' divide by CStopwatches.Frequency. Mirrors .NET's
 ' Stopwatch.ElapsedTicks.
 Public Property Get ElapsedTicks() As Variant
-    Dim timeElapsed As Variant
-    timeElapsed = CDec(m_elapsed)
+    Dim timeElapsed As Variant: timeElapsed = CDec(m_elapsed)
     If m_isRunning Then
         timeElapsed = CDec(timeElapsed) + (CDec(CStopwatches.GetTimestamp()) - CDec(m_startTimeStamp))
     End If

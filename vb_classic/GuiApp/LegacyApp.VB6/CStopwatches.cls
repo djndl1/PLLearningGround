@@ -47,7 +47,7 @@ Private m_frequency As Variant
 Private m_tickFrequency As Variant
 
 Private Sub Class_Initialize()
-    Dim freq As Currency
+    Dim freq As Currency: freq = 0
     If QueryPerformanceFrequency(freq) = 0 Then
         Err.Raise ErrorCodes.ObjectVariableNotSet, _
             "CStopwatches.Class_Initialize", _
@@ -78,7 +78,7 @@ End Property
 ' Int64 to Variant(Decimal). Callers that want the ratio
 ' can divide by CStopwatches.Frequency to get seconds.
 Public Function GetTimestamp() As Variant
-    Dim raw As Currency
+    Dim raw As Currency: raw = 0
     If QueryPerformanceCounter(raw) = 0 Then
         Err.Raise ErrorCodes.ObjectVariableNotSet, _
             "CStopwatches.GetTimestamp", _
@@ -106,10 +106,8 @@ Public Function GetElapsedTime(ByVal startingTimestamp As Variant, _
     If IsMissing(endingTimestamp) Then
         endingTimestamp = GetTimestamp()
     End If
-    Dim elapsedQpc As Variant
-    elapsedQpc = CDec(endingTimestamp) - CDec(startingTimestamp)
-    Dim tsTicks As Variant
-    tsTicks = CDec(elapsedQpc) * CDec(m_tickFrequency)
+    Dim elapsedQpc As Variant: elapsedQpc = CDec(endingTimestamp) - CDec(startingTimestamp)
+    Dim tsTicks As Variant: tsTicks = CDec(elapsedQpc) * CDec(m_tickFrequency)
     Set GetElapsedTime = CTimeSpanFactory.FromTicks(tsTicks)
 End Function
 

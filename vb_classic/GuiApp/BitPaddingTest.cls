@@ -47,14 +47,11 @@ End Sub
 
 ' Compares the bytes of two Double values
 Private Sub AssertDoubleBytesEqual(ByVal expected As Double, ByVal actual As Double, ByVal site As String, ByVal message As String)
-    Dim expectedBytes() As Byte
-    Dim actualBytes() As Byte
-    expectedBytes = NativeConverter.ToBytesDouble(expected)
-    actualBytes = NativeConverter.ToBytesDouble(actual)
+    Dim expectedBytes() As Byte: expectedBytes = NativeConverter.ToBytesDouble(expected)
+    Dim actualBytes() As Byte: actualBytes = NativeConverter.ToBytesDouble(actual)
 
-    Dim i As Long
+    Dim i As Long: For i = 0 To 7
     Dim msg As String
-    For i = 0 To 7
         If expectedBytes(i) <> actualBytes(i) Then
             msg = message & " (expected: " & BytesToHex(expectedBytes) & ", actual: " & BytesToHex(actualBytes) & ")"
             m_asserter.IsTrue False, site, msg
@@ -66,10 +63,8 @@ End Sub
 
 ' Converts byte array to hex string for debugging
 Private Function BytesToHex(ByRef bytes() As Byte) As String
-    Dim i As Long
-    Dim result As String
-    result = ""
-    For i = 0 To 7
+    Dim i As Long: For i = 0 To 7
+    Dim result As String: result = ""
         If i > 0 Then result = result & " "
         result = result & Hex(bytes(i))
     Next i
@@ -149,8 +144,7 @@ End Sub
 
 Private Sub TestPadZeroRightTo64BitsInteger()
     ' PadZeroRight: Integer * 2^48 (shifts to upper 16 bits as numeric)
-    Dim val As Double
-    val = 281474976710656#  ' 1 * 2^48
+    Dim val As Double: val = 281474976710656#  ' 1 * 2^48
     AssertDoubleBytesEqual val, BitAccessor.PadZeroRightTo64BitsInteger(1), "BitPaddingTest.PadZeroRightTo64BitsInteger", "1 -> value * 2^48"
 
     val = 562949953421312#  ' 2 * 2^48
@@ -178,9 +172,7 @@ End Sub
 
 Private Sub TestPadZeroRightTo64BitsLong()
     ' PadZeroRight: Long * 2^32 (shifts to upper 32 bits as numeric)
-    Dim val As Double
-
-    val = 4294967296#  ' 1 * 2^32
+    Dim val As Double: val = 4294967296#  ' 1 * 2^32
     AssertDoubleBytesEqual val, BitAccessor.PadZeroRightTo64BitsLong(1), "BitPaddingTest.PadZeroRightTo64BitsLong", "1 -> value * 2^32"
 
     val = 8589934592#  ' 2 * 2^32

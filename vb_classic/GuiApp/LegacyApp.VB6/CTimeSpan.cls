@@ -125,56 +125,44 @@ End Property
 Public Function Add(ByVal ts As CTimeSpan) As CTimeSpan
 Attribute Add.VB_Description = "Returns a new CTimeSpan whose ticks are this + ts.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  ts (CTimeSpan): Right operand.\r\nReturns:\r\n  CTimeSpan: this + ts."
     Ensure.ArgumentNotNull ts, "ts"
-    Dim resultUdt As TimeSpan
-    resultUdt = CTimeSpans.TimeSpanAdd(m_udt, ts.Udt)
-    Dim result As New CTimeSpan
-    result.Init resultUdt
+    Dim resultUdt As TimeSpan: resultUdt = CTimeSpans.TimeSpanAdd(m_udt, ts.Udt)
+    Dim result As New CTimeSpan: result.Init resultUdt
     Set Add = result
 End Function
 
 Public Function Subtract(ByVal ts As CTimeSpan) As CTimeSpan
 Attribute Subtract.VB_Description = "Returns a new CTimeSpan whose ticks are this - ts.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  ts (CTimeSpan): Right operand.\r\nReturns:\r\n  CTimeSpan: this - ts."
     Ensure.ArgumentNotNull ts, "ts"
-    Dim resultUdt As TimeSpan
-    resultUdt = CTimeSpans.TimeSpanSubtract(m_udt, ts.Udt)
-    Dim result As New CTimeSpan
-    result.Init resultUdt
+    Dim resultUdt As TimeSpan: resultUdt = CTimeSpans.TimeSpanSubtract(m_udt, ts.Udt)
+    Dim result As New CTimeSpan: result.Init resultUdt
     Set Subtract = result
 End Function
 
 Public Function Negate() As CTimeSpan
 Attribute Negate.VB_Description = "Returns a new CTimeSpan with the sign of the duration inverted.\r\nNegating MinValue raises Overflow (no positive equivalent).\r\nReturns:\r\n  CTimeSpan: -this."
-    Dim resultUdt As TimeSpan
-    resultUdt = CTimeSpans.TimeSpanNegate(m_udt)
-    Dim result As New CTimeSpan
-    result.Init resultUdt
+    Dim resultUdt As TimeSpan: resultUdt = CTimeSpans.TimeSpanNegate(m_udt)
+    Dim result As New CTimeSpan: result.Init resultUdt
     Set Negate = result
 End Function
 
 Public Function Duration() As CTimeSpan
 Attribute Duration.VB_Description = "Returns the absolute value as a new CTimeSpan.\r\nThe largest negative value raises Overflow.\r\nReturns:\r\n  CTimeSpan: |this|."
-    Dim resultUdt As TimeSpan
-    resultUdt = CTimeSpans.TimeSpanDuration(m_udt)
-    Dim result As New CTimeSpan
-    result.Init resultUdt
+    Dim resultUdt As TimeSpan: resultUdt = CTimeSpans.TimeSpanDuration(m_udt)
+    Dim result As New CTimeSpan: result.Init resultUdt
     Set Duration = result
 End Function
 
 Public Function Multiply(ByVal factor As Double) As CTimeSpan
 Attribute Multiply.VB_Description = "Returns a new CTimeSpan scaled by factor.\r\nfactor can be negative. Raises Overflow on out-of-range.\r\nArgs:\r\n  factor (Double): Scale factor.\r\nReturns:\r\n  CTimeSpan: this * factor."
-    Dim resultUdt As TimeSpan
-    resultUdt = CTimeSpans.TimeSpanMultiply(m_udt, factor)
-    Dim result As New CTimeSpan
-    result.Init resultUdt
+    Dim resultUdt As TimeSpan: resultUdt = CTimeSpans.TimeSpanMultiply(m_udt, factor)
+    Dim result As New CTimeSpan: result.Init resultUdt
     Set Multiply = result
 End Function
 
 Public Function Divide(ByVal divisor As Double) As CTimeSpan
 Attribute Divide.VB_Description = "Returns a new CTimeSpan whose ticks are this / divisor.\r\ndivisor = 0 raises Overflow; result out of range also raises Overflow.\r\nArgs:\r\n  divisor (Double): Divisor.\r\nReturns:\r\n  CTimeSpan: this / divisor."
-    Dim resultUdt As TimeSpan
-    resultUdt = CTimeSpans.TimeSpanDivide(m_udt, divisor)
-    Dim result As New CTimeSpan
-    result.Init resultUdt
+    Dim resultUdt As TimeSpan: resultUdt = CTimeSpans.TimeSpanDivide(m_udt, divisor)
+    Dim result As New CTimeSpan: result.Init resultUdt
     Set Divide = result
 End Function
 

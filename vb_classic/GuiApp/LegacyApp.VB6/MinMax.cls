@@ -29,13 +29,8 @@ Attribute MinMax.VB_Description = "Returns the minimum and maximum values from a
     result.Second = first
 
     For i = LBound(numbers) To UBound(numbers)
-        v = numbers(i)
-        If v < result.First Then
-            result.First = v
-        End If
-        If v > result.Second Then
-            result.Second = v
-        End If
+        v = numbers(i): If v < result.First Then result.First = v
+        If v > result.Second Then result.Second = v
     Next i
 
     MinMax = result
@@ -51,10 +46,7 @@ Attribute Min.VB_Description = "Returns the minimum value from a set of values\r
     result = first
 
     For i = LBound(numbers) To UBound(numbers)
-        v = numbers(i)
-        If v < result Then
-            result = v
-        End If
+        v = numbers(i): If v < result Then result = v
     Next i
 
     Min = result
@@ -70,10 +62,7 @@ Attribute Max.VB_Description = "Returns the maximum value from a set of values\r
     result = first
 
     For i = LBound(numbers) To UBound(numbers)
-        v = numbers(i)
-        If v > result Then
-            result = v
-        End If
+        v = numbers(i): If v > result Then result = v
     Next i
 
     Max = result

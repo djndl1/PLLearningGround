@@ -48,8 +48,7 @@ End Sub
 ' Returns:
 '   ArraySlice: A slice representing the entire array.
 Public Function SliceOf(ByRef arr As Variant) As ArraySlice
-    Dim sls As ArraySlice
-    sls.m_ArrayData = arr
+    Dim sls As ArraySlice: sls.m_ArrayData = arr
     sls.m_Length = GetArrayLength(arr)
     sls.m_Start = LBound(arr)
     SliceOf = sls
@@ -64,8 +63,7 @@ End Function
 ' Returns:
 '   ArraySlice: A slice representing the specified portion of the array.
 Public Function SliceFrom(ByRef arr As Variant, ByVal startIndex As Long, ByVal Length As Long) As ArraySlice
-    Dim sls As ArraySlice
-    sls.m_ArrayData = arr
+    Dim sls As ArraySlice: sls.m_ArrayData = arr
     sls.m_Length = Length
     sls.m_Start = startIndex
     SliceFrom = sls
@@ -80,8 +78,7 @@ End Function
 ' Returns:
 '   ArraySlice: A slice representing the specified portion of the array.
 Public Function SliceBetween(ByRef arr As Variant, ByVal startIndex As Long, ByVal endIndex As Long) As ArraySlice
-    Dim sls As ArraySlice
-    sls.m_ArrayData = arr
+    Dim sls As ArraySlice: sls.m_ArrayData = arr
     sls.m_Length = endIndex - startIndex
     sls.m_Start = startIndex
     SliceBetween = sls
@@ -113,8 +110,7 @@ End Function
 ' Returns:
 '   Variant: The element at the specified index.
 Public Function SliceGet(ByRef sls As ArraySlice, ByVal index As Long) As Variant
-    Dim realIndex As Long
-    realIndex = sls.m_Start + index
+    Dim realIndex As Long: realIndex = sls.m_Start + index
     If IsObject(sls.m_ArrayData(realIndex)) Then
         Set SliceGet = sls.m_ArrayData(realIndex)
     Else
@@ -128,8 +124,7 @@ End Function
 '   index (Long): The zero-based index within the slice.
 '   value (Variant): The value to set at the specified index.
 Public Sub SliceSet(ByRef sls As ArraySlice, ByVal index As Long, ByVal value As Variant)
-    Dim realIndex As Long
-    realIndex = sls.m_Start + index
+    Dim realIndex As Long: realIndex = sls.m_Start + index
     If IsObject(value) Then
         Set sls.m_ArrayData(realIndex) = value
     Else
@@ -150,8 +145,7 @@ Public Sub SliceReserve(ByRef sls As ArraySlice, ByVal capacity As Long)
         Exit Sub
     End If
 
-    Dim newSizeOfArray As Long
-    newSizeOfArray = LengthBeforeStart(sls) + capacity
+    Dim newSizeOfArray As Long: newSizeOfArray = LengthBeforeStart(sls) + capacity
     ResizeArray sls.m_ArrayData, newSizeOfArray
 End Sub
 
@@ -170,8 +164,7 @@ End Sub
 Public Sub SliceAppend(ByRef sls As ArraySlice, ByVal value As Variant)
     EnsureEnoughCapcityForSlice sls
 
-    Dim pastEndIndex As Long
-    pastEndIndex = sls.m_Start + sls.m_Length
+    Dim pastEndIndex As Long: pastEndIndex = sls.m_Start + sls.m_Length
     If IsObject(value) Then
         Set sls.m_ArrayData(pastEndIndex) = value
     Else
@@ -189,13 +182,10 @@ End Sub
 '   sls (ArraySlice): The slice to delete from.
 '   index (Long): The index of the element to delete.
 Public Sub SliceDelete(ByRef sls As ArraySlice, ByVal index As Long)
-    Dim i As Long
+    Dim i As Long: For i = index + 1 To sls.m_Length - 1
     Dim sourceIndex As Long
     Dim destIndex As Long
-
-    For i = index + 1 To sls.m_Length - 1
-        sourceIndex = sls.m_Start + i
-        destIndex = sls.m_Start + i - 1
+        sourceIndex = sls.m_Start + i: destIndex = sls.m_Start + i - 1
         If IsObject(sls.m_ArrayData(sourceIndex)) Then
             Set sls.m_ArrayData(destIndex) = sls.m_ArrayData(sourceIndex)
         Else
@@ -211,10 +201,8 @@ End Sub
 '   dest (ArraySlice): The destination slice to copy to.
 '   source (ArraySlice): The source slice to copy from.
 Public Sub SliceCopy(ByRef dest As ArraySlice, ByRef source As ArraySlice)
-    Dim copyLength As Long
+    Dim copyLength As Long: copyLength = MinMax.MinLong(SliceLength(source), SliceLength(dest))
     Dim i As Long
-
-    copyLength = MinMax.MinLong(SliceLength(source), SliceLength(dest))
 
     For i = 0 To copyLength - 1
         SliceSet dest, i, SliceGet(source, i)
@@ -229,8 +217,7 @@ End Sub
 Public Sub SliceInsert(ByRef sls As ArraySlice, ByVal index As Long, ByVal value As Variant)
     EnsureEnoughCapcityForSlice sls
 
-    Dim i As Long
-    For i = sls.m_Length - 1 To index Step -1
+    Dim i As Long: For i = sls.m_Length - 1 To index Step -1
         If IsObject(sls.m_ArrayData(sls.m_Start + i)) Then
             Set sls.m_ArrayData(sls.m_Start + i + 1) = sls.m_ArrayData(sls.m_Start + i)
         Else
@@ -254,31 +241,25 @@ End Sub
 ' Returns:
 '   Variant: A new zero-based array containing all elements from the source.
 Public Function ToZeroBased(ByRef source As Variant) As Variant
-    Dim lb As Long
-    Dim ub As Long
-    Dim length As Long
-    Dim i As Long
-    Dim result As Variant
-
     ' Check if source is an array
     Ensure.IsTrue IsArray(source), ErrorCodes.InvalidProcedureCall, "Arrays.ToZeroBased", "Source is not an array"
-
-    ' Get bounds
-    lb = LBound(source)
-    ub = UBound(source)
-    length = ub - lb + 1
 
     ' Check for multi-dimensional array
     Ensure.IsTrue GetArrayDimension(source) = 1, ErrorCodes.InvalidProcedureCall, "Arrays.ToZeroBased", "Array dimension must be 1"
 
     ' If already zero-based, just copy
+    Dim lb As Long: lb = LBound(source)
     If lb = 0 Then
         ToZeroBased = source
         Exit Function
     End If
 
+    Dim ub As Long: ub = UBound(source)
+
     ' Create new zero-based array and copy elements
-    ReDim result(0 To length - 1)
+    Dim length As Long: length = ub - lb + 1
+    Dim result As Variant: ReDim result(0 To length - 1)
+    Dim i As Long
     For i = 0 To length - 1
         If IsObject(source(lb + i)) Then
             Set result(i) = source(lb + i)
@@ -297,24 +278,20 @@ End Function
 ' Returns:
 '   Variant: A one-dimensional zero-based array containing all elements.
 Public Function Flatten(ByRef source As Variant) As Variant
-    Dim rows As Long
-    Dim cols As Long
-    Dim r As Long
-    Dim c As Long
     Dim result As Variant
     Dim index As Long
 
     ' Check if source is an array
     Ensure.IsTrue IsArray(source), ErrorCodes.InvalidProcedureCall, "Arrays.Flatten", "Source is not an array"
 
-    rows = UBound(source, 1) - LBound(source, 1) + 1
-    cols = UBound(source, 2) - LBound(source, 2) + 1
+    Dim rows As Long: rows = UBound(source, 1) - LBound(source, 1) + 1
+    Dim cols As Long: cols = UBound(source, 2) - LBound(source, 2) + 1
 
     ReDim result(0 To rows * cols - 1)
 
     index = 0
-    For r = LBound(source, 1) To UBound(source, 1)
-        For c = LBound(source, 2) To UBound(source, 2)
+    Dim r As Long: For r = LBound(source, 1) To UBound(source, 1)
+        Dim c As Long: For c = LBound(source, 2) To UBound(source, 2)
             If IsObject(source(r, c)) Then
                 Set result(index) = source(r, c)
             Else
@@ -333,25 +310,21 @@ End Function
 '   target (Variant): The 2D array to assign elements to (passed ByRef to modify in place).
 '   source (Variant): The one-dimensional array to copy from.
 Public Sub AssignFrom(ByRef target As Variant, ByRef source As Variant)
-    Dim rows As Long
-    Dim cols As Long
-    Dim r As Long
-    Dim c As Long
     Dim index As Long
 
     ' Validate inputs
     Ensure.IsTrue IsArray(target), ErrorCodes.InvalidProcedureCall, "Arrays.AssignFrom", "Target is not an array"
     Ensure.IsTrue IsArray(source), ErrorCodes.InvalidProcedureCall, "Arrays.AssignFrom", "Source is not an array"
 
-    rows = UBound(target, 1) - LBound(target, 1) + 1
-    cols = UBound(target, 2) - LBound(target, 2) + 1
+    Dim rows As Long: rows = UBound(target, 1) - LBound(target, 1) + 1
+    Dim cols As Long: cols = UBound(target, 2) - LBound(target, 2) + 1
 
     Ensure.IsTrue UBound(source, 1) - LBound(source, 1) + 1 = rows * cols, _
         ErrorCodes.InvalidProcedureCall, "Arrays.AssignFrom", "Source array length does not match target array size"
 
     index = 0
-    For r = LBound(target, 1) To UBound(target, 1)
-        For c = LBound(target, 2) To UBound(target, 2)
+    Dim r As Long: For r = LBound(target, 1) To UBound(target, 1)
+        Dim c As Long: For c = LBound(target, 2) To UBound(target, 2)
             If IsObject(source(index)) Then
                 Set target(r, c) = source(index)
             Else
@@ -369,20 +342,19 @@ End Sub
 ' Returns:
 '   Variant: A one-dimensional array containing the row elements.
 Public Function GetRow(ByRef source As Variant, ByVal rowNumber As Long) As Variant
-    Dim cols As Long
-    Dim c As Long
     Dim result As Variant
 
     ' Validate input
     Ensure.IsTrue IsArray(source), ErrorCodes.InvalidProcedureCall, "Arrays.GetRow", "Source is not an array"
 
-    cols = UBound(source, 2) - LBound(source, 2) + 1
+    Dim cols As Long: cols = UBound(source, 2) - LBound(source, 2) + 1
 
     ' Adjust row number to actual bounds
     rowNumber = LBound(source, 1) + rowNumber
 
     ReDim result(0 To cols - 1)
 
+    Dim c As Long
     For c = 0 To cols - 1
         If IsObject(source(rowNumber, LBound(source, 2) + c)) Then
             Set result(c) = source(rowNumber, LBound(source, 2) + c)
@@ -400,14 +372,13 @@ End Function
 '   rowNumber (Long): The zero-based row index.
 '   row (Variant): The one-dimensional array containing the row data.
 Public Sub SetRow(ByRef target As Variant, ByVal rowNumber As Long, ByRef row As Variant)
-    Dim cols As Long
     Dim c As Long
 
     ' Validate inputs
     Ensure.IsTrue IsArray(target), ErrorCodes.InvalidProcedureCall, "Arrays.SetRow", "Target is not an array"
     Ensure.IsTrue IsArray(row), ErrorCodes.InvalidProcedureCall, "Arrays.SetRow", "Row is not an array"
 
-    cols = UBound(target, 2) - LBound(target, 2) + 1
+    Dim cols As Long: cols = UBound(target, 2) - LBound(target, 2) + 1
 
     Ensure.IsTrue UBound(row, 1) - LBound(row, 1) + 1 = cols, _
         ErrorCodes.InvalidProcedureCall, "Arrays.SetRow", "Row length does not match column count"
@@ -431,31 +402,25 @@ End Sub
 ' Returns:
 '   Variant: A one-based array containing all elements from the source.
 Public Function ToOneBased(ByRef source As Variant) As Variant
-    Dim lb As Long
-    Dim ub As Long
-    Dim length As Long
-    Dim i As Long
-    Dim result As Variant
-
     ' Check if source is an array
     Ensure.IsTrue IsArray(source), ErrorCodes.InvalidProcedureCall, "Arrays.ToOneBased", "Source is not an array"
-
-    ' Get bounds
-    lb = LBound(source)
-    ub = UBound(source)
-    length = ub - lb + 1
 
     ' Check for multi-dimensional array
     Ensure.IsTrue GetArrayDimension(source) = 1, ErrorCodes.InvalidProcedureCall, "Arrays.ToOneBased", "Array must be 1-dimensional"
 
     ' If already one-based (lb = 1), just return copy
+    Dim lb As Long: lb = LBound(source)
     If lb = 1 Then
         ToOneBased = source
         Exit Function
     End If
 
+    Dim ub As Long: ub = UBound(source)
+
     ' Create new one-based array and copy elements
-    ReDim result(1 To length)
+    Dim length As Long: length = ub - lb + 1
+    Dim result As Variant: ReDim result(1 To length)
+    Dim i As Long
     For i = 0 To length - 1
         If IsObject(source(lb + i)) Then
             Set result(i + 1) = source(lb + i)
@@ -484,8 +449,7 @@ Private Function GetArrayDimension(ByRef arr As Variant) As Long
     ' Keep trying until we get an error
     dimCount = 0
     Do
-        i = dimCount + 1
-        tmp = UBound(arr, i)
+        i = dimCount + 1: tmp = UBound(arr, i)
         dimCount = i
     Loop
 

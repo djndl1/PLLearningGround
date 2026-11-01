@@ -29,7 +29,6 @@ Attribute EuclideanDivisionLong.VB_Description = "Performs Euclidean division on
     ' Calculate quotient and remainder
     Dim quotient As Long
     Dim remainder As Long
-
     quotient = dividend \ divisor
     remainder = dividend Mod divisor
 
@@ -67,7 +66,6 @@ Attribute EuclideanDivisionInteger.VB_Description = "Performs Euclidean division
     ' Calculate quotient and remainder
     Dim quotient As Integer
     Dim remainder As Integer
-
     quotient = dividend \ divisor
     remainder = dividend Mod divisor
 
@@ -105,9 +103,6 @@ Attribute CeilingDivisionLong.VB_Description = "Performs ceiling division on two
     ' Calculate quotient and remainder using ceiling division
     Dim quotient As Long
     Dim remainder As Long
-
-    ' Ceiling division: quotient = ceiling(dividend / divisor)
-    ' This means we round towards positive infinity
     quotient = dividend \ divisor
     remainder = dividend Mod divisor
 
@@ -143,9 +138,6 @@ Attribute CeilingDivisionInteger.VB_Description = "Performs ceiling division on 
     ' Calculate quotient and remainder using ceiling division
     Dim quotient As Integer
     Dim remainder As Integer
-
-    ' Ceiling division: quotient = ceiling(dividend / divisor)
-    ' This means we round towards positive infinity
     quotient = dividend \ divisor
     remainder = dividend Mod divisor
 
@@ -181,11 +173,11 @@ Attribute FloorDivisionLong.VB_Description = "Performs floor division on two Lon
     ' Calculate quotient and remainder using floor division
     Dim quotient As Long
     Dim remainder As Long
+    quotient = dividend \ divisor
+    remainder = dividend Mod divisor
 
     ' Floor division: quotient = floor(dividend / divisor)
     ' This means we round towards negative infinity
-    quotient = dividend \ divisor
-    remainder = dividend Mod divisor
 
     '  7 / 3 = 2, 1
     '  7 / -3 = -2, 1
@@ -219,11 +211,11 @@ Attribute FloorDivisionInteger.VB_Description = "Performs floor division on two 
     ' Calculate quotient and remainder using floor division
     Dim quotient As Integer
     Dim remainder As Integer
+    quotient = dividend \ divisor
+    remainder = dividend Mod divisor
 
     ' Floor division: quotient = floor(dividend / divisor)
     ' This means we round towards negative infinity
-    quotient = dividend \ divisor
-    remainder = dividend Mod divisor
 
     '  7 / 3 = 2, 1
     '  7 / -3 = -2, 1
@@ -254,8 +246,7 @@ Attribute MathematicalModuloLong.VB_Description = "Performs mathematical modulo 
     Ensure.NotEqual divisor, 0, ErrorCodes.DivisionByZero, "Numerics.MathematicalModuloLong", "divisor cannot be zero"
 
     ' Mathematical modulo: more efficient implementation matching C# version
-    Dim remainder As Long
-    remainder = dividend Mod divisor
+    Dim remainder As Long: remainder = dividend Mod divisor
 
     If remainder >= 0 Then
         MathematicalModuloLong = remainder
@@ -306,8 +297,7 @@ Public Function ClampByte(ByVal value As Byte, ByVal min As Byte, ByVal max As B
 Attribute ClampByte.VB_Description = "Clamp function: restricts a value to specified upper and lower bounds\r\nArgs:\r\n  value (Byte): The value to be clamped\r\n  min (Byte): The lower bound\r\n  max (Byte): The upper bound\r\nReturns:\r\n  Byte: The clamped value"
     EnforceMinMaxRelation min, max
 
-    Dim maxClamped As Byte
-    maxClamped = IIf(value > max, max, value)
+    Dim maxClamped As Byte: maxClamped = IIf(value > max, max, value)
     ClampByte = IIf(maxClamped < min, min, maxClamped)
 End Function
 
@@ -322,8 +312,7 @@ Public Function ClampInteger(ByVal value As Integer, ByVal min As Integer, ByVal
 Attribute ClampInteger.VB_Description = "Clamp function: restricts a value to specified upper and lower bounds\r\nArgs:\r\n  value (Integer): The value to be clamped\r\n  min (Integer): The lower bound\r\n  max (Integer): The upper bound\r\nReturns:\r\n  Integer: The clamped value"
     EnforceMinMaxRelation min, max
 
-    Dim maxClamped As Integer
-    maxClamped = IIf(value > max, max, value)
+    Dim maxClamped As Integer: maxClamped = IIf(value > max, max, value)
     ClampInteger = IIf(maxClamped < min, min, maxClamped)
 End Function
 
@@ -338,8 +327,7 @@ Public Function ClampLong(ByVal value As Long, ByVal min As Long, ByVal max As L
 Attribute ClampLong.VB_Description = "Clamp function: restricts a value to specified upper and lower bounds\r\nArgs:\r\n  value (Long): The value to be clamped\r\n  min (Long): The lower bound\r\n  max (Long): The upper bound\r\nReturns:\r\n  Long: The clamped value"
     EnforceMinMaxRelation min, max
 
-    Dim maxClamped As Long
-    maxClamped = IIf(value > max, max, value)
+    Dim maxClamped As Long: maxClamped = IIf(value > max, max, value)
     ClampLong = IIf(maxClamped < min, min, maxClamped)
 End Function
 
@@ -357,8 +345,7 @@ Attribute ClampSingle.VB_Description = "Clamp function: restricts a value to spe
     ' Validate that value is not NaN
     Ensure.IsFalse IsNaNSingle(value), ErrorCodes.InvalidProcedureCall, "Numerics.ClampSingle", "value cannot be NaN"
 
-    Dim maxClamped As Single
-    maxClamped = IIf(value > max, max, value)
+    Dim maxClamped As Single: maxClamped = IIf(value > max, max, value)
     ClampSingle = IIf(maxClamped < min, min, maxClamped)
 End Function
 
@@ -376,8 +363,7 @@ Attribute ClampDouble.VB_Description = "Clamp function: restricts a value to spe
     ' Validate that value is not NaN
     Ensure.IsFalse IsNaNDouble(value), ErrorCodes.InvalidProcedureCall, "Numerics.ClampDouble", "value cannot be NaN"
 
-    Dim maxClamped As Double
-    maxClamped = IIf(value > max, max, value)
+    Dim maxClamped As Double: maxClamped = IIf(value > max, max, value)
     ClampDouble = IIf(maxClamped < min, min, maxClamped)
 End Function
 

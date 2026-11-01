@@ -26,8 +26,7 @@ End Sub
 
 Private Sub TestZero()
     Dim factory As New CTimeSpanFactory
-    Dim zero As CTimeSpan
-    Set zero = factory.Zero()
+    Dim zero As CTimeSpan: Set zero = factory.Zero()
     m_asserter.AreEqual zero.Ticks, CDec(0), "CTimeSpanTest.TestZero", "Zero should have 0 ticks"
     m_asserter.AreEqual zero.Days, 0, "CTimeSpanTest.TestZero", "Zero days"
     m_asserter.AreEqual zero.Hours, 0, "CTimeSpanTest.TestZero", "Zero hours"
@@ -66,38 +65,31 @@ Private Sub TestArithmetic()
     Set b = factory.FromMinutes(30)
 
     ' Add
-    Dim sum As CTimeSpan
-    Set sum = a.Add(b)
+    Dim sum As CTimeSpan: Set sum = a.Add(b)
     m_asserter.IsTrue sum.TotalMinutes - 150 < 0.0001, "CTimeSpanTest.TestArithmetic", "2h + 30m = 150 min"
 
     ' Subtract
-    Dim diff As CTimeSpan
-    Set diff = a.Subtract(b)
+    Dim diff As CTimeSpan: Set diff = a.Subtract(b)
     m_asserter.IsTrue diff.TotalMinutes - 90 < 0.0001, "CTimeSpanTest.TestArithmetic", "2h - 30m = 90 min"
 
     ' Negate
-    Dim negA As CTimeSpan
-    Set negA = a.Negate()
+    Dim negA As CTimeSpan: Set negA = a.Negate()
     m_asserter.IsTrue negA.TotalHours + 2 < 0.0001, "CTimeSpanTest.TestArithmetic", "-2h"
 
     ' Duration = abs value
-    Dim negDur As CTimeSpan
-    Set negDur = negA.Duration()
+    Dim negDur As CTimeSpan: Set negDur = negA.Duration()
     m_asserter.IsTrue negDur.TotalHours - 2 < 0.0001, "CTimeSpanTest.TestArithmetic", "|-2h| = 2h"
 
     ' Multiply
-    Dim doubled As CTimeSpan
-    Set doubled = a.Multiply(2)
+    Dim doubled As CTimeSpan: Set doubled = a.Multiply(2)
     m_asserter.IsTrue doubled.TotalHours - 4 < 0.0001, "CTimeSpanTest.TestArithmetic", "2h * 2 = 4h"
 
     ' Divide by scalar
-    Dim half As CTimeSpan
-    Set half = a.Divide(2)
+    Dim half As CTimeSpan: Set half = a.Divide(2)
     m_asserter.IsTrue half.TotalHours - 1 < 0.0001, "CTimeSpanTest.TestArithmetic", "2h / 2 = 1h"
 
     ' DivideBy returns ratio
-    Dim ratio As Double
-    ratio = a.DivideBy(b)
+    Dim ratio As Double: ratio = a.DivideBy(b)
     m_asserter.IsTrue ratio - 4 < 0.0001, "CTimeSpanTest.TestArithmetic", "2h / 30m = 4"
 End Sub
 

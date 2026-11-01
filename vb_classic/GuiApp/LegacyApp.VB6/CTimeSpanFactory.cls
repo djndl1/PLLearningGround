@@ -69,8 +69,7 @@ End Function
 ' Raises Overflow on out-of-range.
 Public Function FromTicks(ByVal ticks As Variant) As CTimeSpan
 Attribute FromTicks.VB_Description = "Returns a CTimeSpan holding exactly the supplied tick count.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  ticks (Variant): The exact tick count.\r\nReturns:\r\n  CTimeSpan: A new CTimeSpan wrapping the supplied ticks."
-    Dim resultUdt As TimeSpan
-    resultUdt = CTimeSpans.TimeSpanFromTicks(ticks)
+    Dim resultUdt As TimeSpan: resultUdt = CTimeSpans.TimeSpanFromTicks(ticks)
     Set FromTicks = CTimeSpans.WrapTimeSpan(resultUdt)
 End Function
 
@@ -78,8 +77,7 @@ End Function
 ' milliseconds. Raises Overflow on out-of-range.
 Public Function FromMillis(ByVal millis As Double) As CTimeSpan
 Attribute FromMillis.VB_Description = "Returns a CTimeSpan representing the given number of milliseconds.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  millis (Double): The number of milliseconds.\r\nReturns:\r\n  CTimeSpan: A new CTimeSpan representing the duration."
-    Dim resultUdt As TimeSpan
-    resultUdt = CTimeSpans.TimeSpanFromMillis(millis)
+    Dim resultUdt As TimeSpan: resultUdt = CTimeSpans.TimeSpanFromMillis(millis)
     Set FromMillis = CTimeSpans.WrapTimeSpan(resultUdt)
 End Function
 
@@ -87,8 +85,7 @@ End Function
 ' microseconds. Raises Overflow on out-of-range.
 Public Function FromMicros(ByVal micros As Double) As CTimeSpan
 Attribute FromMicros.VB_Description = "Returns a CTimeSpan representing the given number of microseconds.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  micros (Double): The number of microseconds.\r\nReturns:\r\n  CTimeSpan: A new CTimeSpan representing the duration."
-    Dim resultUdt As TimeSpan
-    resultUdt = CTimeSpans.TimeSpanFromMicros(micros)
+    Dim resultUdt As TimeSpan: resultUdt = CTimeSpans.TimeSpanFromMicros(micros)
     Set FromMicros = CTimeSpans.WrapTimeSpan(resultUdt)
 End Function
 
@@ -96,8 +93,7 @@ End Function
 ' seconds. Raises Overflow on out-of-range.
 Public Function FromSeconds(ByVal seconds As Double) As CTimeSpan
 Attribute FromSeconds.VB_Description = "Returns a CTimeSpan representing the given number of seconds.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  seconds (Double): The number of seconds.\r\nReturns:\r\n  CTimeSpan: A new CTimeSpan representing the duration."
-    Dim resultUdt As TimeSpan
-    resultUdt = CTimeSpans.TimeSpanFromSeconds(seconds)
+    Dim resultUdt As TimeSpan: resultUdt = CTimeSpans.TimeSpanFromSeconds(seconds)
     Set FromSeconds = CTimeSpans.WrapTimeSpan(resultUdt)
 End Function
 
@@ -105,8 +101,7 @@ End Function
 ' minutes. Raises Overflow on out-of-range.
 Public Function FromMinutes(ByVal minutes As Double) As CTimeSpan
 Attribute FromMinutes.VB_Description = "Returns a CTimeSpan representing the given number of minutes.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  minutes (Double): The number of minutes.\r\nReturns:\r\n  CTimeSpan: A new CTimeSpan representing the duration."
-    Dim resultUdt As TimeSpan
-    resultUdt = CTimeSpans.TimeSpanFromMinutes(minutes)
+    Dim resultUdt As TimeSpan: resultUdt = CTimeSpans.TimeSpanFromMinutes(minutes)
     Set FromMinutes = CTimeSpans.WrapTimeSpan(resultUdt)
 End Function
 
@@ -114,8 +109,7 @@ End Function
 ' Raises Overflow on out-of-range.
 Public Function FromHours(ByVal hours As Double) As CTimeSpan
 Attribute FromHours.VB_Description = "Returns a CTimeSpan representing the given number of hours.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  hours (Double): The number of hours.\r\nReturns:\r\n  CTimeSpan: A new CTimeSpan representing the duration."
-    Dim resultUdt As TimeSpan
-    resultUdt = CTimeSpans.TimeSpanFromHours(hours)
+    Dim resultUdt As TimeSpan: resultUdt = CTimeSpans.TimeSpanFromHours(hours)
     Set FromHours = CTimeSpans.WrapTimeSpan(resultUdt)
 End Function
 
@@ -123,8 +117,7 @@ End Function
 ' Raises Overflow on out-of-range.
 Public Function FromDays(ByVal days As Double) As CTimeSpan
 Attribute FromDays.VB_Description = "Returns a CTimeSpan representing the given number of days.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  days (Double): The number of days.\r\nReturns:\r\n  CTimeSpan: A new CTimeSpan representing the duration."
-    Dim resultUdt As TimeSpan
-    resultUdt = CTimeSpans.TimeSpanFromDays(days)
+    Dim resultUdt As TimeSpan: resultUdt = CTimeSpans.TimeSpanFromDays(days)
     Set FromDays = CTimeSpans.WrapTimeSpan(resultUdt)
 End Function
 
@@ -132,8 +125,7 @@ End Function
 ' Overflow on out-of-range.
 Public Function FromHoursMinutesSeconds(ByVal h As Long, ByVal m As Long, ByVal s As Long) As CTimeSpan
 Attribute FromHoursMinutesSeconds.VB_Description = "Returns a CTimeSpan constructed from h:m:s.\r\nAll inputs can be negative. h must fit in [0, 23] when all inputs are non-negative.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  h (Long): Hours.\r\n  m (Long): Minutes.\r\n  s (Long): Seconds.\r\nReturns:\r\n  CTimeSpan: A new CTimeSpan representing the duration."
-    Dim resultUdt As TimeSpan
-    resultUdt = CTimeSpans.TimeSpanFromHoursMinutesSeconds(h, m, s)
+    Dim resultUdt As TimeSpan: resultUdt = CTimeSpans.TimeSpanFromHoursMinutesSeconds(h, m, s)
     Set FromHoursMinutesSeconds = CTimeSpans.WrapTimeSpan(resultUdt)
 End Function
 
@@ -141,8 +133,7 @@ End Function
 ' Raises Overflow on out-of-range.
 Public Function FromDaysHoursMinutesSeconds(ByVal d As Long, ByVal h As Long, ByVal m As Long, ByVal s As Long) As CTimeSpan
 Attribute FromDaysHoursMinutesSeconds.VB_Description = "Returns a CTimeSpan constructed from d:h:m:s.\r\nAll inputs can be negative. d must fit in [0, 10675199] when all inputs are non-negative. h must fit in [0, 23], m in [0, 59], s in [0, 59].\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  d (Long): Days.\r\n  h (Long): Hours.\r\n  m (Long): Minutes.\r\n  s (Long): Seconds.\r\nReturns:\r\n  CTimeSpan: A new CTimeSpan representing the duration."
-    Dim resultUdt As TimeSpan
-    resultUdt = CTimeSpans.TimeSpanFromDaysHoursMinutesSeconds(d, h, m, s)
+    Dim resultUdt As TimeSpan: resultUdt = CTimeSpans.TimeSpanFromDaysHoursMinutesSeconds(d, h, m, s)
     Set FromDaysHoursMinutesSeconds = CTimeSpans.WrapTimeSpan(resultUdt)
 End Function
 
@@ -150,8 +141,7 @@ End Function
 ' Raises Overflow on out-of-range.
 Public Function FromDaysHoursMinutesSecondsMillis(ByVal d As Long, ByVal h As Long, ByVal m As Long, ByVal s As Long, ByVal millis As Long) As CTimeSpan
 Attribute FromDaysHoursMinutesSecondsMillis.VB_Description = "Returns a CTimeSpan constructed from d:h:m:s plus a milliseconds component.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  d (Long): Days.\r\n  h (Long): Hours.\r\n  m (Long): Minutes.\r\n  s (Long): Seconds.\r\n  millis (Long): Milliseconds.\r\nReturns:\r\n  CTimeSpan: A new CTimeSpan representing the duration."
-    Dim resultUdt As TimeSpan
-    resultUdt = CTimeSpans.TimeSpanFromDaysHoursMinutesSecondsMillis(d, h, m, s, millis)
+    Dim resultUdt As TimeSpan: resultUdt = CTimeSpans.TimeSpanFromDaysHoursMinutesSecondsMillis(d, h, m, s, millis)
     Set FromDaysHoursMinutesSecondsMillis = CTimeSpans.WrapTimeSpan(resultUdt)
 End Function
 
@@ -160,7 +150,6 @@ End Function
 ' Overflow on out-of-range.
 Public Function FromDaysHoursMinutesSecondsMillisMicros(ByVal d As Long, ByVal h As Long, ByVal m As Long, ByVal s As Long, ByVal millis As Long, ByVal micros As Long) As CTimeSpan
 Attribute FromDaysHoursMinutesSecondsMillisMicros.VB_Description = "Returns a CTimeSpan constructed from d:h:m:s plus milliseconds and microseconds.\r\nThe most precise factory offered.\r\nRaises Overflow on out-of-range.\r\nArgs:\r\n  d (Long): Days.\r\n  h (Long): Hours.\r\n  m (Long): Minutes.\r\n  s (Long): Seconds.\r\n  millis (Long): Milliseconds.\r\n  micros (Long): Microseconds.\r\nReturns:\r\n  CTimeSpan: A new CTimeSpan representing the duration."
-    Dim resultUdt As TimeSpan
-    resultUdt = CTimeSpans.TimeSpanFromDaysHoursMinutesSecondsMillisMicros(d, h, m, s, millis, micros)
+    Dim resultUdt As TimeSpan: resultUdt = CTimeSpans.TimeSpanFromDaysHoursMinutesSecondsMillisMicros(d, h, m, s, millis, micros)
     Set FromDaysHoursMinutesSecondsMillisMicros = CTimeSpans.WrapTimeSpan(resultUdt)
 End Function

@@ -71,26 +71,18 @@ End Function
 
 Public Function ToLocalFromUtc(ByVal utcOleDate As Date) As Date
 Attribute ToLocalFromUtc.VB_Description = "Converts a UTC OLE Automation Date to a local OLE Automation Date.\r\n\r\nRaises:\r\n  Overflow (Long): when any Win32 conversion in the chain fails\r\nArgs:\r\n  utcOleDate (Date): The UTC OLE Date to convert.\r\nReturns:\r\n  Date: The corresponding local OLE Date."
-    Dim sysTime_utc As SYSTEMTIME
-    Dim ft_utc As FILETIME
-    Dim ft_local As FILETIME
-    Dim sysTime_local As SYSTEMTIME
-    sysTime_utc = FileTimeDateTimes.ConvertOleDateToSystemTime(utcOleDate)
-    ft_utc = FileTimeDateTimes.ConvertSystemTimeToFileTime(sysTime_utc)
-    ft_local = FileTimeDateTimes.ConvertFileTimeToLocalFileTime(ft_utc)
-    sysTime_local = FileTimeDateTimes.ConvertFileTimeToSystemTime(ft_local)
+    Dim sysTime_utc As SYSTEMTIME: sysTime_utc = FileTimeDateTimes.ConvertOleDateToSystemTime(utcOleDate)
+    Dim ft_utc As FILETIME: ft_utc = FileTimeDateTimes.ConvertSystemTimeToFileTime(sysTime_utc)
+    Dim ft_local As FILETIME: ft_local = FileTimeDateTimes.ConvertFileTimeToLocalFileTime(ft_utc)
+    Dim sysTime_local As SYSTEMTIME: sysTime_local = FileTimeDateTimes.ConvertFileTimeToSystemTime(ft_local)
     ToLocalFromUtc = FileTimeDateTimes.ConvertSystemTimeToOleDate(sysTime_local)
 End Function
 
 Public Function ToUtcFromLocal(ByVal localOleDate As Date) As Date
 Attribute ToUtcFromLocal.VB_Description = "Converts a local OLE Automation Date to a UTC OLE Automation Date.\r\n\r\nRaises:\r\n  Overflow (Long): when any Win32 conversion in the chain fails\r\nArgs:\r\n  localOleDate (Date): The local OLE Date to convert.\r\nReturns:\r\n  Date: The corresponding UTC OLE Date."
-    Dim sysTime_local As SYSTEMTIME
-    Dim ft_local As FILETIME
-    Dim ft_utc As FILETIME
-    Dim sysTime_utc As SYSTEMTIME
-    sysTime_local = FileTimeDateTimes.ConvertOleDateToSystemTime(localOleDate)
-    ft_local = FileTimeDateTimes.ConvertSystemTimeToFileTime(sysTime_local)
-    ft_utc = FileTimeDateTimes.ConvertLocalFileTimeToFileTime(ft_local)
-    sysTime_utc = FileTimeDateTimes.ConvertFileTimeToSystemTime(ft_utc)
+    Dim sysTime_local As SYSTEMTIME: sysTime_local = FileTimeDateTimes.ConvertOleDateToSystemTime(localOleDate)
+    Dim ft_local As FILETIME: ft_local = FileTimeDateTimes.ConvertSystemTimeToFileTime(sysTime_local)
+    Dim ft_utc As FILETIME: ft_utc = FileTimeDateTimes.ConvertLocalFileTimeToFileTime(ft_local)
+    Dim sysTime_utc As SYSTEMTIME: sysTime_utc = FileTimeDateTimes.ConvertFileTimeToSystemTime(ft_utc)
     ToUtcFromLocal = FileTimeDateTimes.ConvertSystemTimeToOleDate(sysTime_utc)
 End Function
