@@ -449,9 +449,9 @@ Private Sub TestPyRange()
     
     ' ─── Single-arg: PyRange(stop) → range(0, stop, 1) ───
     Set r = PyRange(10)
-    m_asserter.AreEqual 0, r.Start, "BuiltinTest.TestPyRange", "range(10).Start=0"
-    m_asserter.AreEqual 10, r.[Stop], "BuiltinTest.TestPyRange", "range(10).Stop=10"
-    m_asserter.AreEqual 1, r.Step, "BuiltinTest.TestPyRange", "range(10).Step=1"
+    m_asserter.AreEqual 0, r.RangeStart, "BuiltinTest.TestPyRange", "range(10).Start=0"
+    m_asserter.AreEqual 10, r.RangeStop, "BuiltinTest.TestPyRange", "range(10).Stop=10"
+    m_asserter.AreEqual 1, r.RangeStep, "BuiltinTest.TestPyRange", "range(10).Step=1"
     m_asserter.AreEqual 10, PyLen(r), "BuiltinTest.TestPyRange", "len(range(10))=10"
     Set seq = r
     m_asserter.AreEqual 0, seq.GetItem(0), "BuiltinTest.TestPyRange", "range(10)[0]=0"
@@ -514,8 +514,8 @@ Private Sub TestPyRange()
     
     ' ─── Index lookup ───
     Set r = PyRange(0, 20, 2)
-    m_asserter.AreEqual 5, r.Index(10), "BuiltinTest.TestPyRange", "range(0,20,2).index(10)=5"
-    m_asserter.AreEqual 0, r.Index(0), "BuiltinTest.TestPyRange", "range(0,20,2).index(0)=0"
+    m_asserter.AreEqual 5, r.index(10), "BuiltinTest.TestPyRange", "range(0,20,2).index(10)=5"
+    m_asserter.AreEqual 0, r.index(0), "BuiltinTest.TestPyRange", "range(0,20,2).index(0)=0"
     
     ' ─── Step = 0 raises error ───
     Dim errorRaised As Boolean
@@ -548,40 +548,40 @@ Private Sub TestPyInt()
     m_asserter.AreEqual 0, PyInt(-0.5), "BuiltinTest.TestPyInt", "PyInt(-0.5)=0"
     
     ' ─── String parsing (decimal) ───
-    m_asserter.AreEqual 123, PyInt("123"), "BuiltinTest.TestPyInt", "PyInt(\"123\")=123"
+    m_asserter.AreEqual 123, PyInt("123"), "BuiltinTest.TestPyInt", "PyInt(""123"")=123"
     m_asserter.AreEqual -12345, PyInt("  -12345"), "BuiltinTest.TestPyInt", _
-        "PyInt(\"  -12345\")=-12345"
-    m_asserter.AreEqual 0, PyInt("0"), "BuiltinTest.TestPyInt", "PyInt(\"0\")=0"
-    m_asserter.AreEqual 10, PyInt("+10"), "BuiltinTest.TestPyInt", "PyInt(\"+10\")=10"
+        "PyInt("" - 12345 "")=-12345"
+    m_asserter.AreEqual 0, PyInt("0"), "BuiltinTest.TestPyInt", "PyInt(""0"")=0"
+    m_asserter.AreEqual 10, PyInt("+10"), "BuiltinTest.TestPyInt", "PyInt("" + 10 "")=10"
     
     ' ─── String parsing with explicit base ───
     m_asserter.AreEqual 64206, PyInt("FACE", 16), "BuiltinTest.TestPyInt", _
-        "PyInt(\"FACE\", 16)=64206"
+        "PyInt(""FACE"", 16)=64206"
     m_asserter.AreEqual 115, PyInt("01110011", 2), "BuiltinTest.TestPyInt", _
-        "PyInt(\"01110011\", 2)=115"
+        "PyInt(""01110011"", 2)=115"
     m_asserter.AreEqual 511, PyInt("777", 8), "BuiltinTest.TestPyInt", _
-        "PyInt(\"777\", 8)=511"
+        "PyInt(""777"", 8)=511"
     m_asserter.AreEqual 255, PyInt("FF", 16), "BuiltinTest.TestPyInt", _
-        "PyInt(\"FF\", 16)=255"
+        "PyInt(""FF"", 16)=255"
     m_asserter.AreEqual 35, PyInt("z", 36), "BuiltinTest.TestPyInt", _
-        "PyInt(\"z\", 36)=35"
+        "PyInt(""z"", 36)=35"
     
     ' ─── String parsing with prefix (base=0 auto-detect) ───
     m_asserter.AreEqual 255, PyInt("0xFF", 0), "BuiltinTest.TestPyInt", _
-        "PyInt(\"0xFF\", 0)=255"
+        "PyInt(""0xFF"", 0)=255"
     m_asserter.AreEqual 255, PyInt("0xFF", 16), "BuiltinTest.TestPyInt", _
-        "PyInt(\"0xFF\", 16)=255"
+        "PyInt(""0xFF"", 16)=255"
     m_asserter.AreEqual 10, PyInt("0b1010", 0), "BuiltinTest.TestPyInt", _
-        "PyInt(\"0b1010\", 0)=10"
+        "PyInt(""0b1010"", 0)=10"
     m_asserter.AreEqual 63, PyInt("0o77", 0), "BuiltinTest.TestPyInt", _
-        "PyInt(\"0o77\", 0)=63"
+        "PyInt(""0o77"", 0)=63"
     
     ' ─── Edge cases ───
     ' Negative hex
     m_asserter.AreEqual -255, PyInt("-0xFF", 0), "BuiltinTest.TestPyInt", _
-        "PyInt(\"-0xFF\", 0)=-255"
+        "PyInt(""-0xFF"", 0)=-255"
     ' Zero with sign
-    m_asserter.AreEqual 0, PyInt("-0"), "BuiltinTest.TestPyInt", "PyInt(\"-0\")=0"
+    m_asserter.AreEqual 0, PyInt("-0"), "BuiltinTest.TestPyInt", "PyInt("" - 0  "")=0"
     
     ' ─── Error: non-integer types ───
     Dim errorRaised As Boolean
@@ -607,7 +607,7 @@ PyIntDigitErr:
     Resume PyIntDigitDone
 PyIntDigitDone:
     On Error GoTo 0
-    m_asserter.IsTrue errorRaised, "BuiltinTest.TestPyInt", "PyInt(\"FF\", 10) should raise error"
+    m_asserter.IsTrue errorRaised, "BuiltinTest.TestPyInt", "PyInt(""FF"", 10) should raise error"
     
     ' ─── Error: empty string ───
     errorRaised = False
@@ -619,11 +619,11 @@ PyIntEmptyErr:
     Resume PyIntEmptyDone
 PyIntEmptyDone:
     On Error GoTo 0
-    m_asserter.IsTrue errorRaised, "BuiltinTest.TestPyInt", "PyInt(\"\") should raise error"
+    m_asserter.IsTrue errorRaised, "BuiltinTest.TestPyInt", "PyInt("" "") should raise error"
     
     ' ─── Base 0 with no prefix → default base 10 ───
     m_asserter.AreEqual 10, PyInt("10", 0), "BuiltinTest.TestPyInt", _
-        "PyInt(\"10\", 0)=10 (no prefix → base 10 default)"
+        "PyInt(""10"", 0)=10 (no prefix → base 10 default)"
 End Sub
 
 Private Sub TestPyIn()
@@ -705,21 +705,21 @@ Private Sub TestSequenceMethods()
     m_asserter.AreEqual 1, seq.Count(0), "BuiltinTest.TestSequenceMethods", "range(0,20,2).count(0)=1"
     
     ' ─── Index on RangeIterator (unbounded) ───
-    m_asserter.AreEqual 5, seq.Index(10), "BuiltinTest.TestSequenceMethods", "range(0,20,2).index(10)=5"
-    m_asserter.AreEqual 0, seq.Index(0), "BuiltinTest.TestSequenceMethods", "range(0,20,2).index(0)=0"
+    m_asserter.AreEqual 5, seq.index(10), "BuiltinTest.TestSequenceMethods", "range(0,20,2).index(10)=5"
+    m_asserter.AreEqual 0, seq.index(0), "BuiltinTest.TestSequenceMethods", "range(0,20,2).index(0)=0"
     
     ' ─── Index with start bound ───
-    m_asserter.AreEqual 5, seq.Index(10, 0), "BuiltinTest.TestSequenceMethods", "range(0,20,2).index(10, 0)=5"
-    m_asserter.AreEqual 5, seq.Index(10, 5), "BuiltinTest.TestSequenceMethods", "range(0,20,2).index(10, 5)=5"
+    m_asserter.AreEqual 5, seq.index(10, 0), "BuiltinTest.TestSequenceMethods", "range(0,20,2).index(10, 0)=5"
+    m_asserter.AreEqual 5, seq.index(10, 5), "BuiltinTest.TestSequenceMethods", "range(0,20,2).index(10, 5)=5"
     
     ' ─── Index with start AND stop bound ───
-    m_asserter.AreEqual 2, seq.Index(4, 0, 3), "BuiltinTest.TestSequenceMethods", "range(0,20,2).index(4, 0, 3)=2"
+    m_asserter.AreEqual 2, seq.index(4, 0, 3), "BuiltinTest.TestSequenceMethods", "range(0,20,2).index(4, 0, 3)=2"
     
     ' ─── Index error: value not in range ───
     Dim errorRaised As Boolean
     errorRaised = False
     On Error GoTo IndexNotFoundErr
-    seq.Index 99
+    seq.index 99
     GoTo IndexNotFoundDone
 IndexNotFoundErr:
     errorRaised = True
@@ -731,7 +731,7 @@ IndexNotFoundDone:
     ' ─── Index error: value outside start/stop bounds ───
     errorRaised = False
     On Error GoTo IndexBoundedErr
-    seq.Index 10, 6, 10
+    seq.index 10, 6, 10
     GoTo IndexBoundedDone
 IndexBoundedErr:
     errorRaised = True
@@ -768,18 +768,18 @@ Private Sub TestPyTuple()
     m_asserter.AreEqual 30, seq.GetItem(2), "BuiltinTest.TestPyTuple", "ISequence[2]=30"
     
     ' ─── Default Item property via seq index ───
-    m_asserter.AreEqual 10, t.Item(0), "BuiltinTest.TestPyTuple", "t.Item(0)=10"
-    m_asserter.AreEqual 20, t.Item(1), "BuiltinTest.TestPyTuple", "t.Item(1)=20"
+    m_asserter.AreEqual 10, t.item(0), "BuiltinTest.TestPyTuple", "t.Item(0)=10"
+    m_asserter.AreEqual 20, t.item(1), "BuiltinTest.TestPyTuple", "t.Item(1)=20"
     
     ' ─── Negative indexing ───
-    m_asserter.AreEqual 40, t.Item(-1), "BuiltinTest.TestPyTuple", "t.Item(-1)=40 (last)"
-    m_asserter.AreEqual 30, t.Item(-2), "BuiltinTest.TestPyTuple", "t.Item(-2)=30"
-    m_asserter.AreEqual 10, t.Item(-4), "BuiltinTest.TestPyTuple", "t.Item(-4)=10 (first)"
+    m_asserter.AreEqual 40, t.item(-1), "BuiltinTest.TestPyTuple", "t.Item(-1)=40 (last)"
+    m_asserter.AreEqual 30, t.item(-2), "BuiltinTest.TestPyTuple", "t.Item(-2)=30"
+    m_asserter.AreEqual 10, t.item(-4), "BuiltinTest.TestPyTuple", "t.Item(-4)=10 (first)"
     
     ' ─── Index out of range raises ───
     errorRaised = False
     On Error GoTo TupOobErr
-    t.Item 100
+    Dim i As Variant: i = t.item(100)
     GoTo TupOobDone
 TupOobErr:
     errorRaised = True
@@ -791,7 +791,7 @@ TupOobDone:
     ' Negative index too far
     errorRaised = False
     On Error GoTo TupNegErr
-    t.Item -10
+    i = t.item(-10)
     GoTo TupNegDone
 TupNegErr:
     errorRaised = True
@@ -810,7 +810,7 @@ TupNegDone:
     mutArr(0) = 1: mutArr(1) = 2: mutArr(2) = 3
     Set t = PyTuple(mutArr)
     mutArr(0) = 99                      ' modify source
-    m_asserter.AreEqual 1, t.Item(0), "BuiltinTest.TestPyTuple", "tuple[0]=1 after source mutation (immutable)"
+    m_asserter.AreEqual 1, t.item(0), "BuiltinTest.TestPyTuple", "tuple[0]=1 after source mutation (immutable)"
     
     ' ─── PyTuple("abc") → ('a', 'b', 'c') ───
     Set t = PyTuple("abc")
@@ -828,8 +828,8 @@ TupNegDone:
     Set r = PyRange(5)
     Set t = PyTuple(r)
     m_asserter.AreEqual 5, t.Length, "BuiltinTest.TestPyTuple", "tuple(range(5)).Length=5"
-    m_asserter.AreEqual 0, t.Item(0), "BuiltinTest.TestPyTuple", "tuple(range(5))[0]=0"
-    m_asserter.AreEqual 4, t.Item(4), "BuiltinTest.TestPyTuple", "tuple(range(5))[4]=4"
+    m_asserter.AreEqual 0, t.item(0), "BuiltinTest.TestPyTuple", "tuple(range(5))[0]=0"
+    m_asserter.AreEqual 4, t.item(4), "BuiltinTest.TestPyTuple", "tuple(range(5))[4]=4"
     
     ' ─── Count(value) ───
     Set t = PyTuple(Array(1, 2, 2, 3, 2, 4))
@@ -838,14 +838,14 @@ TupNegDone:
     m_asserter.AreEqual 0, t.Count(99), "BuiltinTest.TestPyTuple", "tuple.count(99)=0"
     
     ' ─── IndexOf(value) ───
-    m_asserter.AreEqual 0, t.Index(1), "BuiltinTest.TestPyTuple", "tuple.index(1)=0"
-    m_asserter.AreEqual 1, t.Index(2), "BuiltinTest.TestPyTuple", "tuple.index(2)=1 (first occurrence)"
-    m_asserter.AreEqual 5, t.Index(4), "BuiltinTest.TestPyTuple", "tuple.index(4)=5"
+    m_asserter.AreEqual 0, t.index(1), "BuiltinTest.TestPyTuple", "tuple.index(1)=0"
+    m_asserter.AreEqual 1, t.index(2), "BuiltinTest.TestPyTuple", "tuple.index(2)=1 (first occurrence)"
+    m_asserter.AreEqual 5, t.index(4), "BuiltinTest.TestPyTuple", "tuple.index(4)=5"
     
     ' IndexOf not found raises
     errorRaised = False
     On Error GoTo TupIdxErr
-    t.Index 99
+    t.index 99
     GoTo TupIdxDone
 TupIdxErr:
     errorRaised = True
@@ -855,8 +855,8 @@ TupIdxDone:
     m_asserter.IsTrue errorRaised, "BuiltinTest.TestPyTuple", "tuple.index(99) should raise"
     
     ' ─── IndexOf with start and stop bounds ───
-    m_asserter.AreEqual 3, t.Index(2, 2), "BuiltinTest.TestPyTuple", "tuple.index(2, 2)=3 (skip first 2)"
-    m_asserter.AreEqual 1, t.Index(2, 0, 3), "BuiltinTest.TestPyTuple", "tuple.index(2, 0, 3)=1"
+    m_asserter.AreEqual 3, t.index(2, 2), "BuiltinTest.TestPyTuple", "tuple.index(2, 2)=3 (skip first 2)"
+    m_asserter.AreEqual 1, t.index(2, 0, 3), "BuiltinTest.TestPyTuple", "tuple.index(2, 0, 3)=1"
     
     ' ─── Contains via IContains (PyIn) ───
     Dim evens(0 To 4) As Long
@@ -885,14 +885,14 @@ TupIdxDone:
     col.Add "x": col.Add "y": col.Add "z"
     Set t = PyTuple(col)
     m_asserter.AreEqual 3, t.Length, "BuiltinTest.TestPyTuple", "tuple from collection: Length=3"
-    m_asserter.AreEqual "x", t.Item(0), "BuiltinTest.TestPyTuple", "tuple[0]='x'"
-    m_asserter.AreEqual "z", t.Item(2), "BuiltinTest.TestPyTuple", "tuple[2]='z'"
+    m_asserter.AreEqual "x", t.item(0), "BuiltinTest.TestPyTuple", "tuple[0]='x'"
+    m_asserter.AreEqual "z", t.item(2), "BuiltinTest.TestPyTuple", "tuple[2]='z'"
 End Sub
 
 Private Sub TestVBArray()
-    Dim v As VBArray
-    Dim v2 As VBArray
-    Dim v3 As VBArray
+    Dim v As vbArray
+    Dim v2 As vbArray
+    Dim v3 As vbArray
     Dim seq As ISequence
     Dim arr(0 To 3) As Long
     Dim errorRaised As Boolean
@@ -906,8 +906,8 @@ Private Sub TestVBArray()
     arr(0) = 10: arr(1) = 20: arr(2) = 30: arr(3) = 40
     Set v = PyVBArray(arr)
     m_asserter.AreEqual 4, v.Length, "BuiltinTest.TestVBArray", "VBArray from array: Length=4"
-    m_asserter.AreEqual 10, v.Item(0), "BuiltinTest.TestVBArray", "v[0]=10"
-    m_asserter.AreEqual 40, v.Item(3), "BuiltinTest.TestVBArray", "v[3]=40"
+    m_asserter.AreEqual 10, v.item(0), "BuiltinTest.TestVBArray", "v[0]=10"
+    m_asserter.AreEqual 40, v.item(3), "BuiltinTest.TestVBArray", "v[3]=40"
     
     ' ─── ISequence interface ───
     Set seq = v
@@ -915,21 +915,21 @@ Private Sub TestVBArray()
     m_asserter.AreEqual 20, seq.GetItem(1), "BuiltinTest.TestVBArray", "ISequence[1]=20"
     
     ' ─── Default Item property ───
-    m_asserter.AreEqual 10, v.Item(0), "BuiltinTest.TestVBArray", "v.Item(0)=10"
+    m_asserter.AreEqual 10, v.item(0), "BuiltinTest.TestVBArray", "v.Item(0)=10"
     
     ' ─── Negative indexing ───
-    m_asserter.AreEqual 40, v.Item(-1), "BuiltinTest.TestVBArray", "v.Item(-1)=40 (last)"
-    m_asserter.AreEqual 30, v.Item(-2), "BuiltinTest.TestVBArray", "v.Item(-2)=30"
-    m_asserter.AreEqual 10, v.Item(-4), "BuiltinTest.TestVBArray", "v.Item(-4)=10 (first)"
+    m_asserter.AreEqual 40, v.item(-1), "BuiltinTest.TestVBArray", "v.Item(-1)=40 (last)"
+    m_asserter.AreEqual 30, v.item(-2), "BuiltinTest.TestVBArray", "v.Item(-2)=30"
+    m_asserter.AreEqual 10, v.item(-4), "BuiltinTest.TestVBArray", "v.Item(-4)=10 (first)"
     
     ' ─── Set Item (mutation) ───
-    v.Item(1) = 99
-    m_asserter.AreEqual 99, v.Item(1), "BuiltinTest.TestVBArray", "v[1]=99 after set"
+    v.item(1) = 99
+    m_asserter.AreEqual 99, v.item(1), "BuiltinTest.TestVBArray", "v[1]=99 after set"
     
     ' ─── Index out of range raises ───
     errorRaised = False
     On Error GoTo VBOobErr
-    v.Item 100
+    Dim i As Variant: i = v.item(100)
     GoTo VBOobDone
 VBOobErr:
     errorRaised = True
@@ -942,11 +942,11 @@ VBOobDone:
     Set v = PyVBArray(Array(1, 2))
     v.Append 3
     m_asserter.AreEqual 3, v.Length, "BuiltinTest.TestVBArray", "append: Length=3"
-    m_asserter.AreEqual 3, v.Item(2), "BuiltinTest.TestVBArray", "append: v[2]=3"
+    m_asserter.AreEqual 3, v.item(2), "BuiltinTest.TestVBArray", "append: v[2]=3"
     
     v.Append 4
     m_asserter.AreEqual 4, v.Length, "BuiltinTest.TestVBArray", "append: Length=4"
-    m_asserter.AreEqual 4, v.Item(3), "BuiltinTest.TestVBArray", "append: v[3]=4"
+    m_asserter.AreEqual 4, v.item(3), "BuiltinTest.TestVBArray", "append: v[3]=4"
     
     ' ─── Clear ───
     v.Clear
@@ -956,68 +956,68 @@ VBOobDone:
     Set v = PyVBArray(Array(1, 2, 3))
     Set v2 = v.Copy()
     m_asserter.AreEqual 3, v2.Length, "BuiltinTest.TestVBArray", "copy: Length=3"
-    m_asserter.AreEqual 1, v2.Item(0), "BuiltinTest.TestVBArray", "copy: [0]=1"
-    m_asserter.AreEqual 3, v2.Item(2), "BuiltinTest.TestVBArray", "copy: [2]=3"
+    m_asserter.AreEqual 1, v2.item(0), "BuiltinTest.TestVBArray", "copy: [0]=1"
+    m_asserter.AreEqual 3, v2.item(2), "BuiltinTest.TestVBArray", "copy: [2]=3"
     
     ' Copy is independent
-    v2.Item(0) = 99
-    m_asserter.AreEqual 1, v.Item(0), "BuiltinTest.TestVBArray", "copy isolation: original[0]=1 unchanged"
+    v2.item(0) = 99
+    m_asserter.AreEqual 1, v.item(0), "BuiltinTest.TestVBArray", "copy isolation: original[0]=1 unchanged"
     
     ' ─── VBArray(VBArray) creates copy ───
     Set v3 = PyVBArray(v)
     m_asserter.AreEqual 3, v3.Length, "BuiltinTest.TestVBArray", "VBArray(VBArray): Length=3"
-    m_asserter.AreEqual 2, v3.Item(1), "BuiltinTest.TestVBArray", "VBArray(VBArray): [1]=2"
+    m_asserter.AreEqual 2, v3.item(1), "BuiltinTest.TestVBArray", "VBArray(VBArray): [1]=2"
     ' Mutate v3 — v unchanged
-    v3.Item(1) = 77
-    m_asserter.AreEqual 2, v.Item(1), "BuiltinTest.TestVBArray", "VBArray(VBArray): source[1]=2 unchanged"
+    v3.item(1) = 77
+    m_asserter.AreEqual 2, v.item(1), "BuiltinTest.TestVBArray", "VBArray(VBArray): source[1]=2 unchanged"
     
     ' ─── Extend from array ───
     Set v = PyVBArray(Array(1, 2))
     v.Extend Array(3, 4)
     m_asserter.AreEqual 4, v.Length, "BuiltinTest.TestVBArray", "extend array: Length=4"
-    m_asserter.AreEqual 3, v.Item(2), "BuiltinTest.TestVBArray", "extend array: [2]=3"
-    m_asserter.AreEqual 4, v.Item(3), "BuiltinTest.TestVBArray", "extend array: [3]=4"
+    m_asserter.AreEqual 3, v.item(2), "BuiltinTest.TestVBArray", "extend array: [2]=3"
+    m_asserter.AreEqual 4, v.item(3), "BuiltinTest.TestVBArray", "extend array: [3]=4"
     
     ' ─── Extend from string ───
     Set v = PyVBArray(Array("a"))
     v.Extend "bcd"
     m_asserter.AreEqual 4, v.Length, "BuiltinTest.TestVBArray", "extend string: Length=4"
-    m_asserter.AreEqual "b", v.Item(1), "BuiltinTest.TestVBArray", "extend string: [1]='b'"
-    m_asserter.AreEqual "d", v.Item(3), "BuiltinTest.TestVBArray", "extend string: [3]='d'"
+    m_asserter.AreEqual "b", v.item(1), "BuiltinTest.TestVBArray", "extend string: [1]='b'"
+    m_asserter.AreEqual "d", v.item(3), "BuiltinTest.TestVBArray", "extend string: [3]='d'"
     
     ' ─── Extend from range ───
     Set v = PyVBArray(Array(0))
     v.Extend PyRange(1, 4)
     m_asserter.AreEqual 4, v.Length, "BuiltinTest.TestVBArray", "extend range: Length=4"
-    m_asserter.AreEqual 1, v.Item(1), "BuiltinTest.TestVBArray", "extend range: [1]=1"
-    m_asserter.AreEqual 3, v.Item(3), "BuiltinTest.TestVBArray", "extend range: [3]=3"
+    m_asserter.AreEqual 1, v.item(1), "BuiltinTest.TestVBArray", "extend range: [1]=1"
+    m_asserter.AreEqual 3, v.item(3), "BuiltinTest.TestVBArray", "extend range: [3]=3"
     
     ' ─── Insert at beginning ───
     Set v = PyVBArray(Array(2, 3))
     v.Insert 0, 1
     m_asserter.AreEqual 3, v.Length, "BuiltinTest.TestVBArray", "insert 0: Length=3"
-    m_asserter.AreEqual 1, v.Item(0), "BuiltinTest.TestVBArray", "insert 0: [0]=1"
-    m_asserter.AreEqual 2, v.Item(1), "BuiltinTest.TestVBArray", "insert 0: [1]=2"
-    m_asserter.AreEqual 3, v.Item(2), "BuiltinTest.TestVBArray", "insert 0: [2]=3"
+    m_asserter.AreEqual 1, v.item(0), "BuiltinTest.TestVBArray", "insert 0: [0]=1"
+    m_asserter.AreEqual 2, v.item(1), "BuiltinTest.TestVBArray", "insert 0: [1]=2"
+    m_asserter.AreEqual 3, v.item(2), "BuiltinTest.TestVBArray", "insert 0: [2]=3"
     
     ' ─── Insert at end ───
     Set v = PyVBArray(Array(1, 2))
     v.Insert 2, 3
     m_asserter.AreEqual 3, v.Length, "BuiltinTest.TestVBArray", "insert end: Length=3"
-    m_asserter.AreEqual 3, v.Item(2), "BuiltinTest.TestVBArray", "insert end: [2]=3"
+    m_asserter.AreEqual 3, v.item(2), "BuiltinTest.TestVBArray", "insert end: [2]=3"
     
     ' ─── Insert in middle ───
     Set v = PyVBArray(Array(1, 3))
     v.Insert 1, 2
     m_asserter.AreEqual 3, v.Length, "BuiltinTest.TestVBArray", "insert mid: Length=3"
-    m_asserter.AreEqual 2, v.Item(1), "BuiltinTest.TestVBArray", "insert mid: [1]=2"
-    m_asserter.AreEqual 3, v.Item(2), "BuiltinTest.TestVBArray", "insert mid: [2]=3"
+    m_asserter.AreEqual 2, v.item(1), "BuiltinTest.TestVBArray", "insert mid: [1]=2"
+    m_asserter.AreEqual 3, v.item(2), "BuiltinTest.TestVBArray", "insert mid: [2]=3"
     
     ' ─── Insert with negative index ───
     Set v = PyVBArray(Array(1, 3))
     v.Insert -1, 2        ' insert before last → position 1
     m_asserter.AreEqual 3, v.Length, "BuiltinTest.TestVBArray", "insert -1: Length=3"
-    m_asserter.AreEqual 2, v.Item(1), "BuiltinTest.TestVBArray", "insert -1: [1]=2"
+    m_asserter.AreEqual 2, v.item(1), "BuiltinTest.TestVBArray", "insert -1: [1]=2"
     
     ' ─── Pop default (last) ───
     Set v = PyVBArray(Array(1, 2, 3))
@@ -1028,7 +1028,7 @@ VBOobDone:
     Set v = PyVBArray(Array(10, 20, 30, 40))
     m_asserter.AreEqual 20, v.Pop(1), "BuiltinTest.TestVBArray", "pop(1): returns 20"
     m_asserter.AreEqual 3, v.Length, "BuiltinTest.TestVBArray", "pop(1): Length=3"
-    m_asserter.AreEqual 30, v.Item(1), "BuiltinTest.TestVBArray", "pop(1): new[1]=30 (shifted)"
+    m_asserter.AreEqual 30, v.item(1), "BuiltinTest.TestVBArray", "pop(1): new[1]=30 (shifted)"
     
     ' ─── Pop negative index ───
     Set v = PyVBArray(Array(1, 2, 3))
@@ -1051,10 +1051,10 @@ VBEmptyPopDone:
     Set v = PyVBArray(Array(1, 2, 3, 2, 4))
     v.Remove 2
     m_asserter.AreEqual 4, v.Length, "BuiltinTest.TestVBArray", "remove: Length=4"
-    m_asserter.AreEqual 1, v.Item(0), "BuiltinTest.TestVBArray", "remove: [0]=1"
-    m_asserter.AreEqual 3, v.Item(1), "BuiltinTest.TestVBArray", "remove: [1]=3 (second became first)"
-    m_asserter.AreEqual 2, v.Item(2), "BuiltinTest.TestVBArray", "remove: [2]=2 (remaining)"
-    m_asserter.AreEqual 4, v.Item(3), "BuiltinTest.TestVBArray", "remove: [3]=4"
+    m_asserter.AreEqual 1, v.item(0), "BuiltinTest.TestVBArray", "remove: [0]=1"
+    m_asserter.AreEqual 3, v.item(1), "BuiltinTest.TestVBArray", "remove: [1]=3 (second became first)"
+    m_asserter.AreEqual 2, v.item(2), "BuiltinTest.TestVBArray", "remove: [2]=2 (remaining)"
+    m_asserter.AreEqual 4, v.item(3), "BuiltinTest.TestVBArray", "remove: [3]=4"
     
     ' ─── Remove not found raises ───
     errorRaised = False
@@ -1072,10 +1072,10 @@ VBRemoveDone:
     Set v = PyVBArray(Array(1, 2, 3, 4))
     v.Reverse
     m_asserter.AreEqual 4, v.Length, "BuiltinTest.TestVBArray", "reverse: Length=4"
-    m_asserter.AreEqual 4, v.Item(0), "BuiltinTest.TestVBArray", "reverse: [0]=4"
-    m_asserter.AreEqual 3, v.Item(1), "BuiltinTest.TestVBArray", "reverse: [1]=3"
-    m_asserter.AreEqual 2, v.Item(2), "BuiltinTest.TestVBArray", "reverse: [2]=2"
-    m_asserter.AreEqual 1, v.Item(3), "BuiltinTest.TestVBArray", "reverse: [3]=1"
+    m_asserter.AreEqual 4, v.item(0), "BuiltinTest.TestVBArray", "reverse: [0]=4"
+    m_asserter.AreEqual 3, v.item(1), "BuiltinTest.TestVBArray", "reverse: [1]=3"
+    m_asserter.AreEqual 2, v.item(2), "BuiltinTest.TestVBArray", "reverse: [2]=2"
+    m_asserter.AreEqual 1, v.item(3), "BuiltinTest.TestVBArray", "reverse: [3]=1"
     
     ' ─── Reverse empty ───
     Set v = PyVBArray()
@@ -1105,26 +1105,26 @@ VBRemoveDone:
     Set seq = v
     m_asserter.AreEqual 3, seq.Count(2), "BuiltinTest.TestVBArray", "count(2)=3"
     m_asserter.AreEqual 0, seq.Count(99), "BuiltinTest.TestVBArray", "count(99)=0"
-    m_asserter.AreEqual 1, seq.Index(2), "BuiltinTest.TestVBArray", "index(2)=1"
-    m_asserter.AreEqual 3, seq.Index(2, 2), "BuiltinTest.TestVBArray", "index(2, 2)=3"
+    m_asserter.AreEqual 1, seq.index(2), "BuiltinTest.TestVBArray", "index(2)=1"
+    m_asserter.AreEqual 3, seq.index(2, 2), "BuiltinTest.TestVBArray", "index(2, 2)=3"
     
     ' ─── VBArray("abc") → ['a', 'b', 'c'] ───
     Set v = PyVBArray("abc")
     m_asserter.AreEqual 3, v.Length, "BuiltinTest.TestVBArray", "VBArray('abc'): Length=3"
-    m_asserter.AreEqual "a", v.Item(0), "BuiltinTest.TestVBArray", "VBArray('abc'): [0]='a'"
-    m_asserter.AreEqual "c", v.Item(2), "BuiltinTest.TestVBArray", "VBArray('abc'): [2]='c'"
+    m_asserter.AreEqual "a", v.item(0), "BuiltinTest.TestVBArray", "VBArray('abc'): [0]='a'"
+    m_asserter.AreEqual "c", v.item(2), "BuiltinTest.TestVBArray", "VBArray('abc'): [2]='c'"
     
     ' ─── VBArray from range ───
     Set v = PyVBArray(PyRange(4))
     m_asserter.AreEqual 4, v.Length, "BuiltinTest.TestVBArray", "VBArray(range(4)): Length=4"
-    m_asserter.AreEqual 3, v.Item(3), "BuiltinTest.TestVBArray", "VBArray(range(4)): [3]=3"
+    m_asserter.AreEqual 3, v.item(3), "BuiltinTest.TestVBArray", "VBArray(range(4)): [3]=3"
     
     ' ─── Immutability of original array ───
     Dim src(0 To 2) As Long
     src(0) = 1: src(1) = 2: src(2) = 3
     Set v = PyVBArray(src)
     src(0) = 99
-    m_asserter.AreEqual 1, v.Item(0), "BuiltinTest.TestVBArray", "source mutation: [0]=1 unchanged"
+    m_asserter.AreEqual 1, v.item(0), "BuiltinTest.TestVBArray", "source mutation: [0]=1 unchanged"
     
     ' ─── IMutableSequence interface methods ───
     Dim ms As IMutableSequence
@@ -1133,12 +1133,12 @@ VBRemoveDone:
     ms.Append 4
     m_asserter.AreEqual 4, v.Length, "BuiltinTest.TestVBArray", "IMutableSequence.Append: Length=4"
     ms.Reverse
-    m_asserter.AreEqual 4, v.Item(0), "BuiltinTest.TestVBArray", "IMutableSequence.Reverse: [0]=4"
+    m_asserter.AreEqual 4, v.item(0), "BuiltinTest.TestVBArray", "IMutableSequence.Reverse: [0]=4"
     
     ' Copy via IMutableSequence
     Dim copyVar As Variant
     Set copyVar = ms.Copy()
-    Dim copyVB As VBArray
+    Dim copyVB As vbArray
     Set copyVB = copyVar
     m_asserter.AreEqual 4, copyVB.Length, "BuiltinTest.TestVBArray", "IMutableSequence.Copy: Length=4"
 End Sub

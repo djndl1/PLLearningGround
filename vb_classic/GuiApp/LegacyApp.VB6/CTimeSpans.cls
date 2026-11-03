@@ -345,9 +345,7 @@ End Function
 ' Overflow.
 Public Function TimeSpanNegate(ByRef a As TimeSpan) As TimeSpan
 Attribute TimeSpanNegate.VB_Description = "Returns a new TimeSpan with the sign of a inverted.\r\nNegating MinValue raises Overflow (no positive equivalent).\r\nArgs:\r\n  a (TimeSpan): Operand.\r\nReturns:\r\n  TimeSpan: -a."
-    Dim result As TimeSpan: result.ticks = -CDec(a.ticks)
-    TimeSpanNegate = result
-End Function
+    Dim result As TimeSpan
     result.ticks = CheckedNegate(CDec(a.ticks))
     TimeSpanNegate = result
 End Function
@@ -578,7 +576,7 @@ End Function
 ' object. Uses the Friend Udt accessor for direct UDT copy.
 Public Function UnwrapTimeSpan(ByVal obj As CTimeSpan) As TimeSpan
 Attribute UnwrapTimeSpan.VB_Description = "Extracts the underlying TimeSpan UDT from a CTimeSpan object.\r\nArgs:\r\n  obj (CTimeSpan): Source CTimeSpan object.\r\nReturns:\r\n  TimeSpan: The UDT form."
-    UnwrapTimeSpan = obj.Udt
+    UnwrapTimeSpan = obj.udt
 End Function
 
 ' CheckedAdd sums two Decimal tick counts, raising Overflow on
@@ -634,18 +632,18 @@ End Function
 ' component. ticks is taken as a parameter (no instance state) so the
 ' helper is reusable from both the OOP and the UDT accessors.
 Private Function TruncatedComponentTicks(ByVal ticks As Variant, ByVal ticksPerUnit As Variant, ByVal unitsPerLarger As Variant) As Long
-    Dim ticksAsDecimal As Variant
+    Dim TicksAsDecimal As Variant
     Dim ticksPerUnitAsDecimal As Variant
     Dim ticksPerLarger As Variant
     Dim remainder As Variant
-    ticksAsDecimal = CDec(ticks)
+    TicksAsDecimal = CDec(ticks)
     ticksPerUnitAsDecimal = CDec(ticksPerUnit)
     ticksPerLarger = ticksPerUnitAsDecimal * CDec(unitsPerLarger)
     ' VB6's Mod operator coerces Decimal operands to Long (overflow when
     ' ticksPerLarger exceeds Long.MaxValue). Decimals.TruncationDivision keeps
     ' all arithmetic in Decimal and returns quotient + remainder in a
     ' VariantPair; we use only the remainder.
-    remainder = Decimals.TruncationDivision(ticksAsDecimal, ticksPerLarger).second
+    remainder = Decimals.TruncationDivision(TicksAsDecimal, ticksPerLarger).second
     TruncatedComponentTicks = CLng(Fix(CDec(remainder) / ticksPerUnitAsDecimal))
 End Function
 
@@ -668,14 +666,14 @@ End Function
 ' implementation throws Overflow when the result would exceed
 ' [MinValue, MaxValue]; we delegate the same check to InTickRange.
 Private Function TimeToTicks(ByVal d As Long, ByVal h As Long, ByVal m As Long, ByVal s As Long) As Variant
-    Dim totalSeconds As Variant
-    totalSeconds = CDec(d) * CDec(CTimeSpans.SecondsPerDay) _
+    Dim TotalSeconds As Variant
+    TotalSeconds = CDec(d) * CDec(CTimeSpans.SecondsPerDay) _
         + CDec(h) * CDec(CTimeSpans.SecondsPerHour) _
         + CDec(m) * CDec(CTimeSpans.SecondsPerMinute) _
         + CDec(s)
-    Ensure.IsTrue CDec(Abs(CDbl(totalSeconds))) <= CDec("922337203685"), ErrorCodes.Overflow, "CTimeSpans.TimeToTicks", "total seconds exceeds MaxSeconds"
+    Ensure.IsTrue CDec(Abs(CDbl(TotalSeconds))) <= CDec("922337203685"), ErrorCodes.Overflow, "CTimeSpans.TimeToTicks", "total seconds exceeds MaxSeconds"
     Dim ticks As Variant
-    ticks = totalSeconds * CDec(CTimeSpans.TicksPerSecond)
+    ticks = TotalSeconds * CDec(CTimeSpans.TicksPerSecond)
     Ensure.IsTrue InTickRange(ticks), ErrorCodes.Overflow, "CTimeSpans.TimeToTicks", "resulting ticks out of range"
     TimeToTicks = ticks
 End Function
